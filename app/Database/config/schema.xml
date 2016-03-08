@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database name="default" defaultIdMethod="native" namespace="Database\Model">
+    <table name="users" idMethod="native" phpName="Users">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
+        <column name="email" phpName="Email" type="VARCHAR" size="255" required="true"/>
+        <column name="password" phpName="Password" type="VARCHAR" size="255" required="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+
+    <table name="auction" idMethod="native" phpName="Auction">
+        <column name="id" phpName="Id" type="INTEGER" size="11" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="title" phpName="Title" type="LONGVARCHAR" required="true"/>
+        <column name="estimated_value" phpName="EstimatedValue" type="VARCHAR" size="255" required="true"/>
+        <column name="location" phpName="Location" type="VARCHAR" size="255" required="true"/>
+        <column name="documentation" phpName="Documentation" type="LONGVARCHAR" required="false"/>
+        <column name="ad_number" phpName="AdNumber" type="INTEGER" size="11" required="false"/>
+        <column name="publish_date" phpName="PublishDate" type="DATE" required="true"/>
+        <column name="gainer" phpName="Gainer" type="VARCHAR" size="255" required="false"/>
+        <column name="contract_type" phpName="ContractType" type="VARCHAR" size="255" required="true"/>
+        <column name="funding_type" phpName="FundingType" type="VARCHAR" size="255" required="true"/>
+        <column name="contract_subject" phpName="ContractSubject" type="LONGVARCHAR" required="false"/>
+        <column name="offer_end_date" phpName="OfferEndDate" type="DATE" required="true"/>
+        <column name="apply_mode" phpName="ApplyMode" type="VARCHAR" size="255" required="false"/>
+        <column name="contract_period" phpName="ContractPeriod" type="VARCHAR" size="255" required="false"/>
+        <column name="participation_warranty" phpName="ParticipationWarranty" type="VARCHAR" size="255" required="false"/>
+        <column name="participation_conditions" phpName="ParticipationConditions" type="VARCHAR" size="255" required="false"/>
+        <column name="professional_ability" phpName="ProfessionalAbility" type="LONGVARCHAR"  required="false"/>
+        <column name="average_turnover" phpName="AverageTurnover" type="VARCHAR" size="255" required="false"/>
+        <column name="cash_flow" phpName="CashFlow" type="VARCHAR" size="255" required="false"/>
+        <column name="similar_experience" phpName="SimilarExperience" type="LONGVARCHAR" required="false"/>
+        <column name="key_personnel" phpName="KeyPersonnel" type="VARCHAR" size="255" required="false"/>
+        <column name="equipment" phpName="Equipment" type="LONGVARCHAR" required="false"/>
+        <column name="quality_assurance" phpName="QualityAssurance" type="LONGVARCHAR" required="false"/>
+        <column name="additional_information" phpName="AdditionalInformation" type="LONGVARCHAR" required="false"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+
+</database>

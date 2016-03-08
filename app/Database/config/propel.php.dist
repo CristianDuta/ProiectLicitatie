@@ -1,0 +1,15 @@
+<?php
+
+return [
+    'propel' => [
+        'paths' => [
+            // The directory where Propel expects to find your `schema.xml` file.
+            'schemaDir' => 'C:\xampp\htdocs\licitatie-pp\app\Database\config',
+
+            // The directory where Propel should output generated object model classes.
+            'phpDir' => 'C:\xampp\htdocs\licitatie-pp\app',
+
+            'phpConfDir' => 'C:\xampp\htdocs\licitatie-pp\app\Database\config'
+        ]
+    ]
+];

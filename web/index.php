@@ -12,6 +12,8 @@
             'twig.options' => array('cache' => false),
    ));
 
+   $app['config'] = include "../app/config/global.config.php";
+
    $app['twig'] = $app->share($app->extend('twig', function(\Twig_Environment $twig, $app) {
       $twig->addFunction(new \Twig_SimpleFunction('asset', function ($asset) {
          return sprintf('/web/assets/%s', ltrim($asset, '/'));

@@ -9,8 +9,4 @@
 
    abstract class AbstractAppController implements ControllerProviderInterface
    {
-      /**
-       * TODO get data from Model, send it to the view and display
-       */
-      protected abstract function getPageContent();
    }

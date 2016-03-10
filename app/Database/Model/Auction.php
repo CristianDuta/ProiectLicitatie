@@ -16,5 +16,10 @@ use Database\Model\Base\Auction as BaseAuction;
  */
 class Auction extends BaseAuction
 {
-
+    public function setPublishDate($value)
+    {
+        $date = date("Y-m-d", strtotime($value));
+        parent::setPublishDate($date);
+        return $this;
+    }
 }

@@ -3,8 +3,10 @@ namespace BusinessLogic;
 
 use Database\Model\Auction;
 
-class AddAuctionProcess
+class SaveAuctionProcess
 {
+
+
     public function __construct()
     {
     }

@@ -1,13 +1,13 @@
 <div class="panel">
     <div class="panel-body pan">
-        <form action="#">
+        <form action="" method="post">
             <div class="form-body pal">
-                {% for inputId, input in inputArray %}
+                {% for key, value in inputArray %}
                     <div class="form-group">
-                        <label for="{{ inputId }}" class="control-label">
-                            {{ input }}
+                        <label for="{{ key }}" class="control-label">
+                            {{ value }}
                         </label>
-                        <textarea id="{{ inputId }}" rows="1" class="form-control">{{ auctionList[inputId] }}</textarea>
+                        <textarea id="{{ key }}" name="{{ key }}" rows="1" class="form-control">{{ auctionList[key] }}</textarea>
                     </div>
                 {% endfor %}
             </div>

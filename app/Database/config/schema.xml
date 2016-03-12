@@ -35,6 +35,7 @@
         <column name="equipment" phpName="Equipment" type="LONGVARCHAR" required="false"/>
         <column name="quality_assurance" phpName="QualityAssurance" type="LONGVARCHAR" required="false"/>
         <column name="additional_information" phpName="AdditionalInformation" type="LONGVARCHAR" required="false"/>
+        <column name="updated_at" phpName="UpdatedAt" type="DATE" required="true"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Andreea
- * Date: 3/10/2016
- * Time: 9:07 PM
- */
 
 namespace BusinessLogic;
 
@@ -33,36 +27,6 @@ class AddOrEditDTO
     private $equipment;
     private $qualityAssurance;
     private $additionalInformation;
-    private $config;
-
-    public function __construct()
-    {
-        $this->config = array(
-            "title" => "Titlu",
-            "estimated_value" => "Valoare estimata",
-            "location" => "Locatia",
-            "documentation" => "Documentatie",
-            "ad_number" => "Numar anunt",
-            "publish_date" => 'Data Publicare',
-            "gainer" => "Beneficiar",
-            "contract_type" => "Obiectul contractului",
-            "funding_type" => "Tipul de finantare",
-            "contract_subject" => 'Obiectul contractului',
-            "offer_end_date" => "Data limita de depunere a ofertei",
-            "apply_mode" => "Conditii de participare",
-            "contract_period" => "Durata contractului",
-            "participation_warranty" => "Garantie de participare",
-            "participation_conditions" => "Conditii de participare",
-            "professional_ability" => "Capacitate de exercitare a activitatii profesionale",
-            "average_turnover" => "Cifra medie de afaceri in ultimii 3 ani",
-            "cash_flow" => "Cash-flow",
-            "similar_experience" => "Experienta similara",
-            "key_personnel" => "Personal-cheie",
-            "equipment" => "Utilaje/echipamente",
-            "quality_assurance" => "Standarde de asigurare a calitatii si de protectia mediului",
-            "additional_information" => "Important !!!",
-        );
-    }
 
     /**
      * @return mixed
@@ -431,6 +395,4 @@ class AddOrEditDTO
     {
         $this->additionalInformation = $additionalInformation;
     }
-
-
 }

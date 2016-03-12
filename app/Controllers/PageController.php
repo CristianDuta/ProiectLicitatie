@@ -24,9 +24,11 @@ class PageController extends AbstractAppController
 
         $this->homePage($controllers);
         $this->addOrEditPage($controllers);
+        $this->viewPage($controllers);
 
         return $controllers;
     }
+
 
 
     private function homePage(ControllerCollection $controllers)
@@ -37,6 +39,7 @@ class PageController extends AbstractAppController
             ));
         });
     }
+
 
 
     private function addOrEditPage(ControllerCollection $controllers)
@@ -128,5 +131,37 @@ class PageController extends AbstractAppController
                 ])
             ));
         })->value('id', '');
+    }
+
+
+
+    private function viewPage(ControllerCollection $controllers)
+    {
+        $controllers->get('/view', function (Application $app) {
+
+            $pageTitle = 'Vizualizare Licitatii';
+
+            $auctionQuery = new AuctionQuery();
+            $auctionList = $auctionQuery->find();
+
+            $results = array();
+            foreach($auctionList as $auction)
+            {
+                $result = array();
+                $result['location'] = $auction->getLocation();
+                $result['title'] = $auction->getTitle();
+                $result['estimated_value'] = $auction->getEstimatedValue();
+                $result['publish_date'] = $auction->getPublishDate("d.m.Y");
+
+                $results[] = $result;
+            }
+
+            return $app['twig']->render("index.html", array(
+                'pageTitle' => $pageTitle,
+                'pageContent' => $app['twig']->render("view.html", [
+                    'auctionList' => $results,
+                ])
+            ));
+        });
     }
 }

@@ -43,7 +43,7 @@ class PageController extends AbstractAppController
     {
         $controllers->get('/', function (Application $app) {
             return $app['twig']->render("index.html", array(
-                'pageTitle' => self::PAGE_TITLE_HOME
+                'pageTitle' => self::PAGE_TITLE_HOME,
                 'activeMenuItem' => 'home'
             ));
         });

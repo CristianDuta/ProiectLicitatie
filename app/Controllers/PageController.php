@@ -44,6 +44,7 @@ class PageController extends AbstractAppController
         $controllers->get('/', function (Application $app) {
             return $app['twig']->render("index.html", array(
                 'pageTitle' => self::PAGE_TITLE_HOME
+                'activeMenuItem' => 'home'
             ));
         });
     }
@@ -79,6 +80,7 @@ class PageController extends AbstractAppController
 
             return $app['twig']->render("index.html", array(
                 'pageTitle' => $pageTitle,
+                'activeMenuItem' => 'addOrEdit',
                 'pageContent' => $app['twig']->render("add-edit-auction.html", [
                     'inputArray' => $app['config']['addOrEditSection'],
                     'auctionList' => $auction,
@@ -107,12 +109,14 @@ class PageController extends AbstractAppController
                 $result['title'] = $auction->getTitle();
                 $result['estimated_value'] = $auction->getEstimatedValue();
                 $result['publish_date'] = $auction->getPublishDate("d.m.Y");
+                $result['id'] = $auction->getId();
 
                 $results[] = $result;
             }
 
             return $app['twig']->render("index.html", array(
                 'pageTitle' => $pageTitle,
+                'activeMenuItem' => 'view',
                 'pageContent' => $app['twig']->render("view.html", [
                     'auctionList' => $results,
                 ])

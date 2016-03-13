@@ -2,14 +2,22 @@
 
 namespace Controllers;
 
+use BusinessLogic\GetAuctionProcess;
+use BusinessLogic\SaveAuctionProcess;
 use Database\Model\Auction;
-use Database\Model\AuctionQuery;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageController extends AbstractAppController
 {
+    const PAGE_TITLE_HOME = 'Acasa';
+    const PAGE_TITLE_ADD_AUCTION = 'Adauga Licitatie';
+    const PAGE_TITLE_EDIT_AUCTION = 'Editeaza Licitatie';
+    const PAGE_TITLE_VIEW_AUCTION_LIST = 'Vizualizare Licitatii';
+    const PAGE_TITLE_VIEW_AUCTION = 'Vizualizare Licitatie';
+
+
     /**
      * Returns routes to connect to the given application.
      *
@@ -35,7 +43,7 @@ class PageController extends AbstractAppController
     {
         $controllers->get('/', function (Application $app) {
             return $app['twig']->render("index.html", array(
-                'pageTitle' => 'Acasa'
+                'pageTitle' => self::PAGE_TITLE_HOME
             ));
         });
     }
@@ -50,76 +58,22 @@ class PageController extends AbstractAppController
 
             $requestType = $request->getMethod();
             if ($requestType == 'POST') {
-
-                if (!empty($id)) {
-                    $auctionQuery = new AuctionQuery();
-                    $auction = $auctionQuery->filterById($id)->findOne();
-                } else {
-                    $auction = new Auction();
-                }
-
-                $title                   = $request->get("Title");
-                $estimatedValue          = $request->get("EstimatedValue");
-                $location                = $request->get("Location");
-                $documentation           = $request->get("Documentation");
-                $adNumber                = $request->get("AdNumber");
-                $publishDate             = $request->get("PublishDate");
-                $gainer                  = $request->get("Gainer");
-                $contractType            = $request->get("ContractType");
-                $fundingType             = $request->get("FundingType");
-                $contractSubject         = $request->get("ContractSubject");
-                $offerEndDate            = $request->get("OfferEndDate");
-                $applyMode               = $request->get("ApplyMode");
-                $contractPeriod          = $request->get("ContractPeriod");
-                $participationWarranty   = $request->get("ParticipationWarranty");
-                $participationConditions = $request->get("ParticipationConditions");
-                $professionalAbility     = $request->get("ProfessionalAbility");
-                $averageTurnover         = $request->get("AverageTurnover");
-                $cashFlow                = $request->get("CashFlow");
-                $similarExperience       = $request->get("SimilarExperience");
-                $keyPersonnel            = $request->get("KeyPersonnel");
-                $equipment               = $request->get("Equipment");
-                $qualityAssurance        = $request->get("QualityAssurance");
-                $additionalInformation   = $request->get("AdditionalInformation");
-
-                $auction
-                    ->setTitle($title)
-                    ->setLocation($location)
-                    ->setEstimatedValue($estimatedValue)
-                    ->setDocumentation($documentation)
-                    ->setAdNumber($adNumber)
-                    ->setGainer($gainer)
-                    ->setFundingType($fundingType)
-                    ->setContractSubject($contractSubject)
-                    ->setOfferEndDate($offerEndDate)
-                    ->setContractPeriod($contractPeriod)
-                    ->setParticipationWarranty($participationWarranty)
-                    ->setParticipationConditions($participationConditions)
-                    ->setProfessionalAbility($professionalAbility)
-                    ->setAverageTurnover($averageTurnover)
-                    ->setCashFlow($cashFlow)
-                    ->setSimilarExperience($similarExperience)
-                    ->setKeyPersonnel($keyPersonnel)
-                    ->setEquipment($equipment)
-                    ->setQualityAssurance($qualityAssurance)
-                    ->setContractType($contractType)
-                    ->setPublishDate($publishDate)
-                    ->setApplyMode($applyMode)
-                    ->setAdditionalInformation($additionalInformation)
-                    ->save();
-                $id = $auction->getId();
+                $saveAuctionProcess = new SaveAuctionProcess();
+                $saveAuctionProcess->setAuctionId($id);
+                $saveAuctionProcess->setRequest($request);
+                $id = $saveAuctionProcess->execute();
+                $this->redirect('/addOrEdit/'.$id);
             }
 
             $auction   = array();
-            $pageTitle = 'Adauga Licitatie';
+            $pageTitle = self::PAGE_TITLE_ADD_AUCTION;
 
             if (!empty($id)) {
-                $pageTitle = "Editeaza Licitatie";
+                $pageTitle = self::PAGE_TITLE_EDIT_AUCTION;
 
                 if (empty($auction)) {
-                    $auctionQuery = new AuctionQuery();
-                    $auctionQuery->filterById($id);
-                    $auction = $auctionQuery->findOne()->toArray();
+                    $getAuctionProcess = new GetAuctionProcess();
+                    $auction = $getAuctionProcess->getOne($id)->toArray();
                 }
             }
 
@@ -139,12 +93,13 @@ class PageController extends AbstractAppController
     {
         $controllers->get('/view', function (Application $app) {
 
-            $pageTitle = 'Vizualizare Licitatii';
+            $pageTitle = self::PAGE_TITLE_VIEW_AUCTION_LIST;
 
-            $auctionQuery = new AuctionQuery();
-            $auctionList = $auctionQuery->find();
+            $getAuctionProcess = new GetAuctionProcess();
+            $auctionList = $getAuctionProcess->getAll();
 
             $results = array();
+            /** @var Auction $auction */
             foreach($auctionList as $auction)
             {
                 $result = array();
@@ -163,5 +118,13 @@ class PageController extends AbstractAppController
                 ])
             ));
         });
+    }
+
+
+
+    private function redirect($newURL)
+    {
+        header('Location: '.$newURL);
+        exit(0);
     }
 }

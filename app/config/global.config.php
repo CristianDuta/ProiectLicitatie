@@ -9,7 +9,7 @@ return array(
         "AdNumber" => "Numar anunt",
         "PublishDate" => 'Data Publicare',
         "Gainer" => "Beneficiar",
-        "ContractType" => "Obiectul contractului",
+        "ContractType" => "Contract",
         "FundingType" => "Tipul de finantare",
         "ContractSubject" => 'Obiectul contractului',
         "OfferEndDate" => "Data limita de depunere a ofertei",

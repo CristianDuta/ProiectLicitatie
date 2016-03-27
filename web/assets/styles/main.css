@@ -1179,9 +1179,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f5f7', end
 }
 /* End Left Sidebar Collapsed */
 .page-content {
-  padding: 10px 20px 50px 25px;
+  padding: 10px 30px 50px 25px;
   min-height: 700px;
 }
+
 #footer {
   position: fixed;
   width: 100%;

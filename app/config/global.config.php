@@ -13,7 +13,7 @@ return array(
         "FundingType" => "Tipul de finantare",
         "ContractSubject" => 'Obiectul contractului',
         "OfferEndDate" => "Data limita de depunere a ofertei",
-        "ApplyMode" => "Conditii de participare",
+        "ApplyMode" => "Mod de depunere a ofertei",
         "ContractPeriod" => "Durata contractului",
         "ParticipationWarranty" => "Garantie de participare",
         "ParticipationConditions" => "Conditii de participare",
@@ -24,6 +24,6 @@ return array(
         "KeyPersonnel" => "Personal-cheie",
         "Equipment" => "Utilaje/echipamente",
         "QualityAssurance" => "Standarde de asigurare a calitatii si de protectia mediului",
-        "AdditionalInformation" => "Important !!!",
+        "AdditionalInformation" => "Criteriu de atribuire",
     ),
 );

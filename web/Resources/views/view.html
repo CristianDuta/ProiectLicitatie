@@ -11,9 +11,10 @@
                         <div data-control-type="drop-down" data-control-name="paging" data-control-action="paging"
                              class="jplist-drop-down form-control">
                             <ul class="dropdown-menu">
-                                <li><span data-number="3"> 3 pe pagina</span></li>
-                                <li><span data-number="5"> 5 pe pagina</span></li>
-                                <li><span data-number="10" data-default="true"> 10 pe pagina</span></li>
+                                <li><span data-number="5" data-default="true"> 5 pe pagina</span></li>
+                                <li><span data-number="10"> 10 pe pagina</span></li>
+                                <li><span data-number="25"> 25 pe pagina</span></li>
+                                <li><span data-number="50"> 50 pe pagina</span></li>
                                 <li><span data-number="all"> vizualizeaza toate</span></li>
                             </ul>
                         </div>
@@ -78,7 +79,7 @@
                                     <p class="publishDateLabel">Data Publicare:</p>
                                     <p class="title">{{ result.location }}</p>
                                     <p class="desc">{{ result.title }}</p>
-                                    <p class="like">{{ result.estimated_value }}
+                                    <p class="like">Valoare  estimata: {{ result.estimated_value }}
                                     </p>
                                     <a href="/viewDetails/{{ result.id }}" class="btn btn-primary btn-edit">
                                         Detalii
@@ -97,9 +98,10 @@
                         <div data-control-type="drop-down" data-control-name="paging" data-control-action="paging"
                              data-control-animate-to-top="true" class="jplist-drop-down form-control">
                             <ul class="dropdown-menu">
-                                <li><span data-number="3"> 3 pe pagina</span></li>
-                                <li><span data-number="5"> 5 pe pagina</span></li>
-                                <li><span data-number="10" data-default="true"> 10 pe pagina</span></li>
+                                <li><span data-number="5" data-default="true"> 5 pe pagina</span></li>
+                                <li><span data-number="10"> 10 pe pagina</span></li>
+                                <li><span data-number="25"> 25 pe pagina</span></li>
+                                <li><span data-number="50"> 50 pe pagina</span></li>
                                 <li><span data-number="all"> vizualizeaza toate</span></li>
                             </ul>
                         </div>

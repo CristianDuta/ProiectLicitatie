@@ -13,6 +13,7 @@ class PageController extends AbstractAppController
 {
     const PAGE_TITLE_HOME = 'Acasa';
     const PAGE_TITLE_ADD_AUCTION = 'Adauga Licitatie';
+    const PAGE_TITLE_VIEW_DETAILS_AUCTION = 'Detalii Licitatie';
     const PAGE_TITLE_EDIT_AUCTION = 'Editeaza Licitatie';
     const PAGE_TITLE_VIEW_AUCTION_LIST = 'Vizualizare Licitatii';
     const PAGE_TITLE_VIEW_AUCTION = 'Vizualizare Licitatie';
@@ -32,6 +33,7 @@ class PageController extends AbstractAppController
 
         $this->homePage($controllers);
         $this->addOrEditPage($controllers);
+        $this->viewDetailsPage($controllers);
         $this->viewPage($controllers);
 
         return $controllers;
@@ -49,7 +51,43 @@ class PageController extends AbstractAppController
         });
     }
 
+    private function viewDetailsPage(ControllerCollection $controllers)
+    {
+        $controllers->match('/viewDetails/{id}', function (Application $app, $id) {
+            /** @var Request $request */
+            $request = $app['request'];
 
+            $requestType = $request->getMethod();
+            if ($requestType == 'POST') {
+                $saveAuctionProcess = new SaveAuctionProcess();
+                $saveAuctionProcess->setAuctionId($id);
+                $saveAuctionProcess->setRequest($request);
+                $id = $saveAuctionProcess->execute();
+                $this->redirect('/viewDetails/'.$id);
+            }
+
+            $auction   = array();
+            $pageTitle = self::PAGE_TITLE_ADD_AUCTION;
+
+            if (!empty($id)) {
+                $pageTitle = self::PAGE_TITLE_VIEW_DETAILS_AUCTION;
+
+                if (empty($auction)) {
+                    $getAuctionProcess = new GetAuctionProcess();
+                    $auction = $getAuctionProcess->getOne($id)->toArray();
+                }
+            }
+
+            return $app['twig']->render("index.html", array(
+                'pageTitle' => $pageTitle,
+                'activeMenuItem' => 'viewDetails',
+                'pageContent' => $app['twig']->render("view-details.html", [
+                    'inputArray' => $app['config']['addOrEditSection'],
+                    'auctionList' => $auction,
+                ])
+            ));
+        })->value('id', '');
+    }
 
     private function addOrEditPage(ControllerCollection $controllers)
     {

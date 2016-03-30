@@ -334,6 +334,59 @@ $(function () {
     // CALL FUNCTION RESPONSIVE TABS
     fakewaffle.responsiveTabs(['xs', 'sm']);
 
+    var formToPDF = function () {
+        var pdf = new jsPDF('p', 'pt', 'a4');
+        var margins = {
+            top: 80,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+
+        var htmlContent = [];
+        var pageNumber = 0;
+        var rowsPerPage = 12;
+        var index = 0;
+        $('#print-area').find('.print-area-row').each(function () {
+            $(this).find('label').html('<b>' + $(this).find('label').html() + '</b>');
+            var value = $(this).find('p').html();
+            if (value.length <= 0) {
+                return true;
+            }
+
+            if (index < rowsPerPage) {
+                index++;
+            } else {
+                pageNumber++;
+                index = 0;
+            }
+
+            if (typeof htmlContent[pageNumber] !== 'undefined') {
+                htmlContent[pageNumber] += this.outerHTML;
+            } else {
+                htmlContent[pageNumber] = this.outerHTML;
+            }
+
+            htmlContent[pageNumber] += '<br />';
+        });
+
+        for (var i = 0; i <= pageNumber; i++) {
+            pdf.fromHTML(
+                htmlContent[i] // HTML string or DOM elem ref.
+                , margins.left // x coord
+                , margins.top // y coord
+                , {
+                    'width': margins.width // max width of content on PDF
+            });
+            if (i <= pageNumber - 1) {
+                pdf.addPage('a4', 'p');
+            }
+        }
+
+        pdf.save('Test.pdf');
+    };
+
+    formToPDF();
 });
 
 

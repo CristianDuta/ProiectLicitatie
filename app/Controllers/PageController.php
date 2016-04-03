@@ -4,10 +4,12 @@ namespace Controllers;
 
 use BusinessLogic\GetAuctionProcess;
 use BusinessLogic\SaveAuctionProcess;
+use BusinessLogic\SendMailProcess;
 use Database\Model\Auction;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PageController extends AbstractAppController
 {
@@ -33,6 +35,7 @@ class PageController extends AbstractAppController
         $this->homePage($controllers);
         $this->addOrEditPage($controllers);
         $this->viewPage($controllers);
+        $this->sendMailService($controllers);
 
         return $controllers;
     }
@@ -130,5 +133,24 @@ class PageController extends AbstractAppController
     {
         header('Location: '.$newURL);
         exit(0);
+    }
+
+
+
+    private function sendMailService(ControllerCollection $controllers)
+    {
+        $controllers->get('/feedback', function (Application $app) {
+            $sendMailProcess = new SendMailProcess($app);
+            $to = array("andreea_barbu0708@yahoo.com");
+            $subject = "test";
+            $body = $app['twig']->render("defaultEmailTemplate.html", array());
+
+            $sendMailProcess->setTo($to);
+            $sendMailProcess->setSubject($subject);
+            $sendMailProcess->setBody($body);
+//            $sendMailProcess->execute();
+
+            return $body;
+        });
     }
 }

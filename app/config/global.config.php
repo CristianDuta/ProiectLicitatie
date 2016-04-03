@@ -26,4 +26,7 @@ return array(
         "QualityAssurance" => "Standarde de asigurare a calitatii si de protectia mediului",
         "AdditionalInformation" => "Criteriu de atribuire",
     ),
+    "send_mail" => array(
+        'from' => 'licitatiepascupas@gmail.com'
+    ),
 );

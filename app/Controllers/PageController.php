@@ -4,8 +4,10 @@ namespace Controllers;
 
 use BusinessLogic\GetAuctionProcess;
 use BusinessLogic\SaveAuctionProcess;
+use BusinessLogic\SendAuctionViaEmailProcess;
 use BusinessLogic\SendMailProcess;
 use Database\Model\Auction;
+use Database\Model\UserQuery;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,6 +56,8 @@ class PageController extends AbstractAppController
         });
     }
 
+
+
     private function viewDetailsPage(ControllerCollection $controllers)
     {
         $controllers->match('/viewDetails/{id}', function (Application $app, $id) {
@@ -91,6 +95,8 @@ class PageController extends AbstractAppController
             ));
         })->value('id', '');
     }
+
+
 
     private function addOrEditPage(ControllerCollection $controllers)
     {
@@ -179,22 +185,20 @@ class PageController extends AbstractAppController
     {
         $controllers->get('/feedback', function (Application $app) {
             $sendMailProcess = new SendMailProcess($app);
-            $to = array("andreea_barbu0708@yahoo.com");
-            $subject = "test";
-            $body = $app['twig']->render("defaultEmailTemplate.html", array(
-                'website' => $app['local_config']['website_address'],
-                'logoPath' => $sendMailProcess->getImagePath($app['local_config']['root_path'] . 'web/assets/images/email/logo.png'),
-                'headerLine' => $sendMailProcess->getImagePath($app['local_config']['root_path'] . 'web/assets/images/email/headerLine.jpg'),
-                'bodyPicture' => $sendMailProcess->getImagePath($app['local_config']['root_path'] . 'web/assets/images/email/bodyPicture.jpg'),
-                'houseImage' => $sendMailProcess->getImagePath($app['local_config']['root_path'] . 'web/assets/images/email/house.png'),
-            ));
+            $getAuctionProcess = new GetAuctionProcess();
 
-            $sendMailProcess->setTo($to);
-            $sendMailProcess->setSubject($subject);
-            $sendMailProcess->setBody($body);
-            $sendMailProcess->execute();
+            $auctionList = array(
+                $getAuctionProcess->getOne()
+            );
 
-            return $body;
+            $userList = array(
+                UserQuery::create()->findOne()
+            );
+
+            $sendAuctionViaEmailProcess = new SendAuctionViaEmailProcess($app, $sendMailProcess, $auctionList, $userList);
+            $sendAuctionViaEmailProcess->execute();
+
+            return new Response();
         });
     }
 }

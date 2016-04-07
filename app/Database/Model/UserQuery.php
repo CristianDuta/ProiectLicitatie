@@ -2,10 +2,10 @@
 
 namespace Database\Model;
 
-use Database\Model\Base\Users as BaseUsers;
+use Database\Model\Base\UserQuery as BaseUserQuery;
 
 /**
- * Skeleton subclass for representing a row from the 'users' table.
+ * Skeleton subclass for performing query and update operations on the 'users' table.
  *
  *
  *
@@ -14,7 +14,7 @@ use Database\Model\Base\Users as BaseUsers;
  * long as it does not already exist in the output directory.
  *
  */
-class Users extends BaseUsers
+class UserQuery extends BaseUserQuery
 {
 
 }

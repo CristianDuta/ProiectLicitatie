@@ -4,15 +4,16 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
--- users
+-- user
 -- ---------------------------------------------------------------------
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `user`;
 
-CREATE TABLE `users`
+CREATE TABLE `user`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL,
+    `first_name` VARCHAR(255) NOT NULL,
+    `last_name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     PRIMARY KEY (`id`)
@@ -50,6 +51,7 @@ CREATE TABLE `auction`
     `equipment` TEXT,
     `quality_assurance` TEXT,
     `additional_information` TEXT,
+    `updated_at` DATE NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 

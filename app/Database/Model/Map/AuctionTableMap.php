@@ -59,7 +59,7 @@ class AuctionTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 24;
+    const NUM_COLUMNS = 25;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class AuctionTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 24;
+    const NUM_HYDRATE_COLUMNS = 25;
 
     /**
      * the column name for the id field
@@ -192,6 +192,11 @@ class AuctionTableMap extends TableMap
     const COL_ADDITIONAL_INFORMATION = 'auction.additional_information';
 
     /**
+     * the column name for the updated_at field
+     */
+    const COL_UPDATED_AT = 'auction.updated_at';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -203,11 +208,11 @@ class AuctionTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'Title', 'EstimatedValue', 'Location', 'Documentation', 'AdNumber', 'PublishDate', 'Gainer', 'ContractType', 'FundingType', 'ContractSubject', 'OfferEndDate', 'ApplyMode', 'ContractPeriod', 'ParticipationWarranty', 'ParticipationConditions', 'ProfessionalAbility', 'AverageTurnover', 'CashFlow', 'SimilarExperience', 'KeyPersonnel', 'Equipment', 'QualityAssurance', 'AdditionalInformation', ),
-        self::TYPE_CAMELNAME     => array('id', 'title', 'estimatedValue', 'location', 'documentation', 'adNumber', 'publishDate', 'gainer', 'contractType', 'fundingType', 'contractSubject', 'offerEndDate', 'applyMode', 'contractPeriod', 'participationWarranty', 'participationConditions', 'professionalAbility', 'averageTurnover', 'cashFlow', 'similarExperience', 'keyPersonnel', 'equipment', 'qualityAssurance', 'additionalInformation', ),
-        self::TYPE_COLNAME       => array(AuctionTableMap::COL_ID, AuctionTableMap::COL_TITLE, AuctionTableMap::COL_ESTIMATED_VALUE, AuctionTableMap::COL_LOCATION, AuctionTableMap::COL_DOCUMENTATION, AuctionTableMap::COL_AD_NUMBER, AuctionTableMap::COL_PUBLISH_DATE, AuctionTableMap::COL_GAINER, AuctionTableMap::COL_CONTRACT_TYPE, AuctionTableMap::COL_FUNDING_TYPE, AuctionTableMap::COL_CONTRACT_SUBJECT, AuctionTableMap::COL_OFFER_END_DATE, AuctionTableMap::COL_APPLY_MODE, AuctionTableMap::COL_CONTRACT_PERIOD, AuctionTableMap::COL_PARTICIPATION_WARRANTY, AuctionTableMap::COL_PARTICIPATION_CONDITIONS, AuctionTableMap::COL_PROFESSIONAL_ABILITY, AuctionTableMap::COL_AVERAGE_TURNOVER, AuctionTableMap::COL_CASH_FLOW, AuctionTableMap::COL_SIMILAR_EXPERIENCE, AuctionTableMap::COL_KEY_PERSONNEL, AuctionTableMap::COL_EQUIPMENT, AuctionTableMap::COL_QUALITY_ASSURANCE, AuctionTableMap::COL_ADDITIONAL_INFORMATION, ),
-        self::TYPE_FIELDNAME     => array('id', 'title', 'estimated_value', 'location', 'documentation', 'ad_number', 'publish_date', 'gainer', 'contract_type', 'funding_type', 'contract_subject', 'offer_end_date', 'apply_mode', 'contract_period', 'participation_warranty', 'participation_conditions', 'professional_ability', 'average_turnover', 'cash_flow', 'similar_experience', 'key_personnel', 'equipment', 'quality_assurance', 'additional_information', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, )
+        self::TYPE_PHPNAME       => array('Id', 'Title', 'EstimatedValue', 'Location', 'Documentation', 'AdNumber', 'PublishDate', 'Gainer', 'ContractType', 'FundingType', 'ContractSubject', 'OfferEndDate', 'ApplyMode', 'ContractPeriod', 'ParticipationWarranty', 'ParticipationConditions', 'ProfessionalAbility', 'AverageTurnover', 'CashFlow', 'SimilarExperience', 'KeyPersonnel', 'Equipment', 'QualityAssurance', 'AdditionalInformation', 'UpdatedAt', ),
+        self::TYPE_CAMELNAME     => array('id', 'title', 'estimatedValue', 'location', 'documentation', 'adNumber', 'publishDate', 'gainer', 'contractType', 'fundingType', 'contractSubject', 'offerEndDate', 'applyMode', 'contractPeriod', 'participationWarranty', 'participationConditions', 'professionalAbility', 'averageTurnover', 'cashFlow', 'similarExperience', 'keyPersonnel', 'equipment', 'qualityAssurance', 'additionalInformation', 'updatedAt', ),
+        self::TYPE_COLNAME       => array(AuctionTableMap::COL_ID, AuctionTableMap::COL_TITLE, AuctionTableMap::COL_ESTIMATED_VALUE, AuctionTableMap::COL_LOCATION, AuctionTableMap::COL_DOCUMENTATION, AuctionTableMap::COL_AD_NUMBER, AuctionTableMap::COL_PUBLISH_DATE, AuctionTableMap::COL_GAINER, AuctionTableMap::COL_CONTRACT_TYPE, AuctionTableMap::COL_FUNDING_TYPE, AuctionTableMap::COL_CONTRACT_SUBJECT, AuctionTableMap::COL_OFFER_END_DATE, AuctionTableMap::COL_APPLY_MODE, AuctionTableMap::COL_CONTRACT_PERIOD, AuctionTableMap::COL_PARTICIPATION_WARRANTY, AuctionTableMap::COL_PARTICIPATION_CONDITIONS, AuctionTableMap::COL_PROFESSIONAL_ABILITY, AuctionTableMap::COL_AVERAGE_TURNOVER, AuctionTableMap::COL_CASH_FLOW, AuctionTableMap::COL_SIMILAR_EXPERIENCE, AuctionTableMap::COL_KEY_PERSONNEL, AuctionTableMap::COL_EQUIPMENT, AuctionTableMap::COL_QUALITY_ASSURANCE, AuctionTableMap::COL_ADDITIONAL_INFORMATION, AuctionTableMap::COL_UPDATED_AT, ),
+        self::TYPE_FIELDNAME     => array('id', 'title', 'estimated_value', 'location', 'documentation', 'ad_number', 'publish_date', 'gainer', 'contract_type', 'funding_type', 'contract_subject', 'offer_end_date', 'apply_mode', 'contract_period', 'participation_warranty', 'participation_conditions', 'professional_ability', 'average_turnover', 'cash_flow', 'similar_experience', 'key_personnel', 'equipment', 'quality_assurance', 'additional_information', 'updated_at', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, )
     );
 
     /**
@@ -217,11 +222,11 @@ class AuctionTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'Title' => 1, 'EstimatedValue' => 2, 'Location' => 3, 'Documentation' => 4, 'AdNumber' => 5, 'PublishDate' => 6, 'Gainer' => 7, 'ContractType' => 8, 'FundingType' => 9, 'ContractSubject' => 10, 'OfferEndDate' => 11, 'ApplyMode' => 12, 'ContractPeriod' => 13, 'ParticipationWarranty' => 14, 'ParticipationConditions' => 15, 'ProfessionalAbility' => 16, 'AverageTurnover' => 17, 'CashFlow' => 18, 'SimilarExperience' => 19, 'KeyPersonnel' => 20, 'Equipment' => 21, 'QualityAssurance' => 22, 'AdditionalInformation' => 23, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'title' => 1, 'estimatedValue' => 2, 'location' => 3, 'documentation' => 4, 'adNumber' => 5, 'publishDate' => 6, 'gainer' => 7, 'contractType' => 8, 'fundingType' => 9, 'contractSubject' => 10, 'offerEndDate' => 11, 'applyMode' => 12, 'contractPeriod' => 13, 'participationWarranty' => 14, 'participationConditions' => 15, 'professionalAbility' => 16, 'averageTurnover' => 17, 'cashFlow' => 18, 'similarExperience' => 19, 'keyPersonnel' => 20, 'equipment' => 21, 'qualityAssurance' => 22, 'additionalInformation' => 23, ),
-        self::TYPE_COLNAME       => array(AuctionTableMap::COL_ID => 0, AuctionTableMap::COL_TITLE => 1, AuctionTableMap::COL_ESTIMATED_VALUE => 2, AuctionTableMap::COL_LOCATION => 3, AuctionTableMap::COL_DOCUMENTATION => 4, AuctionTableMap::COL_AD_NUMBER => 5, AuctionTableMap::COL_PUBLISH_DATE => 6, AuctionTableMap::COL_GAINER => 7, AuctionTableMap::COL_CONTRACT_TYPE => 8, AuctionTableMap::COL_FUNDING_TYPE => 9, AuctionTableMap::COL_CONTRACT_SUBJECT => 10, AuctionTableMap::COL_OFFER_END_DATE => 11, AuctionTableMap::COL_APPLY_MODE => 12, AuctionTableMap::COL_CONTRACT_PERIOD => 13, AuctionTableMap::COL_PARTICIPATION_WARRANTY => 14, AuctionTableMap::COL_PARTICIPATION_CONDITIONS => 15, AuctionTableMap::COL_PROFESSIONAL_ABILITY => 16, AuctionTableMap::COL_AVERAGE_TURNOVER => 17, AuctionTableMap::COL_CASH_FLOW => 18, AuctionTableMap::COL_SIMILAR_EXPERIENCE => 19, AuctionTableMap::COL_KEY_PERSONNEL => 20, AuctionTableMap::COL_EQUIPMENT => 21, AuctionTableMap::COL_QUALITY_ASSURANCE => 22, AuctionTableMap::COL_ADDITIONAL_INFORMATION => 23, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'title' => 1, 'estimated_value' => 2, 'location' => 3, 'documentation' => 4, 'ad_number' => 5, 'publish_date' => 6, 'gainer' => 7, 'contract_type' => 8, 'funding_type' => 9, 'contract_subject' => 10, 'offer_end_date' => 11, 'apply_mode' => 12, 'contract_period' => 13, 'participation_warranty' => 14, 'participation_conditions' => 15, 'professional_ability' => 16, 'average_turnover' => 17, 'cash_flow' => 18, 'similar_experience' => 19, 'key_personnel' => 20, 'equipment' => 21, 'quality_assurance' => 22, 'additional_information' => 23, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'Title' => 1, 'EstimatedValue' => 2, 'Location' => 3, 'Documentation' => 4, 'AdNumber' => 5, 'PublishDate' => 6, 'Gainer' => 7, 'ContractType' => 8, 'FundingType' => 9, 'ContractSubject' => 10, 'OfferEndDate' => 11, 'ApplyMode' => 12, 'ContractPeriod' => 13, 'ParticipationWarranty' => 14, 'ParticipationConditions' => 15, 'ProfessionalAbility' => 16, 'AverageTurnover' => 17, 'CashFlow' => 18, 'SimilarExperience' => 19, 'KeyPersonnel' => 20, 'Equipment' => 21, 'QualityAssurance' => 22, 'AdditionalInformation' => 23, 'UpdatedAt' => 24, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'title' => 1, 'estimatedValue' => 2, 'location' => 3, 'documentation' => 4, 'adNumber' => 5, 'publishDate' => 6, 'gainer' => 7, 'contractType' => 8, 'fundingType' => 9, 'contractSubject' => 10, 'offerEndDate' => 11, 'applyMode' => 12, 'contractPeriod' => 13, 'participationWarranty' => 14, 'participationConditions' => 15, 'professionalAbility' => 16, 'averageTurnover' => 17, 'cashFlow' => 18, 'similarExperience' => 19, 'keyPersonnel' => 20, 'equipment' => 21, 'qualityAssurance' => 22, 'additionalInformation' => 23, 'updatedAt' => 24, ),
+        self::TYPE_COLNAME       => array(AuctionTableMap::COL_ID => 0, AuctionTableMap::COL_TITLE => 1, AuctionTableMap::COL_ESTIMATED_VALUE => 2, AuctionTableMap::COL_LOCATION => 3, AuctionTableMap::COL_DOCUMENTATION => 4, AuctionTableMap::COL_AD_NUMBER => 5, AuctionTableMap::COL_PUBLISH_DATE => 6, AuctionTableMap::COL_GAINER => 7, AuctionTableMap::COL_CONTRACT_TYPE => 8, AuctionTableMap::COL_FUNDING_TYPE => 9, AuctionTableMap::COL_CONTRACT_SUBJECT => 10, AuctionTableMap::COL_OFFER_END_DATE => 11, AuctionTableMap::COL_APPLY_MODE => 12, AuctionTableMap::COL_CONTRACT_PERIOD => 13, AuctionTableMap::COL_PARTICIPATION_WARRANTY => 14, AuctionTableMap::COL_PARTICIPATION_CONDITIONS => 15, AuctionTableMap::COL_PROFESSIONAL_ABILITY => 16, AuctionTableMap::COL_AVERAGE_TURNOVER => 17, AuctionTableMap::COL_CASH_FLOW => 18, AuctionTableMap::COL_SIMILAR_EXPERIENCE => 19, AuctionTableMap::COL_KEY_PERSONNEL => 20, AuctionTableMap::COL_EQUIPMENT => 21, AuctionTableMap::COL_QUALITY_ASSURANCE => 22, AuctionTableMap::COL_ADDITIONAL_INFORMATION => 23, AuctionTableMap::COL_UPDATED_AT => 24, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'title' => 1, 'estimated_value' => 2, 'location' => 3, 'documentation' => 4, 'ad_number' => 5, 'publish_date' => 6, 'gainer' => 7, 'contract_type' => 8, 'funding_type' => 9, 'contract_subject' => 10, 'offer_end_date' => 11, 'apply_mode' => 12, 'contract_period' => 13, 'participation_warranty' => 14, 'participation_conditions' => 15, 'professional_ability' => 16, 'average_turnover' => 17, 'cash_flow' => 18, 'similar_experience' => 19, 'key_personnel' => 20, 'equipment' => 21, 'quality_assurance' => 22, 'additional_information' => 23, 'updated_at' => 24, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, )
     );
 
     /**
@@ -248,23 +253,24 @@ class AuctionTableMap extends TableMap
         $this->addColumn('documentation', 'Documentation', 'LONGVARCHAR', false, null, null);
         $this->addColumn('ad_number', 'AdNumber', 'INTEGER', false, 11, null);
         $this->addColumn('publish_date', 'PublishDate', 'DATE', true, null, null);
-        $this->addColumn('gainer', 'Gainer', 'VARCHAR', true, 255, null);
+        $this->addColumn('gainer', 'Gainer', 'VARCHAR', false, 255, null);
         $this->addColumn('contract_type', 'ContractType', 'VARCHAR', true, 255, null);
         $this->addColumn('funding_type', 'FundingType', 'VARCHAR', true, 255, null);
-        $this->addColumn('contract_subject', 'ContractSubject', 'LONGVARCHAR', true, null, null);
+        $this->addColumn('contract_subject', 'ContractSubject', 'LONGVARCHAR', false, null, null);
         $this->addColumn('offer_end_date', 'OfferEndDate', 'DATE', true, null, null);
-        $this->addColumn('apply_mode', 'ApplyMode', 'VARCHAR', true, 255, null);
-        $this->addColumn('contract_period', 'ContractPeriod', 'VARCHAR', true, 255, null);
-        $this->addColumn('participation_warranty', 'ParticipationWarranty', 'VARCHAR', true, 255, null);
-        $this->addColumn('participation_conditions', 'ParticipationConditions', 'VARCHAR', true, 255, null);
-        $this->addColumn('professional_ability', 'ProfessionalAbility', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('average_turnover', 'AverageTurnover', 'VARCHAR', true, 255, null);
-        $this->addColumn('cash_flow', 'CashFlow', 'VARCHAR', true, 255, null);
-        $this->addColumn('similar_experience', 'SimilarExperience', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('key_personnel', 'KeyPersonnel', 'VARCHAR', true, 255, null);
-        $this->addColumn('equipment', 'Equipment', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('quality_assurance', 'QualityAssurance', 'LONGVARCHAR', true, null, null);
-        $this->addColumn('additional_information', 'AdditionalInformation', 'LONGVARCHAR', true, null, null);
+        $this->addColumn('apply_mode', 'ApplyMode', 'VARCHAR', false, 255, null);
+        $this->addColumn('contract_period', 'ContractPeriod', 'VARCHAR', false, 255, null);
+        $this->addColumn('participation_warranty', 'ParticipationWarranty', 'VARCHAR', false, 255, null);
+        $this->addColumn('participation_conditions', 'ParticipationConditions', 'VARCHAR', false, 255, null);
+        $this->addColumn('professional_ability', 'ProfessionalAbility', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('average_turnover', 'AverageTurnover', 'VARCHAR', false, 255, null);
+        $this->addColumn('cash_flow', 'CashFlow', 'VARCHAR', false, 255, null);
+        $this->addColumn('similar_experience', 'SimilarExperience', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('key_personnel', 'KeyPersonnel', 'VARCHAR', false, 255, null);
+        $this->addColumn('equipment', 'Equipment', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('quality_assurance', 'QualityAssurance', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('additional_information', 'AdditionalInformation', 'LONGVARCHAR', false, null, null);
+        $this->addColumn('updated_at', 'UpdatedAt', 'DATE', true, null, null);
     } // initialize()
 
     /**
@@ -439,6 +445,7 @@ class AuctionTableMap extends TableMap
             $criteria->addSelectColumn(AuctionTableMap::COL_EQUIPMENT);
             $criteria->addSelectColumn(AuctionTableMap::COL_QUALITY_ASSURANCE);
             $criteria->addSelectColumn(AuctionTableMap::COL_ADDITIONAL_INFORMATION);
+            $criteria->addSelectColumn(AuctionTableMap::COL_UPDATED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.title');
@@ -464,6 +471,7 @@ class AuctionTableMap extends TableMap
             $criteria->addSelectColumn($alias . '.equipment');
             $criteria->addSelectColumn($alias . '.quality_assurance');
             $criteria->addSelectColumn($alias . '.additional_information');
+            $criteria->addSelectColumn($alias . '.updated_at');
         }
     }
 

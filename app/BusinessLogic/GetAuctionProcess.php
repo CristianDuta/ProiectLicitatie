@@ -11,10 +11,12 @@ class GetAuctionProcess
      * @param int $auctionId
      * @return Auction
      */
-    public function getOne($auctionId)
+    public function getOne($auctionId = null)
     {
         $auctionQuery = new AuctionQuery();
-        $auctionQuery->filterById($auctionId);
+        if ($auctionId) {
+            $auctionQuery->filterById($auctionId);
+        }
         return $auctionQuery->findOne();
     }
 

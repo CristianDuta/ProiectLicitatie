@@ -43,6 +43,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuctionQuery orderByEquipment($order = Criteria::ASC) Order by the equipment column
  * @method     ChildAuctionQuery orderByQualityAssurance($order = Criteria::ASC) Order by the quality_assurance column
  * @method     ChildAuctionQuery orderByAdditionalInformation($order = Criteria::ASC) Order by the additional_information column
+ * @method     ChildAuctionQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildAuctionQuery groupById() Group by the id column
  * @method     ChildAuctionQuery groupByTitle() Group by the title column
@@ -68,6 +69,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuctionQuery groupByEquipment() Group by the equipment column
  * @method     ChildAuctionQuery groupByQualityAssurance() Group by the quality_assurance column
  * @method     ChildAuctionQuery groupByAdditionalInformation() Group by the additional_information column
+ * @method     ChildAuctionQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     ChildAuctionQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildAuctionQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -103,7 +105,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuction findOneByKeyPersonnel(string $key_personnel) Return the first ChildAuction filtered by the key_personnel column
  * @method     ChildAuction findOneByEquipment(string $equipment) Return the first ChildAuction filtered by the equipment column
  * @method     ChildAuction findOneByQualityAssurance(string $quality_assurance) Return the first ChildAuction filtered by the quality_assurance column
- * @method     ChildAuction findOneByAdditionalInformation(string $additional_information) Return the first ChildAuction filtered by the additional_information column *
+ * @method     ChildAuction findOneByAdditionalInformation(string $additional_information) Return the first ChildAuction filtered by the additional_information column
+ * @method     ChildAuction findOneByUpdatedAt(string $updated_at) Return the first ChildAuction filtered by the updated_at column *
 
  * @method     ChildAuction requirePk($key, ConnectionInterface $con = null) Return the ChildAuction by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAuction requireOne(ConnectionInterface $con = null) Return the first ChildAuction matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -132,6 +135,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuction requireOneByEquipment(string $equipment) Return the first ChildAuction filtered by the equipment column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAuction requireOneByQualityAssurance(string $quality_assurance) Return the first ChildAuction filtered by the quality_assurance column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAuction requireOneByAdditionalInformation(string $additional_information) Return the first ChildAuction filtered by the additional_information column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildAuction requireOneByUpdatedAt(string $updated_at) Return the first ChildAuction filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildAuction[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildAuction objects based on current ModelCriteria
  * @method     ChildAuction[]|ObjectCollection findById(int $id) Return ChildAuction objects filtered by the id column
@@ -158,6 +162,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuction[]|ObjectCollection findByEquipment(string $equipment) Return ChildAuction objects filtered by the equipment column
  * @method     ChildAuction[]|ObjectCollection findByQualityAssurance(string $quality_assurance) Return ChildAuction objects filtered by the quality_assurance column
  * @method     ChildAuction[]|ObjectCollection findByAdditionalInformation(string $additional_information) Return ChildAuction objects filtered by the additional_information column
+ * @method     ChildAuction[]|ObjectCollection findByUpdatedAt(string $updated_at) Return ChildAuction objects filtered by the updated_at column
  * @method     ChildAuction[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -220,21 +225,27 @@ abstract class AuctionQuery extends ModelCriteria
         if ($key === null) {
             return null;
         }
-        if ((null !== ($obj = AuctionTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key))) && !$this->formatter) {
-            // the object is already in the instance pool
-            return $obj;
-        }
+
         if ($con === null) {
             $con = Propel::getServiceContainer()->getReadConnection(AuctionTableMap::DATABASE_NAME);
         }
+
         $this->basePreSelect($con);
-        if ($this->formatter || $this->modelAlias || $this->with || $this->select
-         || $this->selectColumns || $this->asColumns || $this->selectModifiers
-         || $this->map || $this->having || $this->joins) {
+
+        if (
+            $this->formatter || $this->modelAlias || $this->with || $this->select
+            || $this->selectColumns || $this->asColumns || $this->selectModifiers
+            || $this->map || $this->having || $this->joins
+        ) {
             return $this->findPkComplex($key, $con);
-        } else {
-            return $this->findPkSimple($key, $con);
         }
+
+        if ((null !== ($obj = AuctionTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
+            // the object is already in the instance pool
+            return $obj;
+        }
+
+        return $this->findPkSimple($key, $con);
     }
 
     /**
@@ -250,7 +261,7 @@ abstract class AuctionQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, title, estimated_value, location, documentation, ad_number, publish_date, gainer, contract_type, funding_type, contract_subject, offer_end_date, apply_mode, contract_period, participation_warranty, participation_conditions, professional_ability, average_turnover, cash_flow, similar_experience, key_personnel, equipment, quality_assurance, additional_information FROM auction WHERE id = :p0';
+        $sql = 'SELECT id, title, estimated_value, location, documentation, ad_number, publish_date, gainer, contract_type, funding_type, contract_subject, offer_end_date, apply_mode, contract_period, participation_warranty, participation_conditions, professional_ability, average_turnover, cash_flow, similar_experience, key_personnel, equipment, quality_assurance, additional_information, updated_at FROM auction WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -1086,6 +1097,49 @@ abstract class AuctionQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AuctionTableMap::COL_ADDITIONAL_INFORMATION, $additionalInformation, $comparison);
+    }
+
+    /**
+     * Filter the query on the updated_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+     * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+     * </code>
+     *
+     * @param     mixed $updatedAt The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildAuctionQuery The current query, for fluid interface
+     */
+    public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+    {
+        if (is_array($updatedAt)) {
+            $useMinMax = false;
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(AuctionTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(AuctionTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AuctionTableMap::COL_UPDATED_AT, $updatedAt, $comparison);
     }
 
     /**

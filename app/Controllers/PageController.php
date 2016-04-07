@@ -181,12 +181,18 @@ class PageController extends AbstractAppController
             $sendMailProcess = new SendMailProcess($app);
             $to = array("andreea_barbu0708@yahoo.com");
             $subject = "test";
-            $body = $app['twig']->render("defaultEmailTemplate.html", array());
+            $body = $app['twig']->render("defaultEmailTemplate.html", array(
+                'website' => $app['local_config']['website_address'],
+                'logoPath' => $sendMailProcess->getImagePath($app['local_config']['root_path'] . 'web/assets/images/email/logo.png'),
+                'headerLine' => $sendMailProcess->getImagePath($app['local_config']['root_path'] . 'web/assets/images/email/headerLine.jpg'),
+                'bodyPicture' => $sendMailProcess->getImagePath($app['local_config']['root_path'] . 'web/assets/images/email/bodyPicture.jpg'),
+                'houseImage' => $sendMailProcess->getImagePath($app['local_config']['root_path'] . 'web/assets/images/email/house.png'),
+            ));
 
             $sendMailProcess->setTo($to);
             $sendMailProcess->setSubject($subject);
             $sendMailProcess->setBody($body);
-//            $sendMailProcess->execute();
+            $sendMailProcess->execute();
 
             return $body;
         });

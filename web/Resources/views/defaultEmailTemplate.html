@@ -8,18 +8,18 @@
 <body bgcolor="#8d8e90">
 <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#8d8e90">
     <tr>
-        <td><table width="600" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" align="center">
+        <td><table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" align="center">
             <tr>
                 <td>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding:20px;">
                         <tr>
-                            <td width="144"><a href= "http://yourlink" target="_blank"><img src="{{ asset('images/email/logo.png') }}" width="290" height="50" border="0" alt="" style="padding-bottom:10px;"/></a></td>
+                            <td width="144"><a href= "{{ website }}" target="_blank"><img src="{{ logoPath }}" width="290" height="50" border="0" alt="" style="padding-bottom:10px;"/></a></td>
                         </tr>
                         <tr>
-                            <td width="393">
+                            <td width="100%">
                                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                     <tr>
-                                        <td><img src="{{ asset('images/email/headerLine.jpg') }}" style="width:100%; height:8px;" border="0" alt=""/></td>
+                                        <td><img src="{{ headerLine }}" style="width:100%; max-height:8px;" border="0" alt=""/></td>
                                     </tr>
                                 </table>
                             </td>
@@ -28,7 +28,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="center"><a href= "http://yourlink" target="_blank"><img src="{{ asset('images/email/bodyPicture.jpg') }}" alt="" width="598" height="249" border="0"/></a></td>
+                <td align="center"><a href= "{{ website }}" target="_blank"><img src="{{ bodyPicture }}" alt="" width="598" height="249" border="0"/></a></td>
             </tr>
             <tr>
                 <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -52,12 +52,12 @@
                                             <tr>
                                                 <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                     <tr>
-                                                        <td width="5%"><img src="{{ asset('images/email/house.png') }}" width="150" height="130" border="0" alt=""/></td>
+                                                        <td width="5%"><img src="{{ houseImage }}" width="150" height="130" border="0" alt=""/></td>
                                                         <td width="95%" align="left" valign="top">
                                                             Lucrari de reparatie pentru ridicare restrictii de viteza pe aparate de cale: Linia 500 Ploiesti-Vicsani fir I, II, Statia Veresti, inlocuire schimbatori si inlocuire substrat cap X si Y - LOT I<br />
                                                             Valoare  estimata  : 1,016,629.82 RON<br />
                                                             Locatia : Statia Veresti,SUCEAVA<br />
-                                                            <a href= "http://yourlink" style="color:#05bcda; text-decoration:none"><strong><em>click pentru detalii</em></strong></a>
+                                                            <a href= "{{ website }}viewDetails/21" style="color:#05bcda; text-decoration:none"><strong><em>click pentru detalii</em></strong></a>
                                                         </td>
                                                     </tr>
                                                 </table></td>

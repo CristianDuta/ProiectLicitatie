@@ -386,7 +386,9 @@ $(function () {
         pdf.save('Test.pdf');
     };
 
-    formToPDF();
+    $('#printButton').click(function () {
+        formToPDF();
+    });
 });
 
 

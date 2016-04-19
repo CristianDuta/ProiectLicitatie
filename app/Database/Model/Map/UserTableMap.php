@@ -59,7 +59,7 @@ class UserTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 5;
+    const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class UserTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 5;
+    const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
@@ -97,6 +97,16 @@ class UserTableMap extends TableMap
     const COL_PASSWORD = 'user.password';
 
     /**
+     * the column name for the phone_number field
+     */
+    const COL_PHONE_NUMBER = 'user.phone_number';
+
+    /**
+     * the column name for the news_option field
+     */
+    const COL_NEWS_OPTION = 'user.news_option';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -108,11 +118,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        self::TYPE_PHPNAME       => array('Id', 'FirstName', 'LastName', 'Email', 'Password', ),
-        self::TYPE_CAMELNAME     => array('id', 'firstName', 'lastName', 'email', 'password', ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_FIRST_NAME, UserTableMap::COL_LAST_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_PASSWORD, ),
-        self::TYPE_FIELDNAME     => array('id', 'first_name', 'last_name', 'email', 'password', ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id', 'FirstName', 'LastName', 'Email', 'Password', 'PhoneNumber', 'NewsOption', ),
+        self::TYPE_CAMELNAME     => array('id', 'firstName', 'lastName', 'email', 'password', 'phoneNumber', 'newsOption', ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID, UserTableMap::COL_FIRST_NAME, UserTableMap::COL_LAST_NAME, UserTableMap::COL_EMAIL, UserTableMap::COL_PASSWORD, UserTableMap::COL_PHONE_NUMBER, UserTableMap::COL_NEWS_OPTION, ),
+        self::TYPE_FIELDNAME     => array('id', 'first_name', 'last_name', 'email', 'password', 'phone_number', 'news_option', ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -122,11 +132,11 @@ class UserTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        self::TYPE_PHPNAME       => array('Id' => 0, 'FirstName' => 1, 'LastName' => 2, 'Email' => 3, 'Password' => 4, ),
-        self::TYPE_CAMELNAME     => array('id' => 0, 'firstName' => 1, 'lastName' => 2, 'email' => 3, 'password' => 4, ),
-        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_FIRST_NAME => 1, UserTableMap::COL_LAST_NAME => 2, UserTableMap::COL_EMAIL => 3, UserTableMap::COL_PASSWORD => 4, ),
-        self::TYPE_FIELDNAME     => array('id' => 0, 'first_name' => 1, 'last_name' => 2, 'email' => 3, 'password' => 4, ),
-        self::TYPE_NUM           => array(0, 1, 2, 3, 4, )
+        self::TYPE_PHPNAME       => array('Id' => 0, 'FirstName' => 1, 'LastName' => 2, 'Email' => 3, 'Password' => 4, 'PhoneNumber' => 5, 'NewsOption' => 6, ),
+        self::TYPE_CAMELNAME     => array('id' => 0, 'firstName' => 1, 'lastName' => 2, 'email' => 3, 'password' => 4, 'phoneNumber' => 5, 'newsOption' => 6, ),
+        self::TYPE_COLNAME       => array(UserTableMap::COL_ID => 0, UserTableMap::COL_FIRST_NAME => 1, UserTableMap::COL_LAST_NAME => 2, UserTableMap::COL_EMAIL => 3, UserTableMap::COL_PASSWORD => 4, UserTableMap::COL_PHONE_NUMBER => 5, UserTableMap::COL_NEWS_OPTION => 6, ),
+        self::TYPE_FIELDNAME     => array('id' => 0, 'first_name' => 1, 'last_name' => 2, 'email' => 3, 'password' => 4, 'phone_number' => 5, 'news_option' => 6, ),
+        self::TYPE_NUM           => array(0, 1, 2, 3, 4, 5, 6, )
     );
 
     /**
@@ -151,6 +161,8 @@ class UserTableMap extends TableMap
         $this->addColumn('last_name', 'LastName', 'VARCHAR', true, 255, null);
         $this->addColumn('email', 'Email', 'VARCHAR', true, 255, null);
         $this->addColumn('password', 'Password', 'VARCHAR', true, 255, null);
+        $this->addColumn('phone_number', 'PhoneNumber', 'VARCHAR', false, 255, null);
+        $this->addColumn('news_option', 'NewsOption', 'TINYINT', false, 1, 0);
     } // initialize()
 
     /**
@@ -306,12 +318,16 @@ class UserTableMap extends TableMap
             $criteria->addSelectColumn(UserTableMap::COL_LAST_NAME);
             $criteria->addSelectColumn(UserTableMap::COL_EMAIL);
             $criteria->addSelectColumn(UserTableMap::COL_PASSWORD);
+            $criteria->addSelectColumn(UserTableMap::COL_PHONE_NUMBER);
+            $criteria->addSelectColumn(UserTableMap::COL_NEWS_OPTION);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.first_name');
             $criteria->addSelectColumn($alias . '.last_name');
             $criteria->addSelectColumn($alias . '.email');
             $criteria->addSelectColumn($alias . '.password');
+            $criteria->addSelectColumn($alias . '.phone_number');
+            $criteria->addSelectColumn($alias . '.news_option');
         }
     }
 

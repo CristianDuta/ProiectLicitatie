@@ -389,6 +389,30 @@ $(function () {
     $('#printButton').click(function () {
         formToPDF();
     });
+
+    $(document).ready(function(){
+        var inputList = $('form#registrationForm input');
+        inputList.prop('title', "Va rugam completati acest camp.");
+        inputList.on('change invalid', function() {
+            var textField = $(this).get(0);
+            textField.setCustomValidity('');
+
+            if (!textField.validity.valid) {
+                textField.setCustomValidity('Camp invalid.');
+            }
+        });
+
+        var termsAndConditionField = $("form#registrationForm input[name=termsAndConditions]");
+        termsAndConditionField.prop('title', "Trebuie sa acceptati Termenii si Conditiile de utilizare a site-ului.");
+        termsAndConditionField.on('change invalid', function() {
+            var textField = $(this).get(0);
+            textField.setCustomValidity('');
+
+            if (!textField.validity.valid) {
+                textField.setCustomValidity('Va rugam bifati.');
+            }
+        });
+    });
 });
 
 

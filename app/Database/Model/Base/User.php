@@ -95,6 +95,21 @@ abstract class User implements ActiveRecordInterface
     protected $password;
 
     /**
+     * The value for the phone_number field.
+     *
+     * @var        string
+     */
+    protected $phone_number;
+
+    /**
+     * The value for the news_option field.
+     *
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $news_option;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -103,10 +118,23 @@ abstract class User implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues()
+    {
+        $this->news_option = 0;
+    }
+
+    /**
      * Initializes internal state of Database\Model\Base\User object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -378,6 +406,26 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
+     * Get the [phone_number] column value.
+     *
+     * @return string
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phone_number;
+    }
+
+    /**
+     * Get the [news_option] column value.
+     *
+     * @return int
+     */
+    public function getNewsOption()
+    {
+        return $this->news_option;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v new value
@@ -478,6 +526,46 @@ abstract class User implements ActiveRecordInterface
     } // setPassword()
 
     /**
+     * Set the value of [phone_number] column.
+     *
+     * @param string $v new value
+     * @return $this|\Database\Model\User The current object (for fluent API support)
+     */
+    public function setPhoneNumber($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->phone_number !== $v) {
+            $this->phone_number = $v;
+            $this->modifiedColumns[UserTableMap::COL_PHONE_NUMBER] = true;
+        }
+
+        return $this;
+    } // setPhoneNumber()
+
+    /**
+     * Set the value of [news_option] column.
+     *
+     * @param int $v new value
+     * @return $this|\Database\Model\User The current object (for fluent API support)
+     */
+    public function setNewsOption($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->news_option !== $v) {
+            $this->news_option = $v;
+            $this->modifiedColumns[UserTableMap::COL_NEWS_OPTION] = true;
+        }
+
+        return $this;
+    } // setNewsOption()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -487,6 +575,10 @@ abstract class User implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+            if ($this->news_option !== 0) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -527,6 +619,12 @@ abstract class User implements ActiveRecordInterface
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('Password', TableMap::TYPE_PHPNAME, $indexType)];
             $this->password = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UserTableMap::translateFieldName('PhoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->phone_number = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UserTableMap::translateFieldName('NewsOption', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->news_option = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -535,7 +633,7 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = UserTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Database\\Model\\User'), 0, $e);
@@ -747,6 +845,12 @@ abstract class User implements ActiveRecordInterface
         if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
             $modifiedColumns[':p' . $index++]  = 'password';
         }
+        if ($this->isColumnModified(UserTableMap::COL_PHONE_NUMBER)) {
+            $modifiedColumns[':p' . $index++]  = 'phone_number';
+        }
+        if ($this->isColumnModified(UserTableMap::COL_NEWS_OPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'news_option';
+        }
 
         $sql = sprintf(
             'INSERT INTO user (%s) VALUES (%s)',
@@ -772,6 +876,12 @@ abstract class User implements ActiveRecordInterface
                         break;
                     case 'password':
                         $stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
+                        break;
+                    case 'phone_number':
+                        $stmt->bindValue($identifier, $this->phone_number, PDO::PARAM_STR);
+                        break;
+                    case 'news_option':
+                        $stmt->bindValue($identifier, $this->news_option, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -850,6 +960,12 @@ abstract class User implements ActiveRecordInterface
             case 4:
                 return $this->getPassword();
                 break;
+            case 5:
+                return $this->getPhoneNumber();
+                break;
+            case 6:
+                return $this->getNewsOption();
+                break;
             default:
                 return null;
                 break;
@@ -884,6 +1000,8 @@ abstract class User implements ActiveRecordInterface
             $keys[2] => $this->getLastName(),
             $keys[3] => $this->getEmail(),
             $keys[4] => $this->getPassword(),
+            $keys[5] => $this->getPhoneNumber(),
+            $keys[6] => $this->getNewsOption(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -938,6 +1056,12 @@ abstract class User implements ActiveRecordInterface
             case 4:
                 $this->setPassword($value);
                 break;
+            case 5:
+                $this->setPhoneNumber($value);
+                break;
+            case 6:
+                $this->setNewsOption($value);
+                break;
         } // switch()
 
         return $this;
@@ -978,6 +1102,12 @@ abstract class User implements ActiveRecordInterface
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setPassword($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setPhoneNumber($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setNewsOption($arr[$keys[6]]);
         }
     }
 
@@ -1034,6 +1164,12 @@ abstract class User implements ActiveRecordInterface
         }
         if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
             $criteria->add(UserTableMap::COL_PASSWORD, $this->password);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_PHONE_NUMBER)) {
+            $criteria->add(UserTableMap::COL_PHONE_NUMBER, $this->phone_number);
+        }
+        if ($this->isColumnModified(UserTableMap::COL_NEWS_OPTION)) {
+            $criteria->add(UserTableMap::COL_NEWS_OPTION, $this->news_option);
         }
 
         return $criteria;
@@ -1125,6 +1261,8 @@ abstract class User implements ActiveRecordInterface
         $copyObj->setLastName($this->getLastName());
         $copyObj->setEmail($this->getEmail());
         $copyObj->setPassword($this->getPassword());
+        $copyObj->setPhoneNumber($this->getPhoneNumber());
+        $copyObj->setNewsOption($this->getNewsOption());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1165,8 +1303,11 @@ abstract class User implements ActiveRecordInterface
         $this->last_name = null;
         $this->email = null;
         $this->password = null;
+        $this->phone_number = null;
+        $this->news_option = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);

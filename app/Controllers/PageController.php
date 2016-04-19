@@ -12,6 +12,7 @@ use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use BusinessLogic\UserRegistrationProcess;
 
 class PageController extends AbstractAppController
 {
@@ -40,6 +41,7 @@ class PageController extends AbstractAppController
         $this->viewDetailsPage($controllers);
         $this->viewPage($controllers);
         $this->sendMailService($controllers);
+        $this->registerUser($controllers);
 
         return $controllers;
     }
@@ -54,6 +56,7 @@ class PageController extends AbstractAppController
                 'activeMenuItem' => 'home'
             ));
         });
+
     }
 
 
@@ -168,6 +171,26 @@ class PageController extends AbstractAppController
                     'auctionList' => $results,
                 ])
             ));
+        });
+    }
+
+
+
+    private function registerUser(ControllerCollection $controllers)
+    {
+        $controllers->post('/registerUser', function (Request $request) {
+            $parameterList = $request->request->all();
+            $userRegistrationProcess = new UserRegistrationProcess(
+                $parameterList['email'],
+                $parameterList['password'],
+                $parameterList['firstName'],
+                $parameterList['lastName'],
+                $parameterList['phoneNumber'],
+                $parameterList['newsOption']
+            );
+            $userRegistrationProcess->execute();
+
+            $this->redirect("/");
         });
     }
 

@@ -6,6 +6,8 @@
         <column name="last_name" phpName="LastName" type="VARCHAR" size="255" required="true"/>
         <column name="email" phpName="Email" type="VARCHAR" size="255" required="true"/>
         <column name="password" phpName="Password" type="VARCHAR" size="255" required="true"/>
+        <column name="phone_number" phpName="PhoneNumber" type="VARCHAR" size="255" required="false"/>
+        <column name="news_option" phpName="NewsOption" type="TINYINT" size="1" default="0" required="false"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

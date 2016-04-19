@@ -24,12 +24,16 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUserQuery orderByLastName($order = Criteria::ASC) Order by the last_name column
  * @method     ChildUserQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     ChildUserQuery orderByPassword($order = Criteria::ASC) Order by the password column
+ * @method     ChildUserQuery orderByPhoneNumber($order = Criteria::ASC) Order by the phone_number column
+ * @method     ChildUserQuery orderByNewsOption($order = Criteria::ASC) Order by the news_option column
  *
  * @method     ChildUserQuery groupById() Group by the id column
  * @method     ChildUserQuery groupByFirstName() Group by the first_name column
  * @method     ChildUserQuery groupByLastName() Group by the last_name column
  * @method     ChildUserQuery groupByEmail() Group by the email column
  * @method     ChildUserQuery groupByPassword() Group by the password column
+ * @method     ChildUserQuery groupByPhoneNumber() Group by the phone_number column
+ * @method     ChildUserQuery groupByNewsOption() Group by the news_option column
  *
  * @method     ChildUserQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildUserQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -46,7 +50,9 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser findOneByFirstName(string $first_name) Return the first ChildUser filtered by the first_name column
  * @method     ChildUser findOneByLastName(string $last_name) Return the first ChildUser filtered by the last_name column
  * @method     ChildUser findOneByEmail(string $email) Return the first ChildUser filtered by the email column
- * @method     ChildUser findOneByPassword(string $password) Return the first ChildUser filtered by the password column *
+ * @method     ChildUser findOneByPassword(string $password) Return the first ChildUser filtered by the password column
+ * @method     ChildUser findOneByPhoneNumber(string $phone_number) Return the first ChildUser filtered by the phone_number column
+ * @method     ChildUser findOneByNewsOption(int $news_option) Return the first ChildUser filtered by the news_option column *
 
  * @method     ChildUser requirePk($key, ConnectionInterface $con = null) Return the ChildUser by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOne(ConnectionInterface $con = null) Return the first ChildUser matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -56,6 +62,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser requireOneByLastName(string $last_name) Return the first ChildUser filtered by the last_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByEmail(string $email) Return the first ChildUser filtered by the email column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildUser requireOneByPassword(string $password) Return the first ChildUser filtered by the password column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByPhoneNumber(string $phone_number) Return the first ChildUser filtered by the phone_number column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildUser requireOneByNewsOption(int $news_option) Return the first ChildUser filtered by the news_option column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildUser[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildUser objects based on current ModelCriteria
  * @method     ChildUser[]|ObjectCollection findById(int $id) Return ChildUser objects filtered by the id column
@@ -63,6 +71,8 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildUser[]|ObjectCollection findByLastName(string $last_name) Return ChildUser objects filtered by the last_name column
  * @method     ChildUser[]|ObjectCollection findByEmail(string $email) Return ChildUser objects filtered by the email column
  * @method     ChildUser[]|ObjectCollection findByPassword(string $password) Return ChildUser objects filtered by the password column
+ * @method     ChildUser[]|ObjectCollection findByPhoneNumber(string $phone_number) Return ChildUser objects filtered by the phone_number column
+ * @method     ChildUser[]|ObjectCollection findByNewsOption(int $news_option) Return ChildUser objects filtered by the news_option column
  * @method     ChildUser[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -161,7 +171,7 @@ abstract class UserQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, first_name, last_name, email, password FROM user WHERE id = :p0';
+        $sql = 'SELECT id, first_name, last_name, email, password, phone_number, news_option FROM user WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -406,6 +416,76 @@ abstract class UserQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(UserTableMap::COL_PASSWORD, $password, $comparison);
+    }
+
+    /**
+     * Filter the query on the phone_number column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByPhoneNumber('fooValue');   // WHERE phone_number = 'fooValue'
+     * $query->filterByPhoneNumber('%fooValue%'); // WHERE phone_number LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $phoneNumber The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByPhoneNumber($phoneNumber = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($phoneNumber)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $phoneNumber)) {
+                $phoneNumber = str_replace('*', '%', $phoneNumber);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_PHONE_NUMBER, $phoneNumber, $comparison);
+    }
+
+    /**
+     * Filter the query on the news_option column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNewsOption(1234); // WHERE news_option = 1234
+     * $query->filterByNewsOption(array(12, 34)); // WHERE news_option IN (12, 34)
+     * $query->filterByNewsOption(array('min' => 12)); // WHERE news_option > 12
+     * </code>
+     *
+     * @param     mixed $newsOption The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildUserQuery The current query, for fluid interface
+     */
+    public function filterByNewsOption($newsOption = null, $comparison = null)
+    {
+        if (is_array($newsOption)) {
+            $useMinMax = false;
+            if (isset($newsOption['min'])) {
+                $this->addUsingAlias(UserTableMap::COL_NEWS_OPTION, $newsOption['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($newsOption['max'])) {
+                $this->addUsingAlias(UserTableMap::COL_NEWS_OPTION, $newsOption['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(UserTableMap::COL_NEWS_OPTION, $newsOption, $comparison);
     }
 
     /**

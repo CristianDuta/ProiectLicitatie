@@ -7,7 +7,27 @@
                         <label for="{{ key }}" class="control-label">
                             {{ value }}
                         </label>
-                        <textarea id="{{ key }}" name="{{ key }}" rows="1" class="form-control">{{ auctionList[key] }}</textarea>
+                        {% if key == 'ContractType' %}
+                            <br />
+                            <select id="{{ key }}" name="{{ key }}">
+                                {% set options = {'Furinzare': 'Furinzare', 'Servicii': 'Servicii', 'Lucrari': 'Lucrari'} %}
+                                {% for optionValue, optionLabel in options %}
+                                    <option value="{{ optionValue }}" {{ optionValue == auctionList[key] ? ' selected' : ''}}>{{ optionLabel }}</option>
+                                {% endfor %}
+                            </select>
+                        {% elseif key == 'FundingType' %}
+                            <br />
+                            <select id="{{ key }}" name="{{ key }}">
+                                {% set options = {'Alte fonduri': 'Alte fonduri', 'Fonduri europene': 'Fonduri europene', 'Bugetul de stat': 'Bugetul de stat', 'Fonduri proprii': 'Fonduri proprii'} %}
+                                {% for optionValue, optionLabel in options %}
+                                <option value="{{ optionValue }}" {{ optionValue == auctionList[key] ? ' selected' : ''}}>{{ optionLabel }}</option>
+                                {% endfor %}
+                            </select>
+                        {% elseif key == 'PublishDate' or key == 'OfferEndDate' %}
+                            <textarea id="{{ key }}" name="{{ key }}" placeholder="exemplu: 21.05.2016" rows="1" class="form-control">{{ auctionList[key] }}</textarea>
+                        {% else %}
+                            <textarea id="{{ key }}" name="{{ key }}" rows="1" class="form-control">{{ auctionList[key] }}</textarea>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

@@ -12,6 +12,8 @@ use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\User\User;
 use BusinessLogic\UserRegistrationProcess;
 
 class PageController extends AbstractAppController
@@ -50,13 +52,14 @@ class PageController extends AbstractAppController
 
     private function homePage(ControllerCollection $controllers)
     {
-        $controllers->get('/', function (Application $app) {
+        $controllers->get('/', function (Application $app, Request $request) {
             return $app['twig']->render("index.html", array(
                 'pageTitle' => self::PAGE_TITLE_HOME,
-                'activeMenuItem' => 'home'
+                'activeMenuItem' => 'home',
+                'error' => $app['security.last_error']($request),
+                'username' => $this->getUser($app),
             ));
         });
-
     }
 
 
@@ -91,6 +94,7 @@ class PageController extends AbstractAppController
             return $app['twig']->render("index.html", array(
                 'pageTitle' => $pageTitle,
                 'activeMenuItem' => 'viewDetails',
+                'username' => $this->getUser($app),
                 'pageContent' => $app['twig']->render("view-details.html", [
                     'inputArray' => $app['config']['addOrEditSection'],
                     'auctionList' => $auction,
@@ -131,6 +135,7 @@ class PageController extends AbstractAppController
             return $app['twig']->render("index.html", array(
                 'pageTitle' => $pageTitle,
                 'activeMenuItem' => 'addOrEdit',
+                'username' => $this->getUser($app),
                 'pageContent' => $app['twig']->render("add-edit-auction.html", [
                     'inputArray' => $app['config']['addOrEditSection'],
                     'auctionList' => $auction,
@@ -167,6 +172,7 @@ class PageController extends AbstractAppController
             return $app['twig']->render("index.html", array(
                 'pageTitle' => $pageTitle,
                 'activeMenuItem' => 'view',
+                'username' => $this->getUser($app),
                 'pageContent' => $app['twig']->render("view.html", [
                     'auctionList' => $results,
                 ])
@@ -178,11 +184,11 @@ class PageController extends AbstractAppController
 
     private function registerUser(ControllerCollection $controllers)
     {
-        $controllers->post('/registerUser', function (Request $request) {
+        $controllers->post('/registerUser', function (Application $app, Request $request) {
             $parameterList = $request->request->all();
             $userRegistrationProcess = new UserRegistrationProcess(
                 $parameterList['email'],
-                $parameterList['password'],
+                $app['security.encoder.digest']->encodePassword($parameterList['password'], ''),
                 $parameterList['firstName'],
                 $parameterList['lastName'],
                 $parameterList['phoneNumber'],
@@ -210,18 +216,42 @@ class PageController extends AbstractAppController
             $sendMailProcess = new SendMailProcess($app);
             $getAuctionProcess = new GetAuctionProcess();
 
-            $auctionList = array(
-                $getAuctionProcess->getOne()
-            );
+            $auctionList = $getAuctionProcess->getAuctionsWithLimit(3);
 
-            $userList = array(
-                UserQuery::create()->findOne()
-            );
+            $userList = UserQuery::create()
+                    ->filterByLastName('Duta')
+                    ->find();
+
 
             $sendAuctionViaEmailProcess = new SendAuctionViaEmailProcess($app, $sendMailProcess, $auctionList, $userList);
             $sendAuctionViaEmailProcess->execute();
 
             return new Response();
         });
+    }
+
+
+
+    /**
+     * @param Application $app
+     * @return string
+     */
+    private function getUser($app)
+    {
+        /** @var UsernamePasswordToken $token */
+        $token = $app['security.token_storage']->getToken();
+
+        if (!$token instanceof UsernamePasswordToken) {
+            return null;
+        }
+
+        /** @var User $user */
+        $user = $token->getUser();
+
+        if (!$user instanceof User) {
+            return null;
+        }
+
+        return $user->getUsername();
     }
 }

@@ -4,6 +4,7 @@ namespace BusinessLogic;
 
 use Database\Model\Auction;
 use Database\Model\AuctionQuery;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 class GetAuctionProcess
 {
@@ -29,5 +30,17 @@ class GetAuctionProcess
     {
         $auctionQuery = new AuctionQuery();
         return $auctionQuery->find();
+    }
+
+
+
+    public function getAuctionsWithLimit($limit = 1)
+    {
+        $auctionQuery = new AuctionQuery();
+        return $auctionQuery
+            ->groupByLocation()
+            ->orderById(Criteria::DESC)
+            ->limit($limit)
+            ->find();
     }
 }

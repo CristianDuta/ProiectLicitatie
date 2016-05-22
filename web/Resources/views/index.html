@@ -48,30 +48,17 @@
                         class="text-uppercase mrm pull-left text-white">News:</span>
                     <ul id="news-update" class="ticker list-unstyled">
                         <li>Bun venit pe Licitatie Pas cu Pas !</li>
-                        <!--<li>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque.</li>-->
                     </ul>
                 </div>
                 <ul class="nav navbar navbar-top-links navbar-right mbn">
-                    <li class="dropdown"><a data-hover="dropdown" href="#" class="dropdown-toggle"><i
-                            class="fa fa-bell fa-fw"></i><span class="badge badge-green">3</span></a>
-
-                    </li>
-                    <li class="dropdown"><a data-hover="dropdown" href="#" class="dropdown-toggle"><i
-                            class="fa fa-envelope fa-fw"></i><span class="badge badge-orange">7</span></a>
-
-                    </li>
-                    <li class="dropdown"><a data-hover="dropdown" href="#" class="dropdown-toggle"><i
-                            class="fa fa-tasks fa-fw"></i><span class="badge badge-yellow">8</span></a>
-
-                    </li>
-                    {% if user.logedIn %}
+                    {% if username %}
                         <li class="dropdown topbar-user"><a data-hover="dropdown" href="#" class="dropdown-toggle">
-                            &nbsp;<span class="hidden-xs">Robert Ionut</span>&nbsp;<span class="caret"></span></a>
+                            &nbsp;<span class="hidden-xs">{{ username }}</span>&nbsp;<span class="caret"></span></a>
                             <ul class="dropdown-menu dropdown-user pull-right">
                                 <li><a href="#"><i class="fa fa-user"></i>Profil</a></li>
                                 <li><a href="#"><i class="fa fa-envelope"></i>Inbox</a></li>
                                 <li class="divider"></li>
-                                <li><a href="Login.html"><i class="fa fa-key"></i>Log Out</a></li>
+                                <li><a href="{{ path('logout') }}"><i class="fa fa-key"></i>Log Out</a></li>
                             </ul>
                         </li>
                     {% else %}
@@ -86,14 +73,11 @@
                             </ul>
                         </li>
                     {% endif %}
-                    <li id="topbar-chat" class="hidden-xs"><a href="javascript:void(0)" data-step="4"
-                                                              data-intro="&lt;b&gt;Form chat&lt;/b&gt; keep you connecting with other coworker"
-                                                              data-position="left" class="btn-chat"><i
-                            class="fa fa-comments"></i><span class="badge badge-info">1</span></a></li>
                 </ul>
             </div>
         </nav>
     </div>
+
     <!--END TOPBAR-->
     <div id="wrapper">
         <!--BEGIN SIDEBAR MENU-->
@@ -115,32 +99,34 @@
                             <span class="menu-title">Acasa</span>
                         </a>
                     </li>
-
-                    {% if activeMenuItem == 'addOrEdit' %}
-                    <li class="active">
-                        {% else %}
-                    <li>
+                    {% if username %}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            {% if activeMenuItem == 'addOrEdit' %}
+                            <li class="active">
+                            {% else %}
+                            <li>
+                            {% endif %}
+                                <a href="/addOrEdit">
+                                    <i class="fa fa-edit fa-fw">
+                                        <div class="icon-bg bg-violet"></div>
+                                    </i>
+                                    <span class="menu-title">Adaugare Licitatie</span>
+                                </a>
+                            </li>
                         {% endif %}
-                        <a href="/addOrEdit">
-                            <i class="fa fa-edit fa-fw">
-                                <div class="icon-bg bg-violet"></div>
-                            </i>
-                            <span class="menu-title">Adaugare Licitatie</span>
-                        </a>
-                    </li>
-                    {% if activeMenuItem == 'view' %}
-                    <li class="active">
+                        {% if activeMenuItem == 'view' %}
+                        <li class="active">
                         {% else %}
-                    <li>
+                        <li>
                         {% endif %}
-                        <a href="/view">
-                            <i class="fa fa-database fa-fw">
-                                <div class="icon-bg bg-red"></div>
-                            </i>
-                            <span class="menu-title">Vizualizare Licitatii</span>
-                        </a>
-                    </li>
-
+                            <a href="/view">
+                                <i class="fa fa-database fa-fw">
+                                    <div class="icon-bg bg-red"></div>
+                                </i>
+                                <span class="menu-title">Vizualizare Licitatii</span>
+                            </a>
+                        </li>
+                    {% endif %}
                     {% if activeMenuItem == 'contact' %}
                     <li class="active">
                         {% else %}
@@ -179,12 +165,6 @@
                 </div>
             </div>
             <!--END CONTENT-->
-            <!--BEGIN FOOTER-->
-            <!--<div id="footer">-->
-                <!--<div class="copyright">-->
-                    <!--<a href="http://themifycloud.com">2014 © KAdmin Responsive Multi-Purpose Template</a></div>-->
-            <!--</div>-->
-            <!--END FOOTER-->
         </div>
         <!--END PAGE WRAPPER-->
     </div>

@@ -38,7 +38,8 @@ class UserRegistrationProcess
     {
         $user = new User();
         $user->setEmail($this->email);
-        $user->setPassword(password_hash($this->password, PASSWORD_DEFAULT));
+        $user->setRoles("ROLE_USER");
+        $user->setPassword($this->password);
         $user->setFirstName($this->firstName);
         $user->setLastName($this->lastName);
         $user->setPhoneNumber($this->phoneNumber);

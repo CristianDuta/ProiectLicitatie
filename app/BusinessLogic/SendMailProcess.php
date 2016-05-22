@@ -36,7 +36,7 @@ class SendMailProcess
         $this->message
             ->setSubject($this->subject)
             ->setFrom(array($this->app['config']['send_mail']['from']))
-            ->setTo($this->to)
+            ->setBcc($this->to)
             ->setBody($this->body, 'text/html');
 
         $this->app['mailer']->send($this->message);

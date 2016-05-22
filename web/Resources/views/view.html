@@ -84,9 +84,11 @@
                                     <a href="/viewDetails/{{ result.id }}" class="btn btn-primary btn-edit">
                                         Detalii
                                     </a>
+                                    {% if is_granted('ROLE_ADMIN') %}
                                     <a href="/addOrEdit/{{ result.id }}" class="btn btn-primary btn-edit">
                                         Editeaza
                                     </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}

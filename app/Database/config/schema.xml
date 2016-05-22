@@ -4,6 +4,7 @@
         <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="first_name" phpName="FirstName" type="VARCHAR" size="255" required="true"/>
         <column name="last_name" phpName="LastName" type="VARCHAR" size="255" required="true"/>
+        <column name="roles" phpName="Roles" type="VARCHAR" size="255" required="true"/>
         <column name="email" phpName="Email" type="VARCHAR" size="255" required="true"/>
         <column name="password" phpName="Password" type="VARCHAR" size="255" required="true"/>
         <column name="phone_number" phpName="PhoneNumber" type="VARCHAR" size="255" required="false"/>

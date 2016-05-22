@@ -53,7 +53,6 @@ class SendAuctionViaEmailProcess
     {
         $to = $this->getSendTo();
         $body = $this->getEmailBody();
-
         $this->sendMailProcess->setTo($to);
         $this->sendMailProcess->setSubject(self::EMAIL_SUBJECT);
         $this->sendMailProcess->setBody($body);
@@ -71,8 +70,8 @@ class SendAuctionViaEmailProcess
             'website' => $this->app['local_config']['website_address'],
             'logoPath' => $this->getImageToEmbed('logo.png'),
             'headerLine' => $this->getImageToEmbed('headerLine.jpg'),
-            'bodyPicture' => $this->getImageToEmbed('bodyPicture.jpg'),
             'houseImage' => $this->getImageToEmbed('house.png'),
+            'auctionList' => $this->auctionList
         ));
     }
 

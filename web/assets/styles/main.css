@@ -6712,6 +6712,7 @@ label {
   -webkit-border-radius: 0 !important;
   -moz-border-radius: 0 !important;
   border-radius: 0 !important;
+  margin-right: 0px;
 }
 .thumbnail {
   -webkit-border-radius: 0 !important;
@@ -7081,4 +7082,9 @@ page[size="A4"] {
     margin: 0;
     box-shadow: 0;
   }
+}
+
+select option, select
+{
+  color: #555555;
 }

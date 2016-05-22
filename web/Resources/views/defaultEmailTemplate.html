@@ -28,7 +28,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="center"><a href= "{{ website }}" target="_blank"><img src="{{ bodyPicture }}" alt="" width="598" height="249" border="0"/></a></td>
+                <td align="center"><a href= "{{ website }}" target="_blank"></a></td>
             </tr>
             <tr>
                 <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -51,21 +51,30 @@
 
                                             <tr>
                                                 <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    {% for auction in auctionList %}
                                                     <tr>
                                                         <td width="5%"><img src="{{ houseImage }}" width="150" height="130" border="0" alt=""/></td>
                                                         <td width="95%" align="left" valign="top">
-                                                            Lucrari de reparatie pentru ridicare restrictii de viteza pe aparate de cale: Linia 500 Ploiesti-Vicsani fir I, II, Statia Veresti, inlocuire schimbatori si inlocuire substrat cap X si Y - LOT I<br />
-                                                            Valoare  estimata  : 1,016,629.82 RON<br />
-                                                            Locatia : Statia Veresti,SUCEAVA<br />
-                                                            <a href= "{{ website }}viewDetails/21" style="color:#05bcda; text-decoration:none"><strong><em>click pentru detalii</em></strong></a>
+                                                            <span style="text-decoration: underline;">{{ auction.Title }}</span><br />
+                                                            <b>Valoare  estimata:</b> {{ auction.EstimatedValue }}<br />
+                                                            <b>Locatia:</b> {{ auction.Location }}<br />
+                                                            <a href= "{{ website }}viewDetails/{{ auction.Id }}" style="color:#05bcda; text-decoration:none"><strong><em>click pentru detalii</em></strong></a>
+                                                            <br /><br />
                                                         </td>
                                                     </tr>
+                                                    {% endfor %}
                                                 </table></td>
                                             </tr>
                                             <tr>
                                                 <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                     <tr>
                                                         <td height="10" style="border-bottom:4px solid #d0d1d3"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td height="10"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td height="10">Contact: licitatiepascupas@gmail.com</td>
                                                     </tr>
                                                     <tr>
                                                         <td height="10"></td>

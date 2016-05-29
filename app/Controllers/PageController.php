@@ -4,14 +4,10 @@ namespace Controllers;
 
 use BusinessLogic\GetAuctionProcess;
 use BusinessLogic\SaveAuctionProcess;
-use BusinessLogic\SendAuctionViaEmailProcess;
-use BusinessLogic\SendMailProcess;
 use Database\Model\Auction;
-use Database\Model\UserQuery;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\User;
 use BusinessLogic\UserRegistrationProcess;
@@ -42,7 +38,6 @@ class PageController extends AbstractAppController
         $this->addOrEditPage($controllers);
         $this->viewDetailsPage($controllers);
         $this->viewPage($controllers);
-        $this->sendMailService($controllers);
         $this->registerUser($controllers);
 
         return $controllers;
@@ -206,28 +201,6 @@ class PageController extends AbstractAppController
     {
         header('Location: '.$newURL);
         exit(0);
-    }
-
-
-
-    private function sendMailService(ControllerCollection $controllers)
-    {
-        $controllers->get('/feedback', function (Application $app) {
-            $sendMailProcess = new SendMailProcess($app);
-            $getAuctionProcess = new GetAuctionProcess();
-
-            $auctionList = $getAuctionProcess->getAuctionsWithLimit(3);
-
-            $userList = UserQuery::create()
-                    ->filterByLastName('Duta')
-                    ->find();
-
-
-            $sendAuctionViaEmailProcess = new SendAuctionViaEmailProcess($app, $sendMailProcess, $auctionList, $userList);
-            $sendAuctionViaEmailProcess->execute();
-
-            return new Response();
-        });
     }
 
 

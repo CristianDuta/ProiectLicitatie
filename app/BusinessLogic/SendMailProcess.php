@@ -23,10 +23,10 @@ class SendMailProcess
     /** @var Swift_Message */
     private $message;
 
-    public function __construct(Application $app)
+    public function __construct(Application $app, Swift_Message $message)
     {
         $this->app = $app;
-        $this->message = Swift_Message::newInstance();
+        $this->message = $message;
     }
 
 

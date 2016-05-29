@@ -5,6 +5,7 @@ namespace Database\Model\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
+use Database\Model\Auction as ChildAuction;
 use Database\Model\AuctionQuery as ChildAuctionQuery;
 use Database\Model\Map\AuctionTableMap;
 use Propel\Runtime\Propel;
@@ -228,6 +229,13 @@ abstract class Auction implements ActiveRecordInterface
      * @var        string
      */
     protected $additional_information;
+
+    /**
+     * The value for the created_at field.
+     *
+     * @var        DateTime
+     */
+    protected $created_at;
 
     /**
      * The value for the updated_at field.
@@ -730,13 +738,33 @@ abstract class Auction implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [created_at] column value.
+     *
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
+     */
+    public function getCreatedAt($format = NULL)
+    {
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTimeInterface ? $this->created_at->format($format) : null;
+        }
+    }
+
+    /**
      * Get the [optionally formatted] temporal [updated_at] column value.
      *
      *
      * @param      string $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
@@ -1230,6 +1258,26 @@ abstract class Auction implements ActiveRecordInterface
     } // setAdditionalInformation()
 
     /**
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Database\Model\Auction The current object (for fluent API support)
+     */
+    public function setCreatedAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
+                $this->created_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[AuctionTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
+
+        return $this;
+    } // setCreatedAt()
+
+    /**
      * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
@@ -1240,7 +1288,7 @@ abstract class Auction implements ActiveRecordInterface
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->updated_at !== null || $dt !== null) {
-            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d") !== $this->updated_at->format("Y-m-d")) {
+            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
                 $this->modifiedColumns[AuctionTableMap::COL_UPDATED_AT] = true;
             }
@@ -1363,8 +1411,14 @@ abstract class Auction implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : AuctionTableMap::translateFieldName('AdditionalInformation', TableMap::TYPE_PHPNAME, $indexType)];
             $this->additional_information = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : AuctionTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00') {
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : AuctionTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : AuctionTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
@@ -1376,7 +1430,7 @@ abstract class Auction implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 25; // 25 = AuctionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 26; // 26 = AuctionTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Database\\Model\\Auction'), 0, $e);
@@ -1499,8 +1553,20 @@ abstract class Auction implements ActiveRecordInterface
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+
+                if (!$this->isColumnModified(AuctionTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(AuctionTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(AuctionTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -1645,6 +1711,9 @@ abstract class Auction implements ActiveRecordInterface
         if ($this->isColumnModified(AuctionTableMap::COL_ADDITIONAL_INFORMATION)) {
             $modifiedColumns[':p' . $index++]  = 'additional_information';
         }
+        if ($this->isColumnModified(AuctionTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'created_at';
+        }
         if ($this->isColumnModified(AuctionTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
@@ -1678,7 +1747,7 @@ abstract class Auction implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->ad_number, PDO::PARAM_INT);
                         break;
                     case 'publish_date':
-                        $stmt->bindValue($identifier, $this->publish_date ? $this->publish_date->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->publish_date ? $this->publish_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'gainer':
                         $stmt->bindValue($identifier, $this->gainer, PDO::PARAM_STR);
@@ -1693,7 +1762,7 @@ abstract class Auction implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->contract_subject, PDO::PARAM_STR);
                         break;
                     case 'offer_end_date':
-                        $stmt->bindValue($identifier, $this->offer_end_date ? $this->offer_end_date->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->offer_end_date ? $this->offer_end_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                     case 'apply_mode':
                         $stmt->bindValue($identifier, $this->apply_mode, PDO::PARAM_STR);
@@ -1731,8 +1800,11 @@ abstract class Auction implements ActiveRecordInterface
                     case 'additional_information':
                         $stmt->bindValue($identifier, $this->additional_information, PDO::PARAM_STR);
                         break;
+                    case 'created_at':
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        break;
                     case 'updated_at':
-                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -1869,6 +1941,9 @@ abstract class Auction implements ActiveRecordInterface
                 return $this->getAdditionalInformation();
                 break;
             case 24:
+                return $this->getCreatedAt();
+                break;
+            case 25:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1924,7 +1999,8 @@ abstract class Auction implements ActiveRecordInterface
             $keys[21] => $this->getEquipment(),
             $keys[22] => $this->getQualityAssurance(),
             $keys[23] => $this->getAdditionalInformation(),
-            $keys[24] => $this->getUpdatedAt(),
+            $keys[24] => $this->getCreatedAt(),
+            $keys[25] => $this->getUpdatedAt(),
         );
         if ($result[$keys[6]] instanceof \DateTime) {
             $result[$keys[6]] = $result[$keys[6]]->format('c');
@@ -1936,6 +2012,10 @@ abstract class Auction implements ActiveRecordInterface
 
         if ($result[$keys[24]] instanceof \DateTime) {
             $result[$keys[24]] = $result[$keys[24]]->format('c');
+        }
+
+        if ($result[$keys[25]] instanceof \DateTime) {
+            $result[$keys[25]] = $result[$keys[25]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -2049,6 +2129,9 @@ abstract class Auction implements ActiveRecordInterface
                 $this->setAdditionalInformation($value);
                 break;
             case 24:
+                $this->setCreatedAt($value);
+                break;
+            case 25:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -2150,7 +2233,10 @@ abstract class Auction implements ActiveRecordInterface
             $this->setAdditionalInformation($arr[$keys[23]]);
         }
         if (array_key_exists($keys[24], $arr)) {
-            $this->setUpdatedAt($arr[$keys[24]]);
+            $this->setCreatedAt($arr[$keys[24]]);
+        }
+        if (array_key_exists($keys[25], $arr)) {
+            $this->setUpdatedAt($arr[$keys[25]]);
         }
     }
 
@@ -2265,6 +2351,9 @@ abstract class Auction implements ActiveRecordInterface
         if ($this->isColumnModified(AuctionTableMap::COL_ADDITIONAL_INFORMATION)) {
             $criteria->add(AuctionTableMap::COL_ADDITIONAL_INFORMATION, $this->additional_information);
         }
+        if ($this->isColumnModified(AuctionTableMap::COL_CREATED_AT)) {
+            $criteria->add(AuctionTableMap::COL_CREATED_AT, $this->created_at);
+        }
         if ($this->isColumnModified(AuctionTableMap::COL_UPDATED_AT)) {
             $criteria->add(AuctionTableMap::COL_UPDATED_AT, $this->updated_at);
         }
@@ -2377,6 +2466,7 @@ abstract class Auction implements ActiveRecordInterface
         $copyObj->setEquipment($this->getEquipment());
         $copyObj->setQualityAssurance($this->getQualityAssurance());
         $copyObj->setAdditionalInformation($this->getAdditionalInformation());
+        $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
             $copyObj->setNew(true);
@@ -2437,6 +2527,7 @@ abstract class Auction implements ActiveRecordInterface
         $this->equipment = null;
         $this->quality_assurance = null;
         $this->additional_information = null;
+        $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
@@ -2468,6 +2559,20 @@ abstract class Auction implements ActiveRecordInterface
     public function __toString()
     {
         return (string) $this->exportTo(AuctionTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     $this|ChildAuction The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[AuctionTableMap::COL_UPDATED_AT] = true;
+
+        return $this;
     }
 
     /**

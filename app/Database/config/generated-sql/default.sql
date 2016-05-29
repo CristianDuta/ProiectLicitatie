@@ -54,7 +54,8 @@ CREATE TABLE `auction`
     `equipment` TEXT,
     `quality_assurance` TEXT,
     `additional_information` TEXT,
-    `updated_at` DATE NOT NULL,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 

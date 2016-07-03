@@ -59,5 +59,79 @@ CREATE TABLE `auction`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+-- ---------------------------------------------------------------------
+-- mail
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `mail`;
+
+CREATE TABLE `mail`
+(
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `from_email_address` VARCHAR(255) NOT NULL,
+    `subject` VARCHAR(255) NOT NULL,
+    `auction_list` VARCHAR(255) NOT NULL,
+    `mail_template` VARCHAR(255),
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- mail_queue
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `mail_queue`;
+
+CREATE TABLE `mail_queue`
+(
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `mail_to` VARCHAR(255) NOT NULL,
+    `mail_id` INTEGER(11) NOT NULL,
+    `mail_status` TINYINT(1) NOT NULL,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`),
+    INDEX `mail_queue_fi_f69d66` (`mail_id`),
+    CONSTRAINT `mail_queue_fk_f69d66`
+        FOREIGN KEY (`mail_id`)
+        REFERENCES `mail` (`id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- mail_criteria
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `mail_criteria`;
+
+CREATE TABLE `mail_criteria`
+(
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
+-- mail_criteria_relation
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `mail_criteria_relation`;
+
+CREATE TABLE `mail_criteria_relation`
+(
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `email_address` VARCHAR(255) NOT NULL,
+    `mail_criteria_id` INTEGER(11) NOT NULL,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`),
+    INDEX `mail_criteria_relation_fi_9615f5` (`mail_criteria_id`),
+    CONSTRAINT `mail_criteria_relation_fk_9615f5`
+        FOREIGN KEY (`mail_criteria_id`)
+        REFERENCES `mail_criteria` (`id`)
+) ENGINE=InnoDB;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

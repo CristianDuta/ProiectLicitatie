@@ -1,0 +1,16 @@
+<table id="emailAlertsTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        {% for tableColumn in tableColumns %}
+        <th>{{ tableColumn }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+        {% for tableColumn in tableColumns %}
+        <th>{{ tableColumn }}</th>
+        {% endfor %}
+    </tr>
+    </tfoot>
+</table>

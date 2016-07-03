@@ -816,9 +816,6 @@ hr {
 .navbar-static-side ul li {
   border-bottom: 1px solid #c5c5c5;
 }
-.navbar-static-side ul li:first-child a {
-  padding: 0;
-}
 .navbar-static-side ul li
 {
    background: #f2f5f7; /* Old browsers */
@@ -7087,4 +7084,8 @@ page[size="A4"] {
 select option, select
 {
   color: #555555;
+}
+
+body {
+  padding: 0 !important;
 }

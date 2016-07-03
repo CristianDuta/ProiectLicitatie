@@ -26,8 +26,8 @@ use Propel\Runtime\Util\PropelDateTime;
  *
  *
  *
-* @package    propel.generator.Database.Model.Base
-*/
+ * @package    propel.generator.Database.Model.Base
+ */
 abstract class Auction implements ActiveRecordInterface
 {
     /**

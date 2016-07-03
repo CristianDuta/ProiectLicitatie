@@ -10,4 +10,5 @@ $app = require_once dirname(__DIR__) ."/app/bootstrap.php";
 /** @var \Knp\Console\Application $console */
 $console = &$app["console"];
 $console->add(new \BusinessLogic\MailQueueProcess());
+$console->add(new \BusinessLogic\EnqueueMailProcess());
 $console->run();

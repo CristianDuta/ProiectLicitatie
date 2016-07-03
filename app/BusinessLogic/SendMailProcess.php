@@ -30,18 +30,19 @@ class SendMailProcess
     }
 
 
-
     public function execute()
     {
         $this->message
             ->setSubject($this->subject)
-            ->setFrom(array($this->app['config']['send_mail']['from']))
-            ->setBcc($this->to)
+            ->setFrom(array($this->app['config']['send_mail']['from'])) //todo
+            ->setTo($this->to)
             ->setBody($this->body, 'text/html');
 
-        $this->app['mailer']->send($this->message);
+        /** @var \Swift_Mailer $mailer */
+        $mailer = $this->app['mailer'];
+        $mailer->send($this->message);
+        $this->flushMessageSpool();
     }
-
 
 
     /**
@@ -53,15 +54,13 @@ class SendMailProcess
     }
 
 
-
     /**
-     * @param string[] $to
+     * @param string $to
      */
     public function setTo($to)
     {
         $this->to = $to;
     }
-
 
 
     /**
@@ -80,5 +79,18 @@ class SendMailProcess
     public function getImagePath($path)
     {
         return $this->message->embed(Swift_Image::fromPath($path));
+    }
+
+
+    /**
+     * By default, the Swiftmailer provider sends the emails using the KernelEvents::TERMINATE event,
+     * which is fired after the response has been sent. However, as this event isn't fired for console commands,
+     * your emails won't be sent. To fix this we need to flush the message spool by hand
+     */
+    private function flushMessageSpool()
+    {
+        $this->app['swiftmailer.spooltransport']
+            ->getSpool()
+            ->flushQueue($this->app['swiftmailer.transport']);
     }
 }

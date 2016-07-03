@@ -9,7 +9,6 @@
 namespace BusinessLogic;
 
 use Database\Model\Auction;
-use Database\Model\User;
 use Silex\Application;
 
 class SendAuctionViaEmailProcess
@@ -26,22 +25,22 @@ class SendAuctionViaEmailProcess
     /** @var Auction[] */
     private $auctionList;
 
-    /** @var User[] */
-    private $userList;
+    /** @var string */
+    private $sendTo;
 
     /**
      * SendAuctionViaEmailProcess constructor.
      * @param Application $app
      * @param SendMailProcess $sendMailProcess
      * @param $auctionList
-     * @param $userList
+     * @param $sendTo
      */
-    public function __construct(Application $app, SendMailProcess $sendMailProcess, $auctionList, $userList)
+    public function __construct(Application $app, SendMailProcess $sendMailProcess, $auctionList, $sendTo)
     {
         $this->app = $app;
         $this->sendMailProcess = $sendMailProcess;
         $this->auctionList = $auctionList;
-        $this->userList = $userList;
+        $this->sendTo = $sendTo;
     }
 
 
@@ -51,9 +50,8 @@ class SendAuctionViaEmailProcess
      */
     public function execute()
     {
-        $to = $this->getSendTo();
         $body = $this->getEmailBody();
-        $this->sendMailProcess->setTo($to);
+        $this->sendMailProcess->setTo($this->sendTo);
         $this->sendMailProcess->setSubject(self::EMAIL_SUBJECT);
         $this->sendMailProcess->setBody($body);
         $this->sendMailProcess->execute();
@@ -87,22 +85,5 @@ class SendAuctionViaEmailProcess
             self::EMAIL_IMAGES_PATH .
             $imageName
         );
-    }
-
-
-
-    /**
-     * @return array
-     */
-    private function getSendTo()
-    {
-        $sendTo = array();
-
-        /** @var User $user */
-        foreach ($this->userList as $user) {
-            $sendTo[] = $user->getEmail();
-        }
-
-        return $sendTo;
     }
 }

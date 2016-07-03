@@ -1,0 +1,40 @@
+<div class="modal fade" id="addNewEmailAlertModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="panel panel-orange modal-content">
+            <div class="panel-heading">
+                Adauga o noua intrare
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="panel-body pan">
+                <form id="addNewEmailAlertForm" role="form" method="post">
+                    <div class="form-body pal">
+                        {% for tableColumn in tableColumns %}
+                            {% if tableColumn == 'Email' %}
+                                <div class="form-group">
+                                    <div class="input-icon right">
+                                        <i class="fa fa-envelope"></i>
+                                        <input name="email" type="email" placeholder="E-mail" class="form-control" required />
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="form-group mbn">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="{{ tableColumn.id }}" type="checkbox" />
+                                            &nbsp; {{ tableColumn }}
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="form-actions text-right pal">
+                        <button type="button" class="btn btn-primary pull-right saveButton">
+                            Salveaza
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

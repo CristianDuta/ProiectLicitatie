@@ -2,12 +2,19 @@
 
 namespace Controllers;
 
+use BusinessLogic\EmailAlertList;
 use BusinessLogic\GetAuctionProcess;
 use BusinessLogic\SaveAuctionProcess;
+use BusinessLogic\SaveEmailAlertList;
 use Database\Model\Auction;
+use Database\Model\MailCriteriaQuery;
+use Database\Model\MailCriteriaRelation;
+use Database\Model\MailCriteriaRelationQuery;
+use Exception;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\User;
 use BusinessLogic\UserRegistrationProcess;
@@ -20,6 +27,7 @@ class PageController extends AbstractAppController
     const PAGE_TITLE_EDIT_AUCTION = 'Editeaza Licitatie';
     const PAGE_TITLE_VIEW_AUCTION_LIST = 'Vizualizare Licitatii';
     const PAGE_TITLE_VIEW_AUCTION = 'Vizualizare Licitatie';
+    const PAGE_TITLE_MAIL_ALERTS = 'Alerte email';
 
 
     /**
@@ -39,6 +47,9 @@ class PageController extends AbstractAppController
         $this->viewDetailsPage($controllers);
         $this->viewPage($controllers);
         $this->registerUser($controllers);
+        $this->mailAlertsPage($controllers);
+        $this->mailAlertsProvider($controllers);
+        $this->saveEmailAlerts($controllers);
 
         return $controllers;
     }
@@ -171,6 +182,62 @@ class PageController extends AbstractAppController
                 'pageContent' => $app['twig']->render("view.html", [
                     'auctionList' => $results,
                 ])
+            ));
+        });
+    }
+
+
+
+    private function mailAlertsPage(ControllerCollection $controllers)
+    {
+        $controllers->get('/emailAlerts', function (Application $app) {
+            $mailAlertCriteriaList = MailCriteriaQuery::create()
+                ->find();
+
+            $tableColumns[0] = 'Email';
+            foreach ($mailAlertCriteriaList as $mailAlertCriteria) {
+                $tableColumns[$mailAlertCriteria->getId()] = $mailAlertCriteria->getName();
+            }
+
+            return $app['twig']->render("index.html", array(
+                'pageTitle' => self::PAGE_TITLE_MAIL_ALERTS,
+                'activeMenuItem' => 'emailAlerts',
+                'username' => $this->getUser($app),
+                'pageContent' => $app['twig']->render("emailAlerts.html", [
+                    'tableColumns' => $tableColumns
+                ]),
+                'tableColumns' => $tableColumns
+            ));
+        });
+    }
+
+
+
+    private function mailAlertsProvider(ControllerCollection $controllers)
+    {
+        $controllers->get('/getEmailAlertList', function (Application $app) {
+            $emailAlertList = new EmailAlertList(MailCriteriaRelationQuery::create(), MailCriteriaQuery::create());
+
+            return $app->json($emailAlertList->getDataTableResponse());
+        });
+    }
+
+
+
+    private function saveEmailAlerts(ControllerCollection $controllers)
+    {
+        $controllers->post('/emailAlerts/save', function (Application $app) {
+            $emailAlerts = $app['request']->get('emailAlerts');
+
+            try {
+                $saveEmailAlertList = new SaveEmailAlertList($emailAlerts);
+                $saveEmailAlertList->execute();
+            } catch (Exception $exception) {
+                $statusMessage = $exception->getMessage();
+            }
+
+            return $app->json(array(
+                'statusMessage' => !empty($statusMessage) ? $statusMessage : 'success'
             ));
         });
     }

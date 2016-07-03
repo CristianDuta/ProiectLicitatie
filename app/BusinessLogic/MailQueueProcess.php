@@ -2,8 +2,11 @@
 
 namespace BusinessLogic;
 
-use Database\Model\UserQuery;
+use Database\Model\AuctionQuery;
+use Database\Model\MailQueue;
+use Database\Model\MailQueueQuery;
 use Knp\Command\Command;
+use Propel\Runtime\ActiveQuery\Criteria;
 use Swift_Message;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,16 +27,16 @@ class MailQueueProcess extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $app             = $this->getSilexApplication();
-            $sendMailProcess = $this->getSendMailProcess();
-            $auctionList     = $this->getAuctionList();
-            $userList        = $this->getUserList();
+        $app             = $this->getSilexApplication();
+        $sendMailProcess = $this->getSendMailProcess();
+        $queueItemList   = $this->getQueueItemList();
 
-            $sendAuctionViaEmailProcess = new SendAuctionViaEmailProcess($app, $sendMailProcess, $auctionList, $userList);
+        foreach ($queueItemList as $queueItem) {
+            $auctionList = $this->getAuctionList($queueItem);
+
+            $sendAuctionViaEmailProcess = new SendAuctionViaEmailProcess($app, $sendMailProcess, $auctionList, $queueItem->getMailTo());
             $sendAuctionViaEmailProcess->execute();
-        } catch (\Exception $exception) {
-            $output->writeln($exception->getMessage());
+            $this->markQueueItemAsSent($queueItem);
         }
     }
 
@@ -51,25 +54,54 @@ class MailQueueProcess extends Command
 
 
     /**
+     * @param MailQueue $queueItem
      * @return array|\Database\Model\Auction[]
      */
-    private function getAuctionList()
+    private function getAuctionList($queueItem)
     {
-        $getAuctionProcess = new GetAuctionProcess();
-        $auctionList = $getAuctionProcess->getAuctionsWithLimit(3);
+        $mailQueueItemList = MailQueueQuery::create()
+            ->filterByMailTo($queueItem->getMailTo())
+            ->filterByMailStatus(MailQueue::MAIL_STATUS_NOT_SENT)
+            ->find();
+        $auctionList = array();
+        foreach ($mailQueueItemList as $mailQueueItem) {
+            $mail = $mailQueueItem->getMail();
+            $auctionList = array_merge($auctionList, explode(CreateMailProcess::AUCTION_ID_SEPARATOR, $mail->getAuctionList()));
+        }
 
-        return $auctionList;
+        return AuctionQuery::create()
+            ->filterById($auctionList)
+            ->orderByUpdatedAt(Criteria::DESC)
+            ->find();
     }
 
 
     /**
-     * @return array|\Database\Model\User[]
+     * @return \Database\Model\MailQueue[]|\Propel\Runtime\Collection\ObjectCollection
      */
-    private function getUserList()
+    protected function getQueueItemList()
     {
-        $userList = UserQuery::create()
-            ->filterByLastName('Duta')
+        $queueItemList = MailQueueQuery::create()
+            ->filterByMailStatus(MailQueue::MAIL_STATUS_NOT_SENT)
+            ->groupByMailTo()
             ->find();
-        return $userList;
+        return $queueItemList;
+    }
+
+    /**
+     * @param MailQueue $queueItem
+     */
+    protected function markQueueItemAsSent($queueItem)
+    {
+        $mailQueueItemList = MailQueueQuery::create()
+            ->filterByMailTo($queueItem->getMailTo())
+            ->filterByMailStatus(MailQueue::MAIL_STATUS_NOT_SENT)
+            ->find();
+
+        foreach ($mailQueueItemList as $mailQueueItem) {
+            $mailQueueItem
+                ->setMailStatus(MailQueue::MAIL_STATUS_SENT)
+                ->save();
+        }
     }
 }

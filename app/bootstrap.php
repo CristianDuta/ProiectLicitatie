@@ -34,6 +34,8 @@ $app->register(new SecurityServiceProvider(), array(
         array('^/view$', 'ROLE_USER'),
         array('^/viewDetails/.*$', 'ROLE_USER'),
         array('^/addOrEdit.*$', 'ROLE_ADMIN'),
+        array('^/emailAlerts.*$', 'ROLE_ADMIN'),
+        array('^/getEmailAlertList.*$', 'ROLE_ADMIN'),
     )
 ));
 

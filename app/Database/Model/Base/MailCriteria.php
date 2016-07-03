@@ -2,35 +2,42 @@
 
 namespace Database\Model\Base;
 
+use \DateTime;
 use \Exception;
 use \PDO;
-use Database\Model\UserQuery as ChildUserQuery;
-use Database\Model\Map\UserTableMap;
+use Database\Model\MailCriteria as ChildMailCriteria;
+use Database\Model\MailCriteriaQuery as ChildMailCriteriaQuery;
+use Database\Model\MailCriteriaRelation as ChildMailCriteriaRelation;
+use Database\Model\MailCriteriaRelationQuery as ChildMailCriteriaRelationQuery;
+use Database\Model\Map\MailCriteriaRelationTableMap;
+use Database\Model\Map\MailCriteriaTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
+use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
 use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
+use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'user' table.
+ * Base class that represents a row from the 'mail_criteria' table.
  *
  *
  *
  * @package    propel.generator.Database.Model.Base
  */
-abstract class User implements ActiveRecordInterface
+abstract class MailCriteria implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Database\\Model\\Map\\UserTableMap';
+    const TABLE_MAP = '\\Database\\Model\\Map\\MailCriteriaTableMap';
 
 
     /**
@@ -67,54 +74,31 @@ abstract class User implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the first_name field.
+     * The value for the name field.
      *
      * @var        string
      */
-    protected $first_name;
+    protected $name;
 
     /**
-     * The value for the last_name field.
+     * The value for the created_at field.
      *
-     * @var        string
+     * @var        DateTime
      */
-    protected $last_name;
+    protected $created_at;
 
     /**
-     * The value for the roles field.
+     * The value for the updated_at field.
      *
-     * @var        string
+     * @var        DateTime
      */
-    protected $roles;
+    protected $updated_at;
 
     /**
-     * The value for the email field.
-     *
-     * @var        string
+     * @var        ObjectCollection|ChildMailCriteriaRelation[] Collection to store aggregation of ChildMailCriteriaRelation objects.
      */
-    protected $email;
-
-    /**
-     * The value for the password field.
-     *
-     * @var        string
-     */
-    protected $password;
-
-    /**
-     * The value for the phone_number field.
-     *
-     * @var        string
-     */
-    protected $phone_number;
-
-    /**
-     * The value for the news_option field.
-     *
-     * Note: this column has a database default value of: 0
-     * @var        int
-     */
-    protected $news_option;
+    protected $collMailCriteriaRelations;
+    protected $collMailCriteriaRelationsPartial;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -125,23 +109,16 @@ abstract class User implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Applies default values to this object.
-     * This method should be called from the object's constructor (or
-     * equivalent initialization method).
-     * @see __construct()
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildMailCriteriaRelation[]
      */
-    public function applyDefaultValues()
-    {
-        $this->news_option = 0;
-    }
+    protected $mailCriteriaRelationsScheduledForDeletion = null;
 
     /**
-     * Initializes internal state of Database\Model\Base\User object.
-     * @see applyDefaults()
+     * Initializes internal state of Database\Model\Base\MailCriteria object.
      */
     public function __construct()
     {
-        $this->applyDefaultValues();
     }
 
     /**
@@ -233,9 +210,9 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>User</code> instance.  If
-     * <code>obj</code> is an instance of <code>User</code>, delegates to
-     * <code>equals(User)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>MailCriteria</code> instance.  If
+     * <code>obj</code> is an instance of <code>MailCriteria</code>, delegates to
+     * <code>equals(MailCriteria)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -301,7 +278,7 @@ abstract class User implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|User The current object, for fluid interface
+     * @return $this|MailCriteria The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -373,80 +350,60 @@ abstract class User implements ActiveRecordInterface
     }
 
     /**
-     * Get the [first_name] column value.
+     * Get the [name] column value.
      *
      * @return string
      */
-    public function getFirstName()
+    public function getName()
     {
-        return $this->first_name;
+        return $this->name;
     }
 
     /**
-     * Get the [last_name] column value.
+     * Get the [optionally formatted] temporal [created_at] column value.
      *
-     * @return string
+     *
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     *
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getLastName()
+    public function getCreatedAt($format = NULL)
     {
-        return $this->last_name;
+        if ($format === null) {
+            return $this->created_at;
+        } else {
+            return $this->created_at instanceof \DateTimeInterface ? $this->created_at->format($format) : null;
+        }
     }
 
     /**
-     * Get the [roles] column value.
+     * Get the [optionally formatted] temporal [updated_at] column value.
      *
-     * @return string
-     */
-    public function getRoles()
-    {
-        return $this->roles;
-    }
-
-    /**
-     * Get the [email] column value.
      *
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * Get the [password] column value.
+     * @param      string $format The date/time format string (either date()-style or strftime()-style).
+     *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string
-     */
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    /**
-     * Get the [phone_number] column value.
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
      *
-     * @return string
+     * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getPhoneNumber()
+    public function getUpdatedAt($format = NULL)
     {
-        return $this->phone_number;
-    }
-
-    /**
-     * Get the [news_option] column value.
-     *
-     * @return int
-     */
-    public function getNewsOption()
-    {
-        return $this->news_option;
+        if ($format === null) {
+            return $this->updated_at;
+        } else {
+            return $this->updated_at instanceof \DateTimeInterface ? $this->updated_at->format($format) : null;
+        }
     }
 
     /**
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\Database\Model\User The current object (for fluent API support)
+     * @return $this|\Database\Model\MailCriteria The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -456,151 +413,71 @@ abstract class User implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[UserTableMap::COL_ID] = true;
+            $this->modifiedColumns[MailCriteriaTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [first_name] column.
+     * Set the value of [name] column.
      *
      * @param string $v new value
-     * @return $this|\Database\Model\User The current object (for fluent API support)
+     * @return $this|\Database\Model\MailCriteria The current object (for fluent API support)
      */
-    public function setFirstName($v)
+    public function setName($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->first_name !== $v) {
-            $this->first_name = $v;
-            $this->modifiedColumns[UserTableMap::COL_FIRST_NAME] = true;
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[MailCriteriaTableMap::COL_NAME] = true;
         }
 
         return $this;
-    } // setFirstName()
+    } // setName()
 
     /**
-     * Set the value of [last_name] column.
+     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
-     * @param string $v new value
-     * @return $this|\Database\Model\User The current object (for fluent API support)
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Database\Model\MailCriteria The current object (for fluent API support)
      */
-    public function setLastName($v)
+    public function setCreatedAt($v)
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->last_name !== $v) {
-            $this->last_name = $v;
-            $this->modifiedColumns[UserTableMap::COL_LAST_NAME] = true;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->created_at !== null || $dt !== null) {
+            if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
+                $this->created_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[MailCriteriaTableMap::COL_CREATED_AT] = true;
+            }
+        } // if either are not null
 
         return $this;
-    } // setLastName()
+    } // setCreatedAt()
 
     /**
-     * Set the value of [roles] column.
+     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
      *
-     * @param string $v new value
-     * @return $this|\Database\Model\User The current object (for fluent API support)
+     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     * @return $this|\Database\Model\MailCriteria The current object (for fluent API support)
      */
-    public function setRoles($v)
+    public function setUpdatedAt($v)
     {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->roles !== $v) {
-            $this->roles = $v;
-            $this->modifiedColumns[UserTableMap::COL_ROLES] = true;
-        }
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->updated_at !== null || $dt !== null) {
+            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
+                $this->updated_at = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[MailCriteriaTableMap::COL_UPDATED_AT] = true;
+            }
+        } // if either are not null
 
         return $this;
-    } // setRoles()
-
-    /**
-     * Set the value of [email] column.
-     *
-     * @param string $v new value
-     * @return $this|\Database\Model\User The current object (for fluent API support)
-     */
-    public function setEmail($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->email !== $v) {
-            $this->email = $v;
-            $this->modifiedColumns[UserTableMap::COL_EMAIL] = true;
-        }
-
-        return $this;
-    } // setEmail()
-
-    /**
-     * Set the value of [password] column.
-     *
-     * @param string $v new value
-     * @return $this|\Database\Model\User The current object (for fluent API support)
-     */
-    public function setPassword($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->password !== $v) {
-            $this->password = $v;
-            $this->modifiedColumns[UserTableMap::COL_PASSWORD] = true;
-        }
-
-        return $this;
-    } // setPassword()
-
-    /**
-     * Set the value of [phone_number] column.
-     *
-     * @param string $v new value
-     * @return $this|\Database\Model\User The current object (for fluent API support)
-     */
-    public function setPhoneNumber($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->phone_number !== $v) {
-            $this->phone_number = $v;
-            $this->modifiedColumns[UserTableMap::COL_PHONE_NUMBER] = true;
-        }
-
-        return $this;
-    } // setPhoneNumber()
-
-    /**
-     * Set the value of [news_option] column.
-     *
-     * @param int $v new value
-     * @return $this|\Database\Model\User The current object (for fluent API support)
-     */
-    public function setNewsOption($v)
-    {
-        if ($v !== null) {
-            $v = (int) $v;
-        }
-
-        if ($this->news_option !== $v) {
-            $this->news_option = $v;
-            $this->modifiedColumns[UserTableMap::COL_NEWS_OPTION] = true;
-        }
-
-        return $this;
-    } // setNewsOption()
+    } // setUpdatedAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -612,10 +489,6 @@ abstract class User implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
-            if ($this->news_option !== 0) {
-                return false;
-            }
-
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -642,29 +515,23 @@ abstract class User implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : UserTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MailCriteriaTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : UserTableMap::translateFieldName('FirstName', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->first_name = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MailCriteriaTableMap::translateFieldName('Name', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->name = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : UserTableMap::translateFieldName('LastName', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->last_name = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MailCriteriaTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : UserTableMap::translateFieldName('Roles', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->roles = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : UserTableMap::translateFieldName('Email', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->email = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : UserTableMap::translateFieldName('Password', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->password = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : UserTableMap::translateFieldName('PhoneNumber', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->phone_number = (null !== $col) ? (string) $col : null;
-
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : UserTableMap::translateFieldName('NewsOption', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->news_option = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MailCriteriaTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -673,10 +540,10 @@ abstract class User implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 8; // 8 = UserTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 4; // 4 = MailCriteriaTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Database\\Model\\User'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Database\\Model\\MailCriteria'), 0, $e);
         }
     }
 
@@ -718,13 +585,13 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(MailCriteriaTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildUserQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildMailCriteriaQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -733,6 +600,8 @@ abstract class User implements ActiveRecordInterface
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
+
+            $this->collMailCriteriaRelations = null;
 
         } // if (deep)
     }
@@ -743,8 +612,8 @@ abstract class User implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see User::setDeleted()
-     * @see User::isDeleted()
+     * @see MailCriteria::setDeleted()
+     * @see MailCriteria::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -753,11 +622,11 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MailCriteriaTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildUserQuery::create()
+            $deleteQuery = ChildMailCriteriaQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -788,7 +657,7 @@ abstract class User implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(UserTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(MailCriteriaTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -796,8 +665,20 @@ abstract class User implements ActiveRecordInterface
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
+                // timestampable behavior
+
+                if (!$this->isColumnModified(MailCriteriaTableMap::COL_CREATED_AT)) {
+                    $this->setCreatedAt(time());
+                }
+                if (!$this->isColumnModified(MailCriteriaTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             } else {
                 $ret = $ret && $this->preUpdate($con);
+                // timestampable behavior
+                if ($this->isModified() && !$this->isColumnModified(MailCriteriaTableMap::COL_UPDATED_AT)) {
+                    $this->setUpdatedAt(time());
+                }
             }
             if ($ret) {
                 $affectedRows = $this->doSave($con);
@@ -807,7 +688,7 @@ abstract class User implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                UserTableMap::addInstanceToPool($this);
+                MailCriteriaTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -844,6 +725,23 @@ abstract class User implements ActiveRecordInterface
                 $this->resetModified();
             }
 
+            if ($this->mailCriteriaRelationsScheduledForDeletion !== null) {
+                if (!$this->mailCriteriaRelationsScheduledForDeletion->isEmpty()) {
+                    \Database\Model\MailCriteriaRelationQuery::create()
+                        ->filterByPrimaryKeys($this->mailCriteriaRelationsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->mailCriteriaRelationsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collMailCriteriaRelations !== null) {
+                foreach ($this->collMailCriteriaRelations as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
             $this->alreadyInSave = false;
 
         }
@@ -864,39 +762,27 @@ abstract class User implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[UserTableMap::COL_ID] = true;
+        $this->modifiedColumns[MailCriteriaTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . UserTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . MailCriteriaTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(UserTableMap::COL_ID)) {
+        if ($this->isColumnModified(MailCriteriaTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(UserTableMap::COL_FIRST_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'first_name';
+        if ($this->isColumnModified(MailCriteriaTableMap::COL_NAME)) {
+            $modifiedColumns[':p' . $index++]  = 'name';
         }
-        if ($this->isColumnModified(UserTableMap::COL_LAST_NAME)) {
-            $modifiedColumns[':p' . $index++]  = 'last_name';
+        if ($this->isColumnModified(MailCriteriaTableMap::COL_CREATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(UserTableMap::COL_ROLES)) {
-            $modifiedColumns[':p' . $index++]  = 'roles';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_EMAIL)) {
-            $modifiedColumns[':p' . $index++]  = 'email';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
-            $modifiedColumns[':p' . $index++]  = 'password';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PHONE_NUMBER)) {
-            $modifiedColumns[':p' . $index++]  = 'phone_number';
-        }
-        if ($this->isColumnModified(UserTableMap::COL_NEWS_OPTION)) {
-            $modifiedColumns[':p' . $index++]  = 'news_option';
+        if ($this->isColumnModified(MailCriteriaTableMap::COL_UPDATED_AT)) {
+            $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO user (%s) VALUES (%s)',
+            'INSERT INTO mail_criteria (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -908,26 +794,14 @@ abstract class User implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'first_name':
-                        $stmt->bindValue($identifier, $this->first_name, PDO::PARAM_STR);
+                    case 'name':
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case 'last_name':
-                        $stmt->bindValue($identifier, $this->last_name, PDO::PARAM_STR);
+                    case 'created_at':
+                        $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
-                    case 'roles':
-                        $stmt->bindValue($identifier, $this->roles, PDO::PARAM_STR);
-                        break;
-                    case 'email':
-                        $stmt->bindValue($identifier, $this->email, PDO::PARAM_STR);
-                        break;
-                    case 'password':
-                        $stmt->bindValue($identifier, $this->password, PDO::PARAM_STR);
-                        break;
-                    case 'phone_number':
-                        $stmt->bindValue($identifier, $this->phone_number, PDO::PARAM_STR);
-                        break;
-                    case 'news_option':
-                        $stmt->bindValue($identifier, $this->news_option, PDO::PARAM_INT);
+                    case 'updated_at':
+                        $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -975,7 +849,7 @@ abstract class User implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MailCriteriaTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -995,25 +869,13 @@ abstract class User implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getFirstName();
+                return $this->getName();
                 break;
             case 2:
-                return $this->getLastName();
+                return $this->getCreatedAt();
                 break;
             case 3:
-                return $this->getRoles();
-                break;
-            case 4:
-                return $this->getEmail();
-                break;
-            case 5:
-                return $this->getPassword();
-                break;
-            case 6:
-                return $this->getPhoneNumber();
-                break;
-            case 7:
-                return $this->getNewsOption();
+                return $this->getUpdatedAt();
                 break;
             default:
                 return null;
@@ -1032,32 +894,54 @@ abstract class User implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
 
-        if (isset($alreadyDumpedObjects['User'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['MailCriteria'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['User'][$this->hashCode()] = true;
-        $keys = UserTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['MailCriteria'][$this->hashCode()] = true;
+        $keys = MailCriteriaTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getFirstName(),
-            $keys[2] => $this->getLastName(),
-            $keys[3] => $this->getRoles(),
-            $keys[4] => $this->getEmail(),
-            $keys[5] => $this->getPassword(),
-            $keys[6] => $this->getPhoneNumber(),
-            $keys[7] => $this->getNewsOption(),
+            $keys[1] => $this->getName(),
+            $keys[2] => $this->getCreatedAt(),
+            $keys[3] => $this->getUpdatedAt(),
         );
+        if ($result[$keys[2]] instanceof \DateTime) {
+            $result[$keys[2]] = $result[$keys[2]]->format('c');
+        }
+
+        if ($result[$keys[3]] instanceof \DateTime) {
+            $result[$keys[3]] = $result[$keys[3]]->format('c');
+        }
+
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
 
+        if ($includeForeignObjects) {
+            if (null !== $this->collMailCriteriaRelations) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'mailCriteriaRelations';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'mail_criteria_relations';
+                        break;
+                    default:
+                        $key = 'MailCriteriaRelations';
+                }
+
+                $result[$key] = $this->collMailCriteriaRelations->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+        }
 
         return $result;
     }
@@ -1071,11 +955,11 @@ abstract class User implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Database\Model\User
+     * @return $this|\Database\Model\MailCriteria
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = UserTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = MailCriteriaTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1086,7 +970,7 @@ abstract class User implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Database\Model\User
+     * @return $this|\Database\Model\MailCriteria
      */
     public function setByPosition($pos, $value)
     {
@@ -1095,25 +979,13 @@ abstract class User implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setFirstName($value);
+                $this->setName($value);
                 break;
             case 2:
-                $this->setLastName($value);
+                $this->setCreatedAt($value);
                 break;
             case 3:
-                $this->setRoles($value);
-                break;
-            case 4:
-                $this->setEmail($value);
-                break;
-            case 5:
-                $this->setPassword($value);
-                break;
-            case 6:
-                $this->setPhoneNumber($value);
-                break;
-            case 7:
-                $this->setNewsOption($value);
+                $this->setUpdatedAt($value);
                 break;
         } // switch()
 
@@ -1139,31 +1011,19 @@ abstract class User implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = UserTableMap::getFieldNames($keyType);
+        $keys = MailCriteriaTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setFirstName($arr[$keys[1]]);
+            $this->setName($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setLastName($arr[$keys[2]]);
+            $this->setCreatedAt($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setRoles($arr[$keys[3]]);
-        }
-        if (array_key_exists($keys[4], $arr)) {
-            $this->setEmail($arr[$keys[4]]);
-        }
-        if (array_key_exists($keys[5], $arr)) {
-            $this->setPassword($arr[$keys[5]]);
-        }
-        if (array_key_exists($keys[6], $arr)) {
-            $this->setPhoneNumber($arr[$keys[6]]);
-        }
-        if (array_key_exists($keys[7], $arr)) {
-            $this->setNewsOption($arr[$keys[7]]);
+            $this->setUpdatedAt($arr[$keys[3]]);
         }
     }
 
@@ -1184,7 +1044,7 @@ abstract class User implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Database\Model\User The current object, for fluid interface
+     * @return $this|\Database\Model\MailCriteria The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1204,31 +1064,19 @@ abstract class User implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(UserTableMap::DATABASE_NAME);
+        $criteria = new Criteria(MailCriteriaTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(UserTableMap::COL_ID)) {
-            $criteria->add(UserTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(MailCriteriaTableMap::COL_ID)) {
+            $criteria->add(MailCriteriaTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(UserTableMap::COL_FIRST_NAME)) {
-            $criteria->add(UserTableMap::COL_FIRST_NAME, $this->first_name);
+        if ($this->isColumnModified(MailCriteriaTableMap::COL_NAME)) {
+            $criteria->add(MailCriteriaTableMap::COL_NAME, $this->name);
         }
-        if ($this->isColumnModified(UserTableMap::COL_LAST_NAME)) {
-            $criteria->add(UserTableMap::COL_LAST_NAME, $this->last_name);
+        if ($this->isColumnModified(MailCriteriaTableMap::COL_CREATED_AT)) {
+            $criteria->add(MailCriteriaTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(UserTableMap::COL_ROLES)) {
-            $criteria->add(UserTableMap::COL_ROLES, $this->roles);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_EMAIL)) {
-            $criteria->add(UserTableMap::COL_EMAIL, $this->email);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PASSWORD)) {
-            $criteria->add(UserTableMap::COL_PASSWORD, $this->password);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_PHONE_NUMBER)) {
-            $criteria->add(UserTableMap::COL_PHONE_NUMBER, $this->phone_number);
-        }
-        if ($this->isColumnModified(UserTableMap::COL_NEWS_OPTION)) {
-            $criteria->add(UserTableMap::COL_NEWS_OPTION, $this->news_option);
+        if ($this->isColumnModified(MailCriteriaTableMap::COL_UPDATED_AT)) {
+            $criteria->add(MailCriteriaTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1246,8 +1094,8 @@ abstract class User implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildUserQuery::create();
-        $criteria->add(UserTableMap::COL_ID, $this->id);
+        $criteria = ChildMailCriteriaQuery::create();
+        $criteria->add(MailCriteriaTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1309,20 +1157,30 @@ abstract class User implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Database\Model\User (or compatible) type.
+     * @param      object $copyObj An object of \Database\Model\MailCriteria (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setFirstName($this->getFirstName());
-        $copyObj->setLastName($this->getLastName());
-        $copyObj->setRoles($this->getRoles());
-        $copyObj->setEmail($this->getEmail());
-        $copyObj->setPassword($this->getPassword());
-        $copyObj->setPhoneNumber($this->getPhoneNumber());
-        $copyObj->setNewsOption($this->getNewsOption());
+        $copyObj->setName($this->getName());
+        $copyObj->setCreatedAt($this->getCreatedAt());
+        $copyObj->setUpdatedAt($this->getUpdatedAt());
+
+        if ($deepCopy) {
+            // important: temporarily setNew(false) because this affects the behavior of
+            // the getter/setter methods for fkey referrer objects.
+            $copyObj->setNew(false);
+
+            foreach ($this->getMailCriteriaRelations() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addMailCriteriaRelation($relObj->copy($deepCopy));
+                }
+            }
+
+        } // if ($deepCopy)
+
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1338,7 +1196,7 @@ abstract class User implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Database\Model\User Clone of current object.
+     * @return \Database\Model\MailCriteria Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1351,6 +1209,247 @@ abstract class User implements ActiveRecordInterface
         return $copyObj;
     }
 
+
+    /**
+     * Initializes a collection based on the name of a relation.
+     * Avoids crafting an 'init[$relationName]s' method name
+     * that wouldn't work when StandardEnglishPluralizer is used.
+     *
+     * @param      string $relationName The name of the relation to initialize
+     * @return void
+     */
+    public function initRelation($relationName)
+    {
+        if ('MailCriteriaRelation' == $relationName) {
+            return $this->initMailCriteriaRelations();
+        }
+    }
+
+    /**
+     * Clears out the collMailCriteriaRelations collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return void
+     * @see        addMailCriteriaRelations()
+     */
+    public function clearMailCriteriaRelations()
+    {
+        $this->collMailCriteriaRelations = null; // important to set this to NULL since that means it is uninitialized
+    }
+
+    /**
+     * Reset is the collMailCriteriaRelations collection loaded partially.
+     */
+    public function resetPartialMailCriteriaRelations($v = true)
+    {
+        $this->collMailCriteriaRelationsPartial = $v;
+    }
+
+    /**
+     * Initializes the collMailCriteriaRelations collection.
+     *
+     * By default this just sets the collMailCriteriaRelations collection to an empty array (like clearcollMailCriteriaRelations());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param      boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initMailCriteriaRelations($overrideExisting = true)
+    {
+        if (null !== $this->collMailCriteriaRelations && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = MailCriteriaRelationTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collMailCriteriaRelations = new $collectionClassName;
+        $this->collMailCriteriaRelations->setModel('\Database\Model\MailCriteriaRelation');
+    }
+
+    /**
+     * Gets an array of ChildMailCriteriaRelation objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildMailCriteria is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param      Criteria $criteria optional Criteria object to narrow the query
+     * @param      ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildMailCriteriaRelation[] List of ChildMailCriteriaRelation objects
+     * @throws PropelException
+     */
+    public function getMailCriteriaRelations(Criteria $criteria = null, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMailCriteriaRelationsPartial && !$this->isNew();
+        if (null === $this->collMailCriteriaRelations || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collMailCriteriaRelations) {
+                // return empty collection
+                $this->initMailCriteriaRelations();
+            } else {
+                $collMailCriteriaRelations = ChildMailCriteriaRelationQuery::create(null, $criteria)
+                    ->filterByMailCriteria($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collMailCriteriaRelationsPartial && count($collMailCriteriaRelations)) {
+                        $this->initMailCriteriaRelations(false);
+
+                        foreach ($collMailCriteriaRelations as $obj) {
+                            if (false == $this->collMailCriteriaRelations->contains($obj)) {
+                                $this->collMailCriteriaRelations->append($obj);
+                            }
+                        }
+
+                        $this->collMailCriteriaRelationsPartial = true;
+                    }
+
+                    return $collMailCriteriaRelations;
+                }
+
+                if ($partial && $this->collMailCriteriaRelations) {
+                    foreach ($this->collMailCriteriaRelations as $obj) {
+                        if ($obj->isNew()) {
+                            $collMailCriteriaRelations[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collMailCriteriaRelations = $collMailCriteriaRelations;
+                $this->collMailCriteriaRelationsPartial = false;
+            }
+        }
+
+        return $this->collMailCriteriaRelations;
+    }
+
+    /**
+     * Sets a collection of ChildMailCriteriaRelation objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param      Collection $mailCriteriaRelations A Propel collection.
+     * @param      ConnectionInterface $con Optional connection object
+     * @return $this|ChildMailCriteria The current object (for fluent API support)
+     */
+    public function setMailCriteriaRelations(Collection $mailCriteriaRelations, ConnectionInterface $con = null)
+    {
+        /** @var ChildMailCriteriaRelation[] $mailCriteriaRelationsToDelete */
+        $mailCriteriaRelationsToDelete = $this->getMailCriteriaRelations(new Criteria(), $con)->diff($mailCriteriaRelations);
+
+
+        $this->mailCriteriaRelationsScheduledForDeletion = $mailCriteriaRelationsToDelete;
+
+        foreach ($mailCriteriaRelationsToDelete as $mailCriteriaRelationRemoved) {
+            $mailCriteriaRelationRemoved->setMailCriteria(null);
+        }
+
+        $this->collMailCriteriaRelations = null;
+        foreach ($mailCriteriaRelations as $mailCriteriaRelation) {
+            $this->addMailCriteriaRelation($mailCriteriaRelation);
+        }
+
+        $this->collMailCriteriaRelations = $mailCriteriaRelations;
+        $this->collMailCriteriaRelationsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related MailCriteriaRelation objects.
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct
+     * @param      ConnectionInterface $con
+     * @return int             Count of related MailCriteriaRelation objects.
+     * @throws PropelException
+     */
+    public function countMailCriteriaRelations(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    {
+        $partial = $this->collMailCriteriaRelationsPartial && !$this->isNew();
+        if (null === $this->collMailCriteriaRelations || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collMailCriteriaRelations) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getMailCriteriaRelations());
+            }
+
+            $query = ChildMailCriteriaRelationQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByMailCriteria($this)
+                ->count($con);
+        }
+
+        return count($this->collMailCriteriaRelations);
+    }
+
+    /**
+     * Method called to associate a ChildMailCriteriaRelation object to this object
+     * through the ChildMailCriteriaRelation foreign key attribute.
+     *
+     * @param  ChildMailCriteriaRelation $l ChildMailCriteriaRelation
+     * @return $this|\Database\Model\MailCriteria The current object (for fluent API support)
+     */
+    public function addMailCriteriaRelation(ChildMailCriteriaRelation $l)
+    {
+        if ($this->collMailCriteriaRelations === null) {
+            $this->initMailCriteriaRelations();
+            $this->collMailCriteriaRelationsPartial = true;
+        }
+
+        if (!$this->collMailCriteriaRelations->contains($l)) {
+            $this->doAddMailCriteriaRelation($l);
+
+            if ($this->mailCriteriaRelationsScheduledForDeletion and $this->mailCriteriaRelationsScheduledForDeletion->contains($l)) {
+                $this->mailCriteriaRelationsScheduledForDeletion->remove($this->mailCriteriaRelationsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildMailCriteriaRelation $mailCriteriaRelation The ChildMailCriteriaRelation object to add.
+     */
+    protected function doAddMailCriteriaRelation(ChildMailCriteriaRelation $mailCriteriaRelation)
+    {
+        $this->collMailCriteriaRelations[]= $mailCriteriaRelation;
+        $mailCriteriaRelation->setMailCriteria($this);
+    }
+
+    /**
+     * @param  ChildMailCriteriaRelation $mailCriteriaRelation The ChildMailCriteriaRelation object to remove.
+     * @return $this|ChildMailCriteria The current object (for fluent API support)
+     */
+    public function removeMailCriteriaRelation(ChildMailCriteriaRelation $mailCriteriaRelation)
+    {
+        if ($this->getMailCriteriaRelations()->contains($mailCriteriaRelation)) {
+            $pos = $this->collMailCriteriaRelations->search($mailCriteriaRelation);
+            $this->collMailCriteriaRelations->remove($pos);
+            if (null === $this->mailCriteriaRelationsScheduledForDeletion) {
+                $this->mailCriteriaRelationsScheduledForDeletion = clone $this->collMailCriteriaRelations;
+                $this->mailCriteriaRelationsScheduledForDeletion->clear();
+            }
+            $this->mailCriteriaRelationsScheduledForDeletion[]= clone $mailCriteriaRelation;
+            $mailCriteriaRelation->setMailCriteria(null);
+        }
+
+        return $this;
+    }
+
     /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
@@ -1359,16 +1458,11 @@ abstract class User implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
-        $this->first_name = null;
-        $this->last_name = null;
-        $this->roles = null;
-        $this->email = null;
-        $this->password = null;
-        $this->phone_number = null;
-        $this->news_option = null;
+        $this->name = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
-        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);
@@ -1385,8 +1479,14 @@ abstract class User implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
+            if ($this->collMailCriteriaRelations) {
+                foreach ($this->collMailCriteriaRelations as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
         } // if ($deep)
 
+        $this->collMailCriteriaRelations = null;
     }
 
     /**
@@ -1396,7 +1496,21 @@ abstract class User implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(UserTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(MailCriteriaTableMap::DEFAULT_STRING_FORMAT);
+    }
+
+    // timestampable behavior
+
+    /**
+     * Mark the current object so that the update date doesn't get updated during next save
+     *
+     * @return     $this|ChildMailCriteria The current object (for fluent API support)
+     */
+    public function keepUpdateDateUnchanged()
+    {
+        $this->modifiedColumns[MailCriteriaTableMap::COL_UPDATED_AT] = true;
+
+        return $this;
     }
 
     /**

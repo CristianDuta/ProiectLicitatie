@@ -383,7 +383,9 @@ $(function () {
             }
         }
 
-        pdf.save('Test.pdf');
+        var pathArray = window.location.pathname.split( '/' );
+
+        pdf.save('Licitatie_' + pathArray[2]);
     };
 
     $('#printButton').click(function () {

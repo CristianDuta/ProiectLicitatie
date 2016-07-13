@@ -20,6 +20,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  * @method     ChildAuctionQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildAuctionQuery orderByUniqueId($order = Criteria::ASC) Order by the unique_id column
  * @method     ChildAuctionQuery orderByTitle($order = Criteria::ASC) Order by the title column
  * @method     ChildAuctionQuery orderByEstimatedValue($order = Criteria::ASC) Order by the estimated_value column
  * @method     ChildAuctionQuery orderByLocation($order = Criteria::ASC) Order by the location column
@@ -47,6 +48,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuctionQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     ChildAuctionQuery groupById() Group by the id column
+ * @method     ChildAuctionQuery groupByUniqueId() Group by the unique_id column
  * @method     ChildAuctionQuery groupByTitle() Group by the title column
  * @method     ChildAuctionQuery groupByEstimatedValue() Group by the estimated_value column
  * @method     ChildAuctionQuery groupByLocation() Group by the location column
@@ -85,6 +87,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuction findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAuction matching the query, or a new ChildAuction object populated from the query conditions when no match is found
  *
  * @method     ChildAuction findOneById(int $id) Return the first ChildAuction filtered by the id column
+ * @method     ChildAuction findOneByUniqueId(string $unique_id) Return the first ChildAuction filtered by the unique_id column
  * @method     ChildAuction findOneByTitle(string $title) Return the first ChildAuction filtered by the title column
  * @method     ChildAuction findOneByEstimatedValue(string $estimated_value) Return the first ChildAuction filtered by the estimated_value column
  * @method     ChildAuction findOneByLocation(string $location) Return the first ChildAuction filtered by the location column
@@ -115,6 +118,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAuction requireOne(ConnectionInterface $con = null) Return the first ChildAuction matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildAuction requireOneById(int $id) Return the first ChildAuction filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildAuction requireOneByUniqueId(string $unique_id) Return the first ChildAuction filtered by the unique_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAuction requireOneByTitle(string $title) Return the first ChildAuction filtered by the title column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAuction requireOneByEstimatedValue(string $estimated_value) Return the first ChildAuction filtered by the estimated_value column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAuction requireOneByLocation(string $location) Return the first ChildAuction filtered by the location column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -143,6 +147,7 @@ use Propel\Runtime\Exception\PropelException;
  *
  * @method     ChildAuction[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildAuction objects based on current ModelCriteria
  * @method     ChildAuction[]|ObjectCollection findById(int $id) Return ChildAuction objects filtered by the id column
+ * @method     ChildAuction[]|ObjectCollection findByUniqueId(string $unique_id) Return ChildAuction objects filtered by the unique_id column
  * @method     ChildAuction[]|ObjectCollection findByTitle(string $title) Return ChildAuction objects filtered by the title column
  * @method     ChildAuction[]|ObjectCollection findByEstimatedValue(string $estimated_value) Return ChildAuction objects filtered by the estimated_value column
  * @method     ChildAuction[]|ObjectCollection findByLocation(string $location) Return ChildAuction objects filtered by the location column
@@ -266,7 +271,7 @@ abstract class AuctionQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, title, estimated_value, location, documentation, ad_number, publish_date, gainer, contract_type, funding_type, contract_subject, offer_end_date, apply_mode, contract_period, participation_warranty, participation_conditions, professional_ability, average_turnover, cash_flow, similar_experience, key_personnel, equipment, quality_assurance, additional_information, created_at, updated_at FROM auction WHERE id = :p0';
+        $sql = 'SELECT id, unique_id, title, estimated_value, location, documentation, ad_number, publish_date, gainer, contract_type, funding_type, contract_subject, offer_end_date, apply_mode, contract_period, participation_warranty, participation_conditions, professional_ability, average_turnover, cash_flow, similar_experience, key_personnel, equipment, quality_assurance, additional_information, created_at, updated_at FROM auction WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -395,6 +400,35 @@ abstract class AuctionQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AuctionTableMap::COL_ID, $id, $comparison);
+    }
+
+    /**
+     * Filter the query on the unique_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUniqueId('fooValue');   // WHERE unique_id = 'fooValue'
+     * $query->filterByUniqueId('%fooValue%'); // WHERE unique_id LIKE '%fooValue%'
+     * </code>
+     *
+     * @param     string $uniqueId The value to use as filter.
+     *              Accepts wildcards (* and % trigger a LIKE)
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildAuctionQuery The current query, for fluid interface
+     */
+    public function filterByUniqueId($uniqueId = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($uniqueId)) {
+                $comparison = Criteria::IN;
+            } elseif (preg_match('/[\%\*]/', $uniqueId)) {
+                $uniqueId = str_replace('*', '%', $uniqueId);
+                $comparison = Criteria::LIKE;
+            }
+        }
+
+        return $this->addUsingAlias(AuctionTableMap::COL_UNIQUE_ID, $uniqueId, $comparison);
     }
 
     /**

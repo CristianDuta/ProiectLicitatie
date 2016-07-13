@@ -16,6 +16,7 @@
 
     <table name="auction" idMethod="native" phpName="Auction">
         <column name="id" phpName="Id" type="INTEGER" size="11" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="unique_id" phpName="UniqueId" type="VARCHAR" size="32" required="true"/>
         <column name="title" phpName="Title" type="LONGVARCHAR" required="true"/>
         <column name="estimated_value" phpName="EstimatedValue" type="VARCHAR" size="255" required="true"/>
         <column name="location" phpName="Location" type="VARCHAR" size="255" required="true"/>

@@ -70,6 +70,13 @@ abstract class Auction implements ActiveRecordInterface
     protected $id;
 
     /**
+     * The value for the unique_id field.
+     *
+     * @var        string
+     */
+    protected $unique_id;
+
+    /**
      * The value for the title field.
      *
      * @var        string
@@ -488,6 +495,16 @@ abstract class Auction implements ActiveRecordInterface
     }
 
     /**
+     * Get the [unique_id] column value.
+     *
+     * @return string
+     */
+    public function getUniqueId()
+    {
+        return $this->unique_id;
+    }
+
+    /**
      * Get the [title] column value.
      *
      * @return string
@@ -796,6 +813,26 @@ abstract class Auction implements ActiveRecordInterface
 
         return $this;
     } // setId()
+
+    /**
+     * Set the value of [unique_id] column.
+     *
+     * @param string $v new value
+     * @return $this|\Database\Model\Auction The current object (for fluent API support)
+     */
+    public function setUniqueId($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->unique_id !== $v) {
+            $this->unique_id = $v;
+            $this->modifiedColumns[AuctionTableMap::COL_UNIQUE_ID] = true;
+        }
+
+        return $this;
+    } // setUniqueId()
 
     /**
      * Set the value of [title] column.
@@ -1336,88 +1373,91 @@ abstract class Auction implements ActiveRecordInterface
             $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AuctionTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AuctionTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AuctionTableMap::translateFieldName('UniqueId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->unique_id = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AuctionTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
             $this->title = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AuctionTableMap::translateFieldName('EstimatedValue', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : AuctionTableMap::translateFieldName('EstimatedValue', TableMap::TYPE_PHPNAME, $indexType)];
             $this->estimated_value = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : AuctionTableMap::translateFieldName('Location', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : AuctionTableMap::translateFieldName('Location', TableMap::TYPE_PHPNAME, $indexType)];
             $this->location = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : AuctionTableMap::translateFieldName('Documentation', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : AuctionTableMap::translateFieldName('Documentation', TableMap::TYPE_PHPNAME, $indexType)];
             $this->documentation = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : AuctionTableMap::translateFieldName('AdNumber', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : AuctionTableMap::translateFieldName('AdNumber', TableMap::TYPE_PHPNAME, $indexType)];
             $this->ad_number = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : AuctionTableMap::translateFieldName('PublishDate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : AuctionTableMap::translateFieldName('PublishDate', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00') {
                 $col = null;
             }
             $this->publish_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 7 + $startcol : AuctionTableMap::translateFieldName('Gainer', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : AuctionTableMap::translateFieldName('Gainer', TableMap::TYPE_PHPNAME, $indexType)];
             $this->gainer = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 8 + $startcol : AuctionTableMap::translateFieldName('ContractType', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : AuctionTableMap::translateFieldName('ContractType', TableMap::TYPE_PHPNAME, $indexType)];
             $this->contract_type = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 9 + $startcol : AuctionTableMap::translateFieldName('FundingType', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : AuctionTableMap::translateFieldName('FundingType', TableMap::TYPE_PHPNAME, $indexType)];
             $this->funding_type = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 10 + $startcol : AuctionTableMap::translateFieldName('ContractSubject', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : AuctionTableMap::translateFieldName('ContractSubject', TableMap::TYPE_PHPNAME, $indexType)];
             $this->contract_subject = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 11 + $startcol : AuctionTableMap::translateFieldName('OfferEndDate', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : AuctionTableMap::translateFieldName('OfferEndDate', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00') {
                 $col = null;
             }
             $this->offer_end_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 12 + $startcol : AuctionTableMap::translateFieldName('ApplyMode', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : AuctionTableMap::translateFieldName('ApplyMode', TableMap::TYPE_PHPNAME, $indexType)];
             $this->apply_mode = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 13 + $startcol : AuctionTableMap::translateFieldName('ContractPeriod', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : AuctionTableMap::translateFieldName('ContractPeriod', TableMap::TYPE_PHPNAME, $indexType)];
             $this->contract_period = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 14 + $startcol : AuctionTableMap::translateFieldName('ParticipationWarranty', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : AuctionTableMap::translateFieldName('ParticipationWarranty', TableMap::TYPE_PHPNAME, $indexType)];
             $this->participation_warranty = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 15 + $startcol : AuctionTableMap::translateFieldName('ParticipationConditions', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : AuctionTableMap::translateFieldName('ParticipationConditions', TableMap::TYPE_PHPNAME, $indexType)];
             $this->participation_conditions = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 16 + $startcol : AuctionTableMap::translateFieldName('ProfessionalAbility', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : AuctionTableMap::translateFieldName('ProfessionalAbility', TableMap::TYPE_PHPNAME, $indexType)];
             $this->professional_ability = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 17 + $startcol : AuctionTableMap::translateFieldName('AverageTurnover', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : AuctionTableMap::translateFieldName('AverageTurnover', TableMap::TYPE_PHPNAME, $indexType)];
             $this->average_turnover = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 18 + $startcol : AuctionTableMap::translateFieldName('CashFlow', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : AuctionTableMap::translateFieldName('CashFlow', TableMap::TYPE_PHPNAME, $indexType)];
             $this->cash_flow = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 19 + $startcol : AuctionTableMap::translateFieldName('SimilarExperience', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : AuctionTableMap::translateFieldName('SimilarExperience', TableMap::TYPE_PHPNAME, $indexType)];
             $this->similar_experience = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 20 + $startcol : AuctionTableMap::translateFieldName('KeyPersonnel', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : AuctionTableMap::translateFieldName('KeyPersonnel', TableMap::TYPE_PHPNAME, $indexType)];
             $this->key_personnel = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 21 + $startcol : AuctionTableMap::translateFieldName('Equipment', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : AuctionTableMap::translateFieldName('Equipment', TableMap::TYPE_PHPNAME, $indexType)];
             $this->equipment = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 22 + $startcol : AuctionTableMap::translateFieldName('QualityAssurance', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : AuctionTableMap::translateFieldName('QualityAssurance', TableMap::TYPE_PHPNAME, $indexType)];
             $this->quality_assurance = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 23 + $startcol : AuctionTableMap::translateFieldName('AdditionalInformation', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : AuctionTableMap::translateFieldName('AdditionalInformation', TableMap::TYPE_PHPNAME, $indexType)];
             $this->additional_information = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 24 + $startcol : AuctionTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : AuctionTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 25 + $startcol : AuctionTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 26 + $startcol : AuctionTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -1430,7 +1470,7 @@ abstract class Auction implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 26; // 26 = AuctionTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 27; // 27 = AuctionTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Database\\Model\\Auction'), 0, $e);
@@ -1642,6 +1682,9 @@ abstract class Auction implements ActiveRecordInterface
         if ($this->isColumnModified(AuctionTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
+        if ($this->isColumnModified(AuctionTableMap::COL_UNIQUE_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'unique_id';
+        }
         if ($this->isColumnModified(AuctionTableMap::COL_TITLE)) {
             $modifiedColumns[':p' . $index++]  = 'title';
         }
@@ -1730,6 +1773,9 @@ abstract class Auction implements ActiveRecordInterface
                 switch ($columnName) {
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
+                        break;
+                    case 'unique_id':
+                        $stmt->bindValue($identifier, $this->unique_id, PDO::PARAM_STR);
                         break;
                     case 'title':
                         $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
@@ -1872,78 +1918,81 @@ abstract class Auction implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getTitle();
+                return $this->getUniqueId();
                 break;
             case 2:
-                return $this->getEstimatedValue();
+                return $this->getTitle();
                 break;
             case 3:
-                return $this->getLocation();
+                return $this->getEstimatedValue();
                 break;
             case 4:
-                return $this->getDocumentation();
+                return $this->getLocation();
                 break;
             case 5:
-                return $this->getAdNumber();
+                return $this->getDocumentation();
                 break;
             case 6:
-                return $this->getPublishDate();
+                return $this->getAdNumber();
                 break;
             case 7:
-                return $this->getGainer();
+                return $this->getPublishDate();
                 break;
             case 8:
-                return $this->getContractType();
+                return $this->getGainer();
                 break;
             case 9:
-                return $this->getFundingType();
+                return $this->getContractType();
                 break;
             case 10:
-                return $this->getContractSubject();
+                return $this->getFundingType();
                 break;
             case 11:
-                return $this->getOfferEndDate();
+                return $this->getContractSubject();
                 break;
             case 12:
-                return $this->getApplyMode();
+                return $this->getOfferEndDate();
                 break;
             case 13:
-                return $this->getContractPeriod();
+                return $this->getApplyMode();
                 break;
             case 14:
-                return $this->getParticipationWarranty();
+                return $this->getContractPeriod();
                 break;
             case 15:
-                return $this->getParticipationConditions();
+                return $this->getParticipationWarranty();
                 break;
             case 16:
-                return $this->getProfessionalAbility();
+                return $this->getParticipationConditions();
                 break;
             case 17:
-                return $this->getAverageTurnover();
+                return $this->getProfessionalAbility();
                 break;
             case 18:
-                return $this->getCashFlow();
+                return $this->getAverageTurnover();
                 break;
             case 19:
-                return $this->getSimilarExperience();
+                return $this->getCashFlow();
                 break;
             case 20:
-                return $this->getKeyPersonnel();
+                return $this->getSimilarExperience();
                 break;
             case 21:
-                return $this->getEquipment();
+                return $this->getKeyPersonnel();
                 break;
             case 22:
-                return $this->getQualityAssurance();
+                return $this->getEquipment();
                 break;
             case 23:
-                return $this->getAdditionalInformation();
+                return $this->getQualityAssurance();
                 break;
             case 24:
-                return $this->getCreatedAt();
+                return $this->getAdditionalInformation();
                 break;
             case 25:
+                return $this->getCreatedAt();
+                break;
+            case 26:
                 return $this->getUpdatedAt();
                 break;
             default:
@@ -1976,46 +2025,47 @@ abstract class Auction implements ActiveRecordInterface
         $keys = AuctionTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getTitle(),
-            $keys[2] => $this->getEstimatedValue(),
-            $keys[3] => $this->getLocation(),
-            $keys[4] => $this->getDocumentation(),
-            $keys[5] => $this->getAdNumber(),
-            $keys[6] => $this->getPublishDate(),
-            $keys[7] => $this->getGainer(),
-            $keys[8] => $this->getContractType(),
-            $keys[9] => $this->getFundingType(),
-            $keys[10] => $this->getContractSubject(),
-            $keys[11] => $this->getOfferEndDate(),
-            $keys[12] => $this->getApplyMode(),
-            $keys[13] => $this->getContractPeriod(),
-            $keys[14] => $this->getParticipationWarranty(),
-            $keys[15] => $this->getParticipationConditions(),
-            $keys[16] => $this->getProfessionalAbility(),
-            $keys[17] => $this->getAverageTurnover(),
-            $keys[18] => $this->getCashFlow(),
-            $keys[19] => $this->getSimilarExperience(),
-            $keys[20] => $this->getKeyPersonnel(),
-            $keys[21] => $this->getEquipment(),
-            $keys[22] => $this->getQualityAssurance(),
-            $keys[23] => $this->getAdditionalInformation(),
-            $keys[24] => $this->getCreatedAt(),
-            $keys[25] => $this->getUpdatedAt(),
+            $keys[1] => $this->getUniqueId(),
+            $keys[2] => $this->getTitle(),
+            $keys[3] => $this->getEstimatedValue(),
+            $keys[4] => $this->getLocation(),
+            $keys[5] => $this->getDocumentation(),
+            $keys[6] => $this->getAdNumber(),
+            $keys[7] => $this->getPublishDate(),
+            $keys[8] => $this->getGainer(),
+            $keys[9] => $this->getContractType(),
+            $keys[10] => $this->getFundingType(),
+            $keys[11] => $this->getContractSubject(),
+            $keys[12] => $this->getOfferEndDate(),
+            $keys[13] => $this->getApplyMode(),
+            $keys[14] => $this->getContractPeriod(),
+            $keys[15] => $this->getParticipationWarranty(),
+            $keys[16] => $this->getParticipationConditions(),
+            $keys[17] => $this->getProfessionalAbility(),
+            $keys[18] => $this->getAverageTurnover(),
+            $keys[19] => $this->getCashFlow(),
+            $keys[20] => $this->getSimilarExperience(),
+            $keys[21] => $this->getKeyPersonnel(),
+            $keys[22] => $this->getEquipment(),
+            $keys[23] => $this->getQualityAssurance(),
+            $keys[24] => $this->getAdditionalInformation(),
+            $keys[25] => $this->getCreatedAt(),
+            $keys[26] => $this->getUpdatedAt(),
         );
-        if ($result[$keys[6]] instanceof \DateTime) {
-            $result[$keys[6]] = $result[$keys[6]]->format('c');
+        if ($result[$keys[7]] instanceof \DateTime) {
+            $result[$keys[7]] = $result[$keys[7]]->format('c');
         }
 
-        if ($result[$keys[11]] instanceof \DateTime) {
-            $result[$keys[11]] = $result[$keys[11]]->format('c');
-        }
-
-        if ($result[$keys[24]] instanceof \DateTime) {
-            $result[$keys[24]] = $result[$keys[24]]->format('c');
+        if ($result[$keys[12]] instanceof \DateTime) {
+            $result[$keys[12]] = $result[$keys[12]]->format('c');
         }
 
         if ($result[$keys[25]] instanceof \DateTime) {
             $result[$keys[25]] = $result[$keys[25]]->format('c');
+        }
+
+        if ($result[$keys[26]] instanceof \DateTime) {
+            $result[$keys[26]] = $result[$keys[26]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -2060,78 +2110,81 @@ abstract class Auction implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setTitle($value);
+                $this->setUniqueId($value);
                 break;
             case 2:
-                $this->setEstimatedValue($value);
+                $this->setTitle($value);
                 break;
             case 3:
-                $this->setLocation($value);
+                $this->setEstimatedValue($value);
                 break;
             case 4:
-                $this->setDocumentation($value);
+                $this->setLocation($value);
                 break;
             case 5:
-                $this->setAdNumber($value);
+                $this->setDocumentation($value);
                 break;
             case 6:
-                $this->setPublishDate($value);
+                $this->setAdNumber($value);
                 break;
             case 7:
-                $this->setGainer($value);
+                $this->setPublishDate($value);
                 break;
             case 8:
-                $this->setContractType($value);
+                $this->setGainer($value);
                 break;
             case 9:
-                $this->setFundingType($value);
+                $this->setContractType($value);
                 break;
             case 10:
-                $this->setContractSubject($value);
+                $this->setFundingType($value);
                 break;
             case 11:
-                $this->setOfferEndDate($value);
+                $this->setContractSubject($value);
                 break;
             case 12:
-                $this->setApplyMode($value);
+                $this->setOfferEndDate($value);
                 break;
             case 13:
-                $this->setContractPeriod($value);
+                $this->setApplyMode($value);
                 break;
             case 14:
-                $this->setParticipationWarranty($value);
+                $this->setContractPeriod($value);
                 break;
             case 15:
-                $this->setParticipationConditions($value);
+                $this->setParticipationWarranty($value);
                 break;
             case 16:
-                $this->setProfessionalAbility($value);
+                $this->setParticipationConditions($value);
                 break;
             case 17:
-                $this->setAverageTurnover($value);
+                $this->setProfessionalAbility($value);
                 break;
             case 18:
-                $this->setCashFlow($value);
+                $this->setAverageTurnover($value);
                 break;
             case 19:
-                $this->setSimilarExperience($value);
+                $this->setCashFlow($value);
                 break;
             case 20:
-                $this->setKeyPersonnel($value);
+                $this->setSimilarExperience($value);
                 break;
             case 21:
-                $this->setEquipment($value);
+                $this->setKeyPersonnel($value);
                 break;
             case 22:
-                $this->setQualityAssurance($value);
+                $this->setEquipment($value);
                 break;
             case 23:
-                $this->setAdditionalInformation($value);
+                $this->setQualityAssurance($value);
                 break;
             case 24:
-                $this->setCreatedAt($value);
+                $this->setAdditionalInformation($value);
                 break;
             case 25:
+                $this->setCreatedAt($value);
+                break;
+            case 26:
                 $this->setUpdatedAt($value);
                 break;
         } // switch()
@@ -2164,79 +2217,82 @@ abstract class Auction implements ActiveRecordInterface
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setTitle($arr[$keys[1]]);
+            $this->setUniqueId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setEstimatedValue($arr[$keys[2]]);
+            $this->setTitle($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setLocation($arr[$keys[3]]);
+            $this->setEstimatedValue($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
-            $this->setDocumentation($arr[$keys[4]]);
+            $this->setLocation($arr[$keys[4]]);
         }
         if (array_key_exists($keys[5], $arr)) {
-            $this->setAdNumber($arr[$keys[5]]);
+            $this->setDocumentation($arr[$keys[5]]);
         }
         if (array_key_exists($keys[6], $arr)) {
-            $this->setPublishDate($arr[$keys[6]]);
+            $this->setAdNumber($arr[$keys[6]]);
         }
         if (array_key_exists($keys[7], $arr)) {
-            $this->setGainer($arr[$keys[7]]);
+            $this->setPublishDate($arr[$keys[7]]);
         }
         if (array_key_exists($keys[8], $arr)) {
-            $this->setContractType($arr[$keys[8]]);
+            $this->setGainer($arr[$keys[8]]);
         }
         if (array_key_exists($keys[9], $arr)) {
-            $this->setFundingType($arr[$keys[9]]);
+            $this->setContractType($arr[$keys[9]]);
         }
         if (array_key_exists($keys[10], $arr)) {
-            $this->setContractSubject($arr[$keys[10]]);
+            $this->setFundingType($arr[$keys[10]]);
         }
         if (array_key_exists($keys[11], $arr)) {
-            $this->setOfferEndDate($arr[$keys[11]]);
+            $this->setContractSubject($arr[$keys[11]]);
         }
         if (array_key_exists($keys[12], $arr)) {
-            $this->setApplyMode($arr[$keys[12]]);
+            $this->setOfferEndDate($arr[$keys[12]]);
         }
         if (array_key_exists($keys[13], $arr)) {
-            $this->setContractPeriod($arr[$keys[13]]);
+            $this->setApplyMode($arr[$keys[13]]);
         }
         if (array_key_exists($keys[14], $arr)) {
-            $this->setParticipationWarranty($arr[$keys[14]]);
+            $this->setContractPeriod($arr[$keys[14]]);
         }
         if (array_key_exists($keys[15], $arr)) {
-            $this->setParticipationConditions($arr[$keys[15]]);
+            $this->setParticipationWarranty($arr[$keys[15]]);
         }
         if (array_key_exists($keys[16], $arr)) {
-            $this->setProfessionalAbility($arr[$keys[16]]);
+            $this->setParticipationConditions($arr[$keys[16]]);
         }
         if (array_key_exists($keys[17], $arr)) {
-            $this->setAverageTurnover($arr[$keys[17]]);
+            $this->setProfessionalAbility($arr[$keys[17]]);
         }
         if (array_key_exists($keys[18], $arr)) {
-            $this->setCashFlow($arr[$keys[18]]);
+            $this->setAverageTurnover($arr[$keys[18]]);
         }
         if (array_key_exists($keys[19], $arr)) {
-            $this->setSimilarExperience($arr[$keys[19]]);
+            $this->setCashFlow($arr[$keys[19]]);
         }
         if (array_key_exists($keys[20], $arr)) {
-            $this->setKeyPersonnel($arr[$keys[20]]);
+            $this->setSimilarExperience($arr[$keys[20]]);
         }
         if (array_key_exists($keys[21], $arr)) {
-            $this->setEquipment($arr[$keys[21]]);
+            $this->setKeyPersonnel($arr[$keys[21]]);
         }
         if (array_key_exists($keys[22], $arr)) {
-            $this->setQualityAssurance($arr[$keys[22]]);
+            $this->setEquipment($arr[$keys[22]]);
         }
         if (array_key_exists($keys[23], $arr)) {
-            $this->setAdditionalInformation($arr[$keys[23]]);
+            $this->setQualityAssurance($arr[$keys[23]]);
         }
         if (array_key_exists($keys[24], $arr)) {
-            $this->setCreatedAt($arr[$keys[24]]);
+            $this->setAdditionalInformation($arr[$keys[24]]);
         }
         if (array_key_exists($keys[25], $arr)) {
-            $this->setUpdatedAt($arr[$keys[25]]);
+            $this->setCreatedAt($arr[$keys[25]]);
+        }
+        if (array_key_exists($keys[26], $arr)) {
+            $this->setUpdatedAt($arr[$keys[26]]);
         }
     }
 
@@ -2281,6 +2337,9 @@ abstract class Auction implements ActiveRecordInterface
 
         if ($this->isColumnModified(AuctionTableMap::COL_ID)) {
             $criteria->add(AuctionTableMap::COL_ID, $this->id);
+        }
+        if ($this->isColumnModified(AuctionTableMap::COL_UNIQUE_ID)) {
+            $criteria->add(AuctionTableMap::COL_UNIQUE_ID, $this->unique_id);
         }
         if ($this->isColumnModified(AuctionTableMap::COL_TITLE)) {
             $criteria->add(AuctionTableMap::COL_TITLE, $this->title);
@@ -2443,6 +2502,7 @@ abstract class Auction implements ActiveRecordInterface
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setUniqueId($this->getUniqueId());
         $copyObj->setTitle($this->getTitle());
         $copyObj->setEstimatedValue($this->getEstimatedValue());
         $copyObj->setLocation($this->getLocation());
@@ -2504,6 +2564,7 @@ abstract class Auction implements ActiveRecordInterface
     public function clear()
     {
         $this->id = null;
+        $this->unique_id = null;
         $this->title = null;
         $this->estimated_value = null;
         $this->location = null;

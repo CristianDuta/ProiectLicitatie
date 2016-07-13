@@ -4,6 +4,7 @@ namespace Database\Model;
 
 use Database\Model\Base\Auction as BaseAuction;
 use Database\Model\Map\AuctionTableMap;
+use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Map\TableMap;
 
 /**
@@ -18,6 +19,9 @@ use Propel\Runtime\Map\TableMap;
  */
 class Auction extends BaseAuction
 {
+    const UNIQUE_ID_SEED = 'auctionStepByStep';
+
+
     public function setPublishDate($value)
     {
         $date = date("Y-m-d", strtotime($value));
@@ -61,5 +65,19 @@ class Auction extends BaseAuction
         );
 
         return $result;
+    }
+
+
+    /**
+     * @param ConnectionInterface|null $con
+     * @return bool
+     */
+    public function preSave(ConnectionInterface $con = null)
+    {
+        if ($this->isNew()) {
+            $this->setUniqueId(md5(self::UNIQUE_ID_SEED . time()));
+        }
+
+        return parent::preSave($con);
     }
 }

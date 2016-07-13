@@ -31,6 +31,7 @@ DROP TABLE IF EXISTS `auction`;
 CREATE TABLE `auction`
 (
     `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `unique_id` VARCHAR(32) NOT NULL,
     `title` TEXT NOT NULL,
     `estimated_value` VARCHAR(255) NOT NULL,
     `location` VARCHAR(255) NOT NULL,

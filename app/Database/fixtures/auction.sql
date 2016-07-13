@@ -9,3 +9,6 @@ INSERT INTO `auction` (`title`, `estimated_value`, `location`, `documentation`, 
 ALTER TABLE `auction` ADD `created_at` DATETIME AFTER `additional_information`;
 ALTER TABLE `auction` MODIFY `updated_at` DATETIME;
 
+ALTER TABLE `auction` ADD `unique_id` VARCHAR(32) NOT NULL AFTER `id`;
+
+UPDATE `auction` SET `unique_id` = MD5(CONCAT('auctionStepByStep', UNIX_TIMESTAMP(`created_at`)));

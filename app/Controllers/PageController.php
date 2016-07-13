@@ -170,7 +170,7 @@ class PageController extends AbstractAppController
                 $result['title'] = $auction->getTitle();
                 $result['estimated_value'] = $auction->getEstimatedValue();
                 $result['publish_date'] = $auction->getPublishDate("d.m.Y");
-                $result['id'] = $auction->getId();
+                $result['id'] = $auction->getUniqueId();
 
                 $results[] = $result;
             }

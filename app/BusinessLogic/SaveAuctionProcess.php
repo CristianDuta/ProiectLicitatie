@@ -18,7 +18,7 @@ class SaveAuctionProcess
     {
         if (!empty($this->auctionId)) {
             $auctionQuery = new AuctionQuery();
-            $auction = $auctionQuery->filterById($this->auctionId)->findOne();
+            $auction = $auctionQuery->filterByUniqueId($this->auctionId)->findOne();
         } else {
             $auction = new Auction();
         }

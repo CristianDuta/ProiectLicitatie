@@ -9,14 +9,14 @@ use Propel\Runtime\ActiveQuery\Criteria;
 class GetAuctionProcess
 {
     /**
-     * @param int $auctionId
+     * @param int $auctionUniqueId
      * @return Auction
      */
-    public function getOne($auctionId = null)
+    public function getOne($auctionUniqueId = null)
     {
         $auctionQuery = new AuctionQuery();
-        if ($auctionId) {
-            $auctionQuery->filterById($auctionId);
+        if ($auctionUniqueId) {
+            $auctionQuery->filterByUniqueId($auctionUniqueId);
         }
         return $auctionQuery->findOne();
     }

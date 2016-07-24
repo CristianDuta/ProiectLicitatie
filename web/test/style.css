@@ -1,0 +1,79 @@
+body {
+    background-color: #881917;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.container.site-container {
+    max-width: 1000px;
+    padding: 0;
+}
+
+.row.header .header-img {
+    height: 50%;
+    width: 100%;
+}
+
+.row.header .menu {
+    margin-top: -90px;
+}
+
+.row.header .btn-custom {
+    background: #881917;
+    border: 3px solid #FFFFFF;
+    color: #FFFFFF;
+    font-weight: bold;
+    width: 100%;
+    margin: 5px 0;
+}
+
+.row.title {
+    text-align: center;
+    background-color: #FFFFFF;
+    color: #1F6AB9;
+}
+
+.row.title h3,
+.row.title h2 {
+    font-weight: bold;
+}
+
+.row.title h2 {
+    text-align: center;
+}
+
+.row.title .welcome-title {
+    border-bottom: 5px solid #1F6AB9;
+    width: 80%;
+    margin: 0 auto;
+}
+
+.row.main-content {
+    background-color: #721513;
+}
+
+.row.main-content .main-content-notebook {
+    height: 0;
+    padding: 320px 0;
+    background: url("images/main-content-notebook.png") no-repeat center center;
+}
+
+.row.main-content .main-content-notebook .text-content {
+    max-width: 400px;
+    margin: -225px auto 0;
+    color: #1F6AB9;
+    padding-left: 15px;
+}
+
+.row.main-content .main-content-notebook .text-content .check-icon {
+    font-size: 60px;
+    color: #721513;
+}
+
+.row.main-content .main-content-title {
+    color: #FFFFFF;
+    margin: 0 auto;
+    max-width: 520px;
+}

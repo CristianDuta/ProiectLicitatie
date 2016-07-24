@@ -35,6 +35,7 @@ $app->register(new SecurityServiceProvider(), array(
         array('^/addOrEdit.*$', 'ROLE_ADMIN'),
         array('^/emailAlerts.*$', 'ROLE_ADMIN'),
         array('^/getEmailAlertList.*$', 'ROLE_ADMIN'),
+        array('^/sendAuctionViaEmail.*$', 'ROLE_ADMIN'),
     )
 ));
 

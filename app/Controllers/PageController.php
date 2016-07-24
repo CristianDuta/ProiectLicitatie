@@ -7,14 +7,14 @@ use BusinessLogic\GetAuctionProcess;
 use BusinessLogic\SaveAuctionProcess;
 use BusinessLogic\SaveEmailAlertList;
 use Database\Model\Auction;
+use Database\Model\Mail;
 use Database\Model\MailCriteriaQuery;
-use Database\Model\MailCriteriaRelation;
 use Database\Model\MailCriteriaRelationQuery;
+use Database\Model\MailQueue;
 use Exception;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\User;
 use BusinessLogic\UserRegistrationProcess;
@@ -50,6 +50,7 @@ class PageController extends AbstractAppController
         $this->mailAlertsPage($controllers);
         $this->mailAlertsProvider($controllers);
         $this->saveEmailAlerts($controllers);
+        $this->sendAuctionListViaEmail($controllers);
 
         return $controllers;
     }
@@ -170,7 +171,8 @@ class PageController extends AbstractAppController
                 $result['title'] = $auction->getTitle();
                 $result['estimated_value'] = $auction->getEstimatedValue();
                 $result['publish_date'] = $auction->getPublishDate("d.m.Y");
-                $result['id'] = $auction->getUniqueId();
+                $result['id'] = $auction->getId();
+                $result['uniqueId'] = $auction->getUniqueId();
 
                 $results[] = $result;
             }
@@ -232,6 +234,49 @@ class PageController extends AbstractAppController
             try {
                 $saveEmailAlertList = new SaveEmailAlertList($emailAlerts);
                 $saveEmailAlertList->execute();
+            } catch (Exception $exception) {
+                $statusMessage = $exception->getMessage();
+            }
+
+            return $app->json(array(
+                'statusMessage' => !empty($statusMessage) ? $statusMessage : 'success'
+            ));
+        });
+    }
+
+
+
+    private function sendAuctionListViaEmail(ControllerCollection $controllers)
+    {
+        $controllers->post('/sendAuctionViaEmail', function (Application $app) {
+            $emailSubject = $app['request']->get('emailSubject');
+            $emailList = explode(",",$app['request']->get('emailList'));
+            $auctionList = $app['request']->get('auctionList');
+
+            if (empty($emailSubject)) {
+                $emailSubject = 'Alerta Licitatii !';
+            }
+
+            try {
+
+                if (empty($emailList) || empty($auctionList)) {
+                    throw new Exception("Ai uitat un camp obligatoriu");
+                }
+
+                $mail = new Mail();
+                $mail->setSubject($emailSubject);
+                $mail->setFromEmailAddress('licitatiepascupas@gmail.com');
+                $mail->setAuctionList(implode(",",$auctionList));
+                $mail->setMailTemplate("defaultEmailTemplate.html");
+                $mail->save();
+
+                foreach ($emailList as $email) {
+                    $mailQueue = new MailQueue();
+                    $mailQueue->setMailTo($email);
+                    $mailQueue->setMail($mail);
+                    $mailQueue->setMailStatus(MailQueue::MAIL_STATUS_NOT_SENT);
+                    $mailQueue->save();
+                }
             } catch (Exception $exception) {
                 $statusMessage = $exception->getMessage();
             }

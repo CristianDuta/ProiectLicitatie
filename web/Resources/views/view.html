@@ -79,16 +79,22 @@
                                     <p class="publishDateLabel">Data Publicare:</p>
                                     <p class="title">{{ result.location }}</p>
                                     <p class="desc">{{ result.title }}</p>
-                                    <p class="like">Valoare  estimata: {{ result.estimated_value }}
-                                    </p>
-                                    <a href="/viewDetails/{{ result.id }}" class="btn btn-primary btn-edit">
+                                    <p class="like">Valoare  estimata: {{ result.estimated_value }}</p>
+                                    <a href="/viewDetails/{{ result.uniqueId }}" class="btn btn-primary btn-edit">
                                         Detalii
                                     </a>
                                     {% if is_granted('ROLE_ADMIN') %}
-                                    <a href="/addOrEdit/{{ result.id }}" class="btn btn-primary btn-edit">
+                                    <div class="sendViaEmailGroup pull-left">
+                                        <br />
+                                        <span>Trimite prin email?</span>
+                                        <input title="Send via email" type="checkbox" class="addToSendViaEmailList" />
+                                        <input type="hidden" name="auctionId" value="{{ result.id }}" />
+                                    </div>
+                                    <a href="/addOrEdit/{{ result.uniqueId }}" class="btn btn-primary btn-edit">
                                         Editeaza
                                     </a>
                                     {% endif %}
+                                    <div class="clearfix"></div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -143,5 +149,8 @@
                 </div>
             </div>
         </div>
+        {% if is_granted('ROLE_ADMIN') %}
+            {% include 'sendAuctionViaEmail.html' %}
+        {% endif %}
     </div>
 </div>

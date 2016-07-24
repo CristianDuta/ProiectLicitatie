@@ -216,6 +216,11 @@
 <script src="//cdn.datatables.net/u/bs/dt-1.10.12,b-1.2.1/datatables.min.js"></script>
 <script src="{{ asset('script/emailAlert.js') }}"></script>
 {% endif %}
+{% if activeMenuItem == 'view' %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <script src="{{ asset('script/sendAuctionViaEmail.js') }}"></script>
+    {% endif %}
+{% endif %}
 <!--CORE JAVASCRIPT-->
 <script src="{{ asset('script/main.js') }}"></script>
 </body>

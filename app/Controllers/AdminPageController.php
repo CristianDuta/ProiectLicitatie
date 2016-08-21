@@ -15,11 +15,8 @@ use Exception;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\User\User;
-use BusinessLogic\UserRegistrationProcess;
 
-class PageController extends AbstractAppController
+class AdminPageController extends AbstractAppController
 {
     const PAGE_TITLE_HOME = 'Acasa';
     const PAGE_TITLE_ADD_AUCTION = 'Adauga Licitatie';
@@ -28,7 +25,6 @@ class PageController extends AbstractAppController
     const PAGE_TITLE_VIEW_AUCTION_LIST = 'Vizualizare Licitatii';
     const PAGE_TITLE_VIEW_AUCTION = 'Vizualizare Licitatie';
     const PAGE_TITLE_MAIL_ALERTS = 'Alerte email';
-
 
     /**
      * Returns routes to connect to the given application.
@@ -39,28 +35,27 @@ class PageController extends AbstractAppController
      */
     public function connect(Application $app)
     {
-        /** @var ControllerCollection $controllers */
-        $controllers = $app['controllers_factory'];
+        $this->setControllerCollection($app['controllers_factory']);
 
-        $this->homePage($controllers);
-        $this->addOrEditPage($controllers);
-        $this->viewDetailsPage($controllers);
-        $this->viewPage($controllers);
-        $this->registerUser($controllers);
-        $this->mailAlertsPage($controllers);
-        $this->mailAlertsProvider($controllers);
-        $this->saveEmailAlerts($controllers);
-        $this->sendAuctionListViaEmail($controllers);
+        $this->setUpHomePage();
+        $this->setUpAddOrEditPage()->secure('ROLE_ADMIN');
+        $this->setUpViewDetailsPage()->secure('ROLE_ADMIN');
+        $this->setUpViewPage()->secure('ROLE_ADMIN');
+        $this->setUpMailAlertsPage()->secure('ROLE_ADMIN');
+        $this->setUpMailAlertsProvider()->secure('ROLE_ADMIN');
+        $this->setUpSaveEmailAlerts()->secure('ROLE_ADMIN');
+        $this->setUpSendAuctionListViaEmail()->secure('ROLE_ADMIN');
 
-        return $controllers;
+        return $this->getControllerCollection();
     }
 
-
-
-    private function homePage(ControllerCollection $controllers)
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpHomePage()
     {
-        $controllers->get('/', function (Application $app, Request $request) {
-            return $app['twig']->render("index.html", array(
+        return $this->getControllerCollection()->get('/', function (Application $app, Request $request) {
+            return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => self::PAGE_TITLE_HOME,
                 'activeMenuItem' => 'home',
                 'error' => $app['security.last_error']($request),
@@ -69,11 +64,12 @@ class PageController extends AbstractAppController
         });
     }
 
-
-
-    private function viewDetailsPage(ControllerCollection $controllers)
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpAddOrEditPage()
     {
-        $controllers->match('/viewDetails/{id}', function (Application $app, $id) {
+        return $this->getControllerCollection()->match('/addOrEdit/{id}', function (Application $app, $id) {
             /** @var Request $request */
             $request = $app['request'];
 
@@ -83,48 +79,7 @@ class PageController extends AbstractAppController
                 $saveAuctionProcess->setAuctionId($id);
                 $saveAuctionProcess->setRequest($request);
                 $id = $saveAuctionProcess->execute();
-                $this->redirect('/viewDetails/'.$id);
-            }
-
-            $auction   = array();
-            $pageTitle = self::PAGE_TITLE_ADD_AUCTION;
-
-            if (!empty($id)) {
-                $pageTitle = self::PAGE_TITLE_VIEW_DETAILS_AUCTION;
-
-                if (empty($auction)) {
-                    $getAuctionProcess = new GetAuctionProcess();
-                    $auction = $getAuctionProcess->getOne($id)->toArray();
-                }
-            }
-
-            return $app['twig']->render("index.html", array(
-                'pageTitle' => $pageTitle,
-                'activeMenuItem' => 'viewDetails',
-                'username' => $this->getUser($app),
-                'pageContent' => $app['twig']->render("view-details.html", [
-                    'inputArray' => $app['config']['addOrEditSection'],
-                    'auctionList' => $auction,
-                ])
-            ));
-        })->value('id', '');
-    }
-
-
-
-    private function addOrEditPage(ControllerCollection $controllers)
-    {
-        $controllers->match('/addOrEdit/{id}', function (Application $app, $id) {
-            /** @var Request $request */
-            $request = $app['request'];
-
-            $requestType = $request->getMethod();
-            if ($requestType == 'POST') {
-                $saveAuctionProcess = new SaveAuctionProcess();
-                $saveAuctionProcess->setAuctionId($id);
-                $saveAuctionProcess->setRequest($request);
-                $id = $saveAuctionProcess->execute();
-                $this->redirect('/addOrEdit/'.$id);
+                return $app->redirect('/addOrEdit/' . $id);
             }
 
             $auction   = array();
@@ -135,11 +90,11 @@ class PageController extends AbstractAppController
 
                 if (empty($auction)) {
                     $getAuctionProcess = new GetAuctionProcess();
-                    $auction = $getAuctionProcess->getOne($id)->toArray();
+                    $auction           = $getAuctionProcess->getOne($id)->toArray();
                 }
             }
 
-            return $app['twig']->render("index.html", array(
+            return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => $pageTitle,
                 'activeMenuItem' => 'addOrEdit',
                 'username' => $this->getUser($app),
@@ -151,33 +106,75 @@ class PageController extends AbstractAppController
         })->value('id', '');
     }
 
-
-
-    private function viewPage(ControllerCollection $controllers)
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpViewDetailsPage()
     {
-        $controllers->get('/view', function (Application $app) {
+        return $this->getControllerCollection()->match('/viewDetails/{id}', function (Application $app, $id) {
+            /** @var Request $request */
+            $request = $app['request'];
+
+            $requestType = $request->getMethod();
+            if ($requestType == 'POST') {
+                $saveAuctionProcess = new SaveAuctionProcess();
+                $saveAuctionProcess->setAuctionId($id);
+                $saveAuctionProcess->setRequest($request);
+                $id = $saveAuctionProcess->execute();
+                return $app->redirect('/viewDetails/' . $id);
+            }
+
+            $auction   = array();
+            $pageTitle = self::PAGE_TITLE_ADD_AUCTION;
+
+            if (!empty($id)) {
+                $pageTitle = self::PAGE_TITLE_VIEW_DETAILS_AUCTION;
+
+                if (empty($auction)) {
+                    $getAuctionProcess = new GetAuctionProcess();
+                    $auction           = $getAuctionProcess->getOne($id)->toArray();
+                }
+            }
+
+            return $app['twig']->render("admin-index.html", array(
+                'pageTitle' => $pageTitle,
+                'activeMenuItem' => 'viewDetails',
+                'username' => $this->getUser($app),
+                'pageContent' => $app['twig']->render("view-details.html", [
+                    'inputArray' => $app['config']['addOrEditSection'],
+                    'auctionList' => $auction,
+                ])
+            ));
+        })->value('id', '');
+    }
+
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpViewPage()
+    {
+        return $this->getControllerCollection()->get('/view', function (Application $app) {
 
             $pageTitle = self::PAGE_TITLE_VIEW_AUCTION_LIST;
 
             $getAuctionProcess = new GetAuctionProcess();
-            $auctionList = $getAuctionProcess->getAll();
+            $auctionList       = $getAuctionProcess->getAll();
 
             $results = array();
             /** @var Auction $auction */
-            foreach($auctionList as $auction)
-            {
-                $result = array();
-                $result['location'] = $auction->getLocation();
-                $result['title'] = $auction->getTitle();
+            foreach ($auctionList as $auction) {
+                $result                    = array();
+                $result['location']        = $auction->getLocation();
+                $result['title']           = $auction->getTitle();
                 $result['estimated_value'] = $auction->getEstimatedValue();
-                $result['publish_date'] = $auction->getPublishDate("d.m.Y");
-                $result['id'] = $auction->getId();
-                $result['uniqueId'] = $auction->getUniqueId();
+                $result['publish_date']    = $auction->getPublishDate("d.m.Y");
+                $result['id']              = $auction->getId();
+                $result['uniqueId']        = $auction->getUniqueId();
 
                 $results[] = $result;
             }
 
-            return $app['twig']->render("index.html", array(
+            return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => $pageTitle,
                 'activeMenuItem' => 'view',
                 'username' => $this->getUser($app),
@@ -188,11 +185,12 @@ class PageController extends AbstractAppController
         });
     }
 
-
-
-    private function mailAlertsPage(ControllerCollection $controllers)
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpMailAlertsPage()
     {
-        $controllers->get('/emailAlerts', function (Application $app) {
+        return $this->getControllerCollection()->get('/emailAlerts', function (Application $app) {
             $mailAlertCriteriaList = MailCriteriaQuery::create()
                 ->find();
 
@@ -201,7 +199,7 @@ class PageController extends AbstractAppController
                 $tableColumns[$mailAlertCriteria->getId()] = $mailAlertCriteria->getName();
             }
 
-            return $app['twig']->render("index.html", array(
+            return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => self::PAGE_TITLE_MAIL_ALERTS,
                 'activeMenuItem' => 'emailAlerts',
                 'username' => $this->getUser($app),
@@ -213,22 +211,24 @@ class PageController extends AbstractAppController
         });
     }
 
-
-
-    private function mailAlertsProvider(ControllerCollection $controllers)
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpMailAlertsProvider()
     {
-        $controllers->get('/getEmailAlertList', function (Application $app) {
+        return $this->getControllerCollection()->get('/getEmailAlertList', function (Application $app) {
             $emailAlertList = new EmailAlertList(MailCriteriaRelationQuery::create(), MailCriteriaQuery::create());
 
             return $app->json($emailAlertList->getDataTableResponse());
         });
     }
 
-
-
-    private function saveEmailAlerts(ControllerCollection $controllers)
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpSaveEmailAlerts()
     {
-        $controllers->post('/emailAlerts/save', function (Application $app) {
+        return $this->getControllerCollection()->post('/emailAlerts/save', function (Application $app) {
             $emailAlerts = $app['request']->get('emailAlerts');
 
             try {
@@ -244,14 +244,15 @@ class PageController extends AbstractAppController
         });
     }
 
-
-
-    private function sendAuctionListViaEmail(ControllerCollection $controllers)
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpSendAuctionListViaEmail()
     {
-        $controllers->post('/sendAuctionViaEmail', function (Application $app) {
+        return $this->getControllerCollection()->post('/sendAuctionViaEmail', function (Application $app) {
             $emailSubject = $app['request']->get('emailSubject');
-            $emailList = explode(",",$app['request']->get('emailList'));
-            $auctionList = $app['request']->get('auctionList');
+            $emailList    = explode(",", $app['request']->get('emailList'));
+            $auctionList  = $app['request']->get('auctionList');
 
             if (empty($emailSubject)) {
                 $emailSubject = 'Alerta Licitatii !';
@@ -266,7 +267,7 @@ class PageController extends AbstractAppController
                 $mail = new Mail();
                 $mail->setSubject($emailSubject);
                 $mail->setFromEmailAddress('licitatiepascupas@gmail.com');
-                $mail->setAuctionList(implode(",",$auctionList));
+                $mail->setAuctionList(implode(",", $auctionList));
                 $mail->setMailTemplate("defaultEmailTemplate.html");
                 $mail->save();
 
@@ -285,58 +286,5 @@ class PageController extends AbstractAppController
                 'statusMessage' => !empty($statusMessage) ? $statusMessage : 'success'
             ));
         });
-    }
-
-
-
-    private function registerUser(ControllerCollection $controllers)
-    {
-        $controllers->post('/registerUser', function (Application $app, Request $request) {
-            $parameterList = $request->request->all();
-            $userRegistrationProcess = new UserRegistrationProcess(
-                $parameterList['email'],
-                $app['security.encoder.digest']->encodePassword($parameterList['password'], ''),
-                $parameterList['firstName'],
-                $parameterList['lastName'],
-                $parameterList['phoneNumber'],
-                $parameterList['newsOption']
-            );
-            $userRegistrationProcess->execute();
-
-            $this->redirect("/");
-        });
-    }
-
-
-
-    private function redirect($newURL)
-    {
-        header('Location: '.$newURL);
-        exit(0);
-    }
-
-
-
-    /**
-     * @param Application $app
-     * @return string
-     */
-    private function getUser($app)
-    {
-        /** @var UsernamePasswordToken $token */
-        $token = $app['security.token_storage']->getToken();
-
-        if (!$token instanceof UsernamePasswordToken) {
-            return null;
-        }
-
-        /** @var User $user */
-        $user = $token->getUser();
-
-        if (!$user instanceof User) {
-            return null;
-        }
-
-        return $user->getUsername();
     }
 }

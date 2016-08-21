@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="{{ asset('images/icons/favicon.ico') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
+          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="{{ asset('styles/jplist-custom.css') }}"/>
+    <link type="text/css" rel="stylesheet" href="{{ asset('styles/style.css') }}">
+    <title>Licitaţie Pas cu Pas</title>
+</head>
+<body>
+<div class="container site-container">
+    <div class="row header">
+        <img class="header-img" src="{{ asset('images/header-image.jpg') }}"/>
+        {% include 'page-menu.html' %}
+    </div>
+    <div class="row title">
+        <div class="col-sm-12">
+            <div class="welcome-title">
+                <h2>Licitaţie pas cu pas <br/> Bun venit!</h2>
+            </div>
+            <h3>Această platformă a fost gândită special pentru ca dumneavoastră, în calitate de client să puteți decide
+                în 5 minute dacă sunteți eligibil să participați la licitațiile din domeniul dumneavoastră de
+                activitate.</h3>
+        </div>
+    </div>
+
+    <div class="row main-content">
+        {% include pageName %}
+    </div>
+    <div class="row footer">
+        <br/>
+        <div class="copyright">&copy; {{ "now"|date("Y") }} - Licitaţie Pas cu Pas</div>
+        <br/>
+    </div>
+</div> <!-- /.container -->
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="https://use.fontawesome.com/01a7fb78cb.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+<script src="{{ asset('script/jplist.min.js') }}"></script>
+<script src="{{ asset('script/jplist.js') }}"></script>
+
+<!--Start of Tawk.to Script-->
+<!--<script type="text/javascript">-->
+    <!--var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();-->
+    <!--(function () {-->
+        <!--var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];-->
+        <!--s1.async = true;-->
+        <!--s1.src = 'https://embed.tawk.to/5793d5c292a0df3b7f4025cb/default';-->
+        <!--s1.charset = 'UTF-8';-->
+        <!--s1.setAttribute('crossorigin', '*');-->
+        <!--s0.parentNode.insertBefore(s1, s0);-->
+    <!--})();-->
+<!--</script>-->
+<!--End of Tawk.to Script-->
+
+</body>
+</html>

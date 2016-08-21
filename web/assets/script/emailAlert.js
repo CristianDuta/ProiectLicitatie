@@ -65,7 +65,7 @@
             }
         },
         "ajax": {
-            "url": "/getEmailAlertList",
+            "url": "/admin/getEmailAlertList",
             "dataSrc": function (json) {
                 return json;
             }

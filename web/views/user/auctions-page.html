@@ -1,0 +1,137 @@
+<div class="col-xs-12">
+    <div id="grid-layout-table-1" class="box jplist">
+        <div class="jplist-ios-button"><i class="fa fa-sort"></i>jPList Actions</div>
+        <div class="jplist-panel box panel-top">
+            <button type="button" data-control-type="reset" data-control-name="reset"
+                    data-control-action="reset" class="jplist-reset-btn btn btn-default">Reseteza<i
+                    class="fa fa-share mls"></i></button>
+            <div data-control-type="drop-down" data-control-name="paging" data-control-action="paging"
+                 class="jplist-drop-down form-control">
+                <ul class="dropdown-menu">
+                    <li><span data-number="5" data-default="true"> 5 pe pagina</span></li>
+                    <li><span data-number="10"> 10 pe pagina</span></li>
+                    <li><span data-number="25"> 25 pe pagina</span></li>
+                    <li><span data-number="50"> 50 pe pagina</span></li>
+                    <li><span data-number="all"> vizualizeaza toate</span></li>
+                </ul>
+            </div>
+            <div data-control-type="drop-down" data-control-name="sort" data-control-action="sort"
+                 data-datetime-format="{day}.{month}.{year}" class="jplist-drop-down form-control">
+                <ul class="dropdown-menu">
+                    <li>
+                        <span data-path="default">Sorteaza dupa</span>
+                    </li>
+                    <li>
+                        <span data-path=".title" data-order="asc" data-type="text">Titlu A-Z</span>
+                    </li>
+                    <li>
+                        <span data-path=".title" data-order="desc" data-type="text">Titlu Z-A</span>
+                    </li>
+                    <li>
+                        <span data-path=".desc" data-order="asc" data-type="text">Descriere A-Z</span>
+                    </li>
+                    <li>
+                        <span data-path=".desc" data-order="desc" data-type="text">Descriere Z-A</span>
+                    </li>
+                    <li>
+                        <span data-path=".date" data-order="asc" data-type="datetime">Data asc</span>
+                    </li>
+                    <li>
+                        <span data-path=".date" data-order="desc" data-type="datetime">Data desc</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="text-filter-box">
+                <div class="input-group"><span class="input-group-addon"><i
+                        class="fa fa-search"></i></span><input data-path=".title" type="text" value=""
+                                                               placeholder="Filtreaza dupa Titlu"
+                                                               data-control-type="textbox"
+                                                               data-control-name="title-filter"
+                                                               data-control-action="filter"
+                                                               class="form-control"/></div>
+            </div>
+            <div class="text-filter-box">
+                <div class="input-group "><span class="input-group-addon"><i
+                        class="fa fa-search"></i></span><input data-path=".desc" type="text" value=""
+                                                               placeholder="Filtreaza dupa Descriere"
+                                                               data-control-type="textbox"
+                                                               data-control-name="desc-filter"
+                                                               data-control-action="filter"
+                                                               class="form-control filterDescription"/></div>
+            </div>
+            <div data-type="Pagina {current} din {pages}" data-control-type="pagination-info"
+                 data-control-name="paging" data-control-action="paging"
+                 class="jplist-label btn btn-default"></div>
+            <div data-control-type="pagination" data-control-name="paging" data-control-action="paging"
+                 class="jplist-pagination"></div>
+        </div>
+        <div class="box text-shadow">
+            <table class="demo-tbl"><!--<item>1</item>-->
+                {% for result in auctionList %}
+                <tr class="tbl-item"><!--<img/>-->
+                    <!--<td class="img"><span>Atentionare !</span></td>-->
+                    <!--<data></data>-->
+                    <td class="td-block">
+                        <p class="date">{{ result.publish_date }}</p>
+                        <p class="publishDateLabel">Data Publicare:</p>
+                        <p class="title">{{ result.location }}</p>
+                        <p class="desc">{{ result.title }}</p>
+                        <p class="like">Valoare estimata: {{ result.estimated_value }}</p>
+                        <a href="/auction/{{ result.uniqueId }}" class="btn btn-primary btn-edit">
+                            Detalii
+                        </a>
+                        <div class="clearfix"></div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="box jplist-no-results text-shadow align-center pull-left"><p>Fara resultate!</p></div>
+        <div class="jplist-ios-button"><i class="fa fa-sort"></i>jPList Actions</div>
+        <div class="jplist-panel box panel-bottom">
+            <div data-control-type="drop-down" data-control-name="paging" data-control-action="paging"
+                 data-control-animate-to-top="true" class="jplist-drop-down form-control">
+                <ul class="dropdown-menu">
+                    <li><span data-number="5" data-default="true"> 5 pe pagina</span></li>
+                    <li><span data-number="10"> 10 pe pagina</span></li>
+                    <li><span data-number="25"> 25 pe pagina</span></li>
+                    <li><span data-number="50"> 50 pe pagina</span></li>
+                    <li><span data-number="all"> vizualizeaza toate</span></li>
+                </ul>
+            </div>
+            <div data-control-type="drop-down" data-control-name="sort" data-control-action="sort"
+                 data-control-animate-to-top="true" data-datetime-format="{month}/{day}/{year}"
+                 class="jplist-drop-down form-control">
+                <ul class="dropdown-menu">
+                    <li>
+                        <span data-path="default">Sorteaza dupa</span>
+                    </li>
+                    <li>
+                        <span data-path=".title" data-order="asc" data-type="text">Titlu A-Z</span>
+                    </li>
+                    <li>
+                        <span data-path=".title" data-order="desc" data-type="text">Titlu Z-A</span>
+                    </li>
+                    <li>
+                        <span data-path=".desc" data-order="asc" data-type="text">Descriere A-Z</span>
+                    </li>
+                    <li>
+                        <span data-path=".desc" data-order="desc" data-type="text">Descriere Z-A</span>
+                    </li>
+                    <li>
+                        <span data-path=".date" data-order="asc" data-type="datetime">Data asc</span>
+                    </li>
+                    <li>
+                        <span data-path=".date" data-order="desc" data-type="datetime">Data desc</span>
+                    </li>
+                </ul>
+            </div>
+            <div data-type="{start} - {end} din {all}" data-control-type="pagination-info"
+                 data-control-name="paging" data-control-action="paging"
+                 class="jplist-label btn btn-default"></div>
+            <div data-control-type="pagination" data-control-name="paging" data-control-action="paging"
+                 data-control-animate-to-top="true" class="jplist-pagination"></div>
+        </div>
+    </div>
+    <br /><br /><br />
+</div>

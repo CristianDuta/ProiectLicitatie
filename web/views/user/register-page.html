@@ -1,0 +1,64 @@
+<div class="main-content-title">
+    <h2>Creează cont</h2>
+</div>
+<br /><br />
+<div class="col-xs-10 main-content-auth">
+    <form action="/account/register" id="registrationForm" role="form" method="post">
+        <div class="form-body pal">
+            <div class="form-group">
+                <div class="input-icon right">
+                    <i class="fa fa-envelope"></i>
+                    <input id="inputEmail" name="email" type="email" placeholder="E-mail" class="form-control" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-icon right">
+                    <i class="fa fa-lock"></i>
+                    <input id="inputPassword" name="password" type="password" placeholder="Parola" data-minlength="6" class="form-control" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-icon right">
+                    <i class="fa fa-phone"></i>
+                    <input id="inputPhone" name="phoneNumber" type="text" placeholder="Telefon" class="form-control" required />
+                </div>
+            </div>
+
+            <hr />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input id="inputLastName" name="lastName" type="text" placeholder="Nume" class="form-control" required  />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input id="inputFirstName" name="firstName" type="text" placeholder="Prenume" class="form-control" required />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group hidden">
+                <div class="checkbox">
+                    <label>
+                        <input name="newsOption" type="checkbox" />
+                        Sunt de acord sa primesc noutati si oferte speciale
+                    </label>
+                </div>
+            </div>
+            <div class="form-group mbn">
+                <div class="checkbox">
+                    <label>
+                        <input name="termsAndConditions" type="checkbox" required />
+                        Am citit și sunt de acord cu Termenii și Condițiile de utilizare a site-ului.
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-actions text-right pal">
+            <button type="submit" class="btn btn-primary">
+                Creaza
+            </button>
+        </div>
+    </form>
+    <br /><br /><br />
+</div>

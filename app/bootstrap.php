@@ -13,7 +13,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 $app = new Silex\Application();
 $app['config'] = require_once dirname(__DIR__) . "/app/config/global.config.php";
 $app['local_config'] = require_once dirname(__DIR__) . "/app/config/local.config.php";
-
+$app['route_class'] = 'BusinessLogic\SecureRoute';
 
 /** register auth services */
 $app->register(new SessionServiceProvider());
@@ -31,11 +31,7 @@ $app->register(new SecurityServiceProvider(), array(
         ),
     ),
     'security.access_rules' => array(
-        array('^/view$', 'ROLE_USER'),
-        array('^/addOrEdit.*$', 'ROLE_ADMIN'),
-        array('^/emailAlerts.*$', 'ROLE_ADMIN'),
-        array('^/getEmailAlertList.*$', 'ROLE_ADMIN'),
-        array('^/sendAuctionViaEmail.*$', 'ROLE_ADMIN'),
+        array('^/auction$', 'ROLE_USER'),
     )
 ));
 
@@ -47,8 +43,10 @@ $app['swiftmailer.options'] = $app['local_config']['mail'];
 
 /** register twig  */
 $app->register(new TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/../web/Resources/views',
-//            'twig.options' => array('cache' => __DIR__.'/../cache'),
+    'twig.path' => array(
+        __DIR__.'/../web/views/admin',
+        __DIR__.'/../web/views/user',
+    ),
     'twig.options' => array(
         'cache' => false,
     ),

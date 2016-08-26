@@ -7,7 +7,7 @@
             $(".sendAuctionViaEmailPanelLoading, .sendAuctionViaEmailPanel").toggle();
             $.ajax({
                 type: "POST",
-                url: "/sendAuctionViaEmail",
+                url: "/admin/sendAuctionViaEmail",
                 data: {
                     emailSubject : sendAuctionsViaEmailForm.find('input[name=emailSubject]').val(),
                     emailList : sendAuctionsViaEmailForm.find('input[name=emailList]').val(),

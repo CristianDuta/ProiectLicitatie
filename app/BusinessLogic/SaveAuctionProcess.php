@@ -72,7 +72,7 @@ class SaveAuctionProcess
             ->setApplyMode($applyMode)
             ->setAdditionalInformation($additionalInformation)
             ->save();
-        return $auction->getId();
+        return $auction->getUniqueId();
     }
 
 

@@ -41,6 +41,10 @@ class RegistrationController extends AbstractAppController
             );
             $userRegistrationProcess->execute();
 
+//            if (strpos($request->headers->get('referer'), 'admin') !== false) {
+//                $redirectUrl = "/admin/";
+//            }
+
             return $app->redirect('/');
         });
     }

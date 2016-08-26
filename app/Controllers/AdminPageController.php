@@ -59,7 +59,7 @@ class AdminPageController extends AbstractAppController
                 'pageTitle' => self::PAGE_TITLE_HOME,
                 'activeMenuItem' => 'home',
                 'error' => $app['security.last_error']($request),
-                'username' => $this->getUser($app),
+                'username' => $this->getUsername($app),
             ));
         });
     }
@@ -69,17 +69,14 @@ class AdminPageController extends AbstractAppController
      */
     private function setUpAddOrEditPage()
     {
-        return $this->getControllerCollection()->match('/addOrEdit/{id}', function (Application $app, $id) {
-            /** @var Request $request */
-            $request = $app['request'];
-
+        return $this->getControllerCollection()->match('/addOrEdit/{id}', function (Request $request, Application $app, $id) {
             $requestType = $request->getMethod();
             if ($requestType == 'POST') {
                 $saveAuctionProcess = new SaveAuctionProcess();
                 $saveAuctionProcess->setAuctionId($id);
                 $saveAuctionProcess->setRequest($request);
                 $id = $saveAuctionProcess->execute();
-                return $app->redirect('/addOrEdit/' . $id);
+                return $app->redirect('/admin/addOrEdit/' . $id);
             }
 
             $auction   = array();
@@ -97,7 +94,7 @@ class AdminPageController extends AbstractAppController
             return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => $pageTitle,
                 'activeMenuItem' => 'addOrEdit',
-                'username' => $this->getUser($app),
+                'username' => $this->getUsername($app),
                 'pageContent' => $app['twig']->render("add-edit-auction.html", [
                     'inputArray' => $app['config']['addOrEditSection'],
                     'auctionList' => $auction,
@@ -111,17 +108,14 @@ class AdminPageController extends AbstractAppController
      */
     private function setUpViewDetailsPage()
     {
-        return $this->getControllerCollection()->match('/viewDetails/{id}', function (Application $app, $id) {
-            /** @var Request $request */
-            $request = $app['request'];
-
+        return $this->getControllerCollection()->match('/viewDetails/{id}', function (Request $request, Application $app, $id) {
             $requestType = $request->getMethod();
             if ($requestType == 'POST') {
                 $saveAuctionProcess = new SaveAuctionProcess();
                 $saveAuctionProcess->setAuctionId($id);
                 $saveAuctionProcess->setRequest($request);
                 $id = $saveAuctionProcess->execute();
-                return $app->redirect('/viewDetails/' . $id);
+                return $app->redirect('/admin/viewDetails/' . $id);
             }
 
             $auction   = array();
@@ -139,7 +133,7 @@ class AdminPageController extends AbstractAppController
             return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => $pageTitle,
                 'activeMenuItem' => 'viewDetails',
-                'username' => $this->getUser($app),
+                'username' => $this->getUsername($app),
                 'pageContent' => $app['twig']->render("view-details.html", [
                     'inputArray' => $app['config']['addOrEditSection'],
                     'auctionList' => $auction,
@@ -177,7 +171,7 @@ class AdminPageController extends AbstractAppController
             return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => $pageTitle,
                 'activeMenuItem' => 'view',
-                'username' => $this->getUser($app),
+                'username' => $this->getUsername($app),
                 'pageContent' => $app['twig']->render("view.html", [
                     'auctionList' => $results,
                 ])
@@ -202,7 +196,7 @@ class AdminPageController extends AbstractAppController
             return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => self::PAGE_TITLE_MAIL_ALERTS,
                 'activeMenuItem' => 'emailAlerts',
-                'username' => $this->getUser($app),
+                'username' => $this->getUsername($app),
                 'pageContent' => $app['twig']->render("emailAlerts.html", [
                     'tableColumns' => $tableColumns
                 ]),
@@ -228,8 +222,8 @@ class AdminPageController extends AbstractAppController
      */
     private function setUpSaveEmailAlerts()
     {
-        return $this->getControllerCollection()->post('/emailAlerts/save', function (Application $app) {
-            $emailAlerts = $app['request']->get('emailAlerts');
+        return $this->getControllerCollection()->post('/emailAlerts/save', function (Request $request, Application $app) {
+            $emailAlerts = $request->get('emailAlerts');
 
             try {
                 $saveEmailAlertList = new SaveEmailAlertList($emailAlerts);
@@ -249,10 +243,10 @@ class AdminPageController extends AbstractAppController
      */
     private function setUpSendAuctionListViaEmail()
     {
-        return $this->getControllerCollection()->post('/sendAuctionViaEmail', function (Application $app) {
-            $emailSubject = $app['request']->get('emailSubject');
-            $emailList    = explode(",", $app['request']->get('emailList'));
-            $auctionList  = $app['request']->get('auctionList');
+        return $this->getControllerCollection()->post('/sendAuctionViaEmail', function (Request $request, Application $app) {
+            $emailSubject = $request->get('emailSubject');
+            $emailList    = explode(",", $request->get('emailList'));
+            $auctionList  = $request->get('auctionList');
 
             if (empty($emailSubject)) {
                 $emailSubject = 'Alerta Licitatii !';

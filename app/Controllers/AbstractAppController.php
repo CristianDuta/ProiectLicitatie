@@ -2,9 +2,9 @@
 
 namespace Controllers;
 
+use Silex\Api\ControllerProviderInterface;
 use Silex\Application;
 use Silex\ControllerCollection;
-use Silex\ControllerProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\User;
 
@@ -31,9 +31,9 @@ abstract class AbstractAppController implements ControllerProviderInterface
 
     /**
      * @param Application $app
-     * @return string
+     * @return null|string
      */
-    protected function getUser($app)
+    protected function getUsername(Application $app)
     {
         /** @var UsernamePasswordToken $token */
         $token = $app['security.token_storage']->getToken();
@@ -50,5 +50,28 @@ abstract class AbstractAppController implements ControllerProviderInterface
         }
 
         return $user->getUsername();
+    }
+
+    /**
+     * @param Application $app
+     * @return null|User
+     */
+    protected function getUser(Application $app)
+    {
+        /** @var UsernamePasswordToken $token */
+        $token = $app['security.token_storage']->getToken();
+
+        if (!$token instanceof UsernamePasswordToken) {
+            return null;
+        }
+
+        /** @var User $user */
+        $user = $token->getUser();
+
+        if (!$user instanceof User) {
+            return null;
+        }
+
+        return $user;
     }
 }

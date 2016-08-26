@@ -26,7 +26,7 @@
                     saveButton.toggleSavingState();
                     $.ajax({
                         type: "POST",
-                        url: '/emailAlerts/save',
+                        url: '/admin/emailAlerts/save',
                         data: {
                             emailAlerts: modifiedData.filter(function (e) {
                                 if (e.length > 0) {

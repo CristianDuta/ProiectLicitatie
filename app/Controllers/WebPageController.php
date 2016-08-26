@@ -31,6 +31,9 @@ class WebPageController extends AbstractAppController
     private function setUpGeneralRoute()
     {
         $this->getControllerCollection()->get('/{pageName}/{pageValue}', function (Application $app, $pageName, $pageValue) {
+            if ($pageName == 'admin') {
+                return $app->redirect("/admin/");
+            }
 
             $templateName = 'home-page.html';
             if ($pageName) {
@@ -39,7 +42,7 @@ class WebPageController extends AbstractAppController
 
             $renderParams             = $this->getPageRenderParams($app, $pageName, $pageValue);
             $renderParams['pageName'] = $templateName;
-            $renderParams['username'] = $this->getUser($app);
+            $renderParams['username'] = $this->getUsername($app);
 
             return $app['twig']->render("index.html", $renderParams);
         })->value('pageName', '')->value('pageValue', '');

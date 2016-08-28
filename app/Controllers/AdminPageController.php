@@ -55,6 +55,11 @@ class AdminPageController extends AbstractAppController
     private function setUpHomePage()
     {
         return $this->getControllerCollection()->get('/', function (Application $app, Request $request) {
+
+            if (!$app['security.authorization_checker']->isGranted('ROLE_ADMIN')) {
+                return $app->redirect("/auth");
+            }
+
             return $app['twig']->render("admin-index.html", array(
                 'pageTitle' => self::PAGE_TITLE_HOME,
                 'activeMenuItem' => 'home',

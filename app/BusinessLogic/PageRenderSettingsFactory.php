@@ -13,9 +13,7 @@ use Silex\Application;
 
 class PageRenderSettingsFactory
 {
-    /**
-     * @var Application
-     */
+    /** @var Application */
     private $app;
 
     /**
@@ -24,7 +22,6 @@ class PageRenderSettingsFactory
      */
     public function __construct(Application $app)
     {
-
         $this->app = $app;
     }
 
@@ -44,6 +41,7 @@ class PageRenderSettingsFactory
                 break;
             case 'auction':
                 $pageRenderSettings = new AuctionPageRenderSettings($this->app['config'], $pageValue);
+                break;
         }
 
         return $pageRenderSettings;

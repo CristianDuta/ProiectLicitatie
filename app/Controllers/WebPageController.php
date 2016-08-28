@@ -5,6 +5,7 @@ namespace Controllers;
 use BusinessLogic\PageRenderSettingsFactory;
 use Silex\Application;
 use Silex\ControllerCollection;
+use Symfony\Component\HttpFoundation\Request;
 
 class WebPageController extends AbstractAppController
 {
@@ -30,7 +31,9 @@ class WebPageController extends AbstractAppController
      */
     private function setUpGeneralRoute()
     {
-        $this->getControllerCollection()->get('/{pageName}/{pageValue}', function (Application $app, $pageName, $pageValue) {
+        $this->getControllerCollection()->get('/{pageName}/{pageValue}', function (
+            Application $app, Request $request, $pageName, $pageValue
+        ) {
             if ($pageName == 'admin') {
                 return $app->redirect("/admin/");
             }
@@ -43,6 +46,8 @@ class WebPageController extends AbstractAppController
             $renderParams             = $this->getPageRenderParams($app, $pageName, $pageValue);
             $renderParams['pageName'] = $templateName;
             $renderParams['username'] = $this->getUsername($app);
+            $renderParams['error']    = $app['security.last_error']($request);
+            $renderParams['isDebug']  = $app['debug'];
 
             return $app['twig']->render("index.html", $renderParams);
         })->value('pageName', '')->value('pageValue', '');

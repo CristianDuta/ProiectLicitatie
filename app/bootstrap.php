@@ -13,6 +13,8 @@ $app = new Silex\Application();
 $app['config'] = require_once dirname(__DIR__) . "/app/config/global.config.php";
 $app['local_config'] = require_once dirname(__DIR__) . "/app/config/local.config.php";
 //$app['debug'] = true;
+
+
 /** register auth services */
 $app->register(new SessionServiceProvider());
 $app->register(new RoutingServiceProvider());
@@ -22,19 +24,22 @@ $app->register(new SecurityServiceProvider(), array(
             'pattern' => '^/.*$',
             'anonymous' => true, // Needed as the login path is under the secured area
             'form' => array(
-                'login_path' => '/',
+                'login_path' => '/auth',
                 'check_path' => 'login_check',
                 'always_use_default_target_path' => true,
                 'default_target_path' => '/login/redirect'
             ),
-            'logout' => array('logout_path' => '/logout'), // url to call for logging out
+            'logout' => array(
+                'logout_path' => '/logout',
+                'invalidate_session' => true
+            ),
             'users' => $app->factory(function() use ($app) {
                 return new UserProvider();
             }),
         ),
     ),
     'security.access_rules' => array(
-        array('^/auction$', 'ROLE_USER'),
+        array('^/auction.*$', 'ROLE_USER'),
     ),
     'security.default_encoder' => function ($app) {
         return $app['security.encoder.digest'];

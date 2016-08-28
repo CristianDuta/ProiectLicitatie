@@ -35,15 +35,8 @@ abstract class AbstractAppController implements ControllerProviderInterface
      */
     protected function getUsername(Application $app)
     {
-        /** @var UsernamePasswordToken $token */
-        $token = $app['security.token_storage']->getToken();
-
-        if (!$token instanceof UsernamePasswordToken) {
-            return null;
-        }
-
         /** @var User $user */
-        $user = $token->getUser();
+        $user = $app['user'];
 
         if (!$user instanceof User) {
             return null;
@@ -58,15 +51,8 @@ abstract class AbstractAppController implements ControllerProviderInterface
      */
     protected function getUser(Application $app)
     {
-        /** @var UsernamePasswordToken $token */
-        $token = $app['security.token_storage']->getToken();
-
-        if (!$token instanceof UsernamePasswordToken) {
-            return null;
-        }
-
         /** @var User $user */
-        $user = $token->getUser();
+        $user = $app['user'];
 
         if (!$user instanceof User) {
             return null;

@@ -13,7 +13,6 @@
     <link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,700">
     <link type="text/css" rel="stylesheet" href="//fonts.googleapis.com/css?family=Oswald:400,700,300">
     <link type="text/css" rel="stylesheet" href="{{ asset('styles/jquery-ui-1.10.4.custom.min.css') }}"/>
-    <link type="text/css" rel="stylesheet" href="{{ asset('styles/font-awesome.min.css') }}"/>
     <link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="{{ asset('styles/animate.css') }}"/>
     <link type="text/css" rel="stylesheet" href="{{ asset('styles/all.css') }}"/>
@@ -141,6 +140,30 @@
                                 <span class="menu-title">Alerte email</span>
                             </a>
                         </li>
+                        {% if activeMenuItem == 'addOrEditNews' %}
+                        <li class="active">
+                        {% else %}
+                        <li>
+                        {% endif %}
+                            <a href="/admin/addOrEditNews">
+                                <i class="fa fa-print fa-fw">
+                                    <div class="icon-bg bg-red"></div>
+                                </i>
+                                <span class="menu-title">Adauga stire noua</span>
+                            </a>
+                        </li>
+                        {% if activeMenuItem == 'emailAlerts' %}
+                        <li class="active">
+                        {% else %}
+                        <li>
+                        {% endif %}
+                            <a href="/admin/newsList">
+                                <i class="fa fa-newspaper-o">
+                                    <div class="icon-bg bg-red"></div>
+                                </i>
+                                <span class="menu-title">Vizualizare stiri</span>
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
@@ -181,6 +204,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="{{ asset('script/jquery-migrate-1.2.1.min.js') }}"></script>
 <script src="{{ asset('script/jquery-ui.js') }}"></script>
+<script src="https://use.fontawesome.com/01a7fb78cb.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="{{ asset('script/bootstrap-hover-dropdown.js') }}"></script>
 <script src="{{ asset('script/html5shiv.js') }}"></script>

@@ -788,16 +788,16 @@ abstract class Mail implements ActiveRecordInterface
                 // timestampable behavior
 
                 if (!$this->isColumnModified(MailTableMap::COL_CREATED_AT)) {
-                    $this->setCreatedAt(time());
+                    $this->setCreatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
                 if (!$this->isColumnModified(MailTableMap::COL_UPDATED_AT)) {
-                    $this->setUpdatedAt(time());
+                    $this->setUpdatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);
                 // timestampable behavior
                 if ($this->isModified() && !$this->isColumnModified(MailTableMap::COL_UPDATED_AT)) {
-                    $this->setUpdatedAt(time());
+                    $this->setUpdatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
             }
             if ($ret) {

@@ -5,11 +5,9 @@ namespace Database\Model\Base;
 use \DateTime;
 use \Exception;
 use \PDO;
-use Database\Model\Mail as ChildMail;
-use Database\Model\MailQuery as ChildMailQuery;
-use Database\Model\MailQueue as ChildMailQueue;
-use Database\Model\MailQueueQuery as ChildMailQueueQuery;
-use Database\Model\Map\MailQueueTableMap;
+use Database\Model\News as ChildNews;
+use Database\Model\NewsQuery as ChildNewsQuery;
+use Database\Model\Map\NewsTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -24,18 +22,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'mail_queue' table.
+ * Base class that represents a row from the 'news' table.
  *
  *
  *
  * @package    propel.generator.Database.Model.Base
  */
-abstract class MailQueue implements ActiveRecordInterface
+abstract class News implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Database\\Model\\Map\\MailQueueTableMap';
+    const TABLE_MAP = '\\Database\\Model\\Map\\NewsTableMap';
 
 
     /**
@@ -72,25 +70,25 @@ abstract class MailQueue implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the mail_to field.
+     * The value for the unique_id field.
      *
      * @var        string
      */
-    protected $mail_to;
+    protected $unique_id;
 
     /**
-     * The value for the mail_id field.
+     * The value for the title field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $mail_id;
+    protected $title;
 
     /**
-     * The value for the mail_status field.
+     * The value for the description field.
      *
-     * @var        int
+     * @var        string
      */
-    protected $mail_status;
+    protected $description;
 
     /**
      * The value for the created_at field.
@@ -107,11 +105,6 @@ abstract class MailQueue implements ActiveRecordInterface
     protected $updated_at;
 
     /**
-     * @var        ChildMail
-     */
-    protected $aMail;
-
-    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -120,7 +113,7 @@ abstract class MailQueue implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of Database\Model\Base\MailQueue object.
+     * Initializes internal state of Database\Model\Base\News object.
      */
     public function __construct()
     {
@@ -215,9 +208,9 @@ abstract class MailQueue implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>MailQueue</code> instance.  If
-     * <code>obj</code> is an instance of <code>MailQueue</code>, delegates to
-     * <code>equals(MailQueue)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>News</code> instance.  If
+     * <code>obj</code> is an instance of <code>News</code>, delegates to
+     * <code>equals(News)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
@@ -283,7 +276,7 @@ abstract class MailQueue implements ActiveRecordInterface
      * @param string $name  The virtual column name
      * @param mixed  $value The value to give to the virtual column
      *
-     * @return $this|MailQueue The current object, for fluid interface
+     * @return $this|News The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -355,33 +348,33 @@ abstract class MailQueue implements ActiveRecordInterface
     }
 
     /**
-     * Get the [mail_to] column value.
+     * Get the [unique_id] column value.
      *
      * @return string
      */
-    public function getMailTo()
+    public function getUniqueId()
     {
-        return $this->mail_to;
+        return $this->unique_id;
     }
 
     /**
-     * Get the [mail_id] column value.
+     * Get the [title] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getMailId()
+    public function getTitle()
     {
-        return $this->mail_id;
+        return $this->title;
     }
 
     /**
-     * Get the [mail_status] column value.
+     * Get the [description] column value.
      *
-     * @return int
+     * @return string
      */
-    public function getMailStatus()
+    public function getDescription()
     {
-        return $this->mail_status;
+        return $this->description;
     }
 
     /**
@@ -428,7 +421,7 @@ abstract class MailQueue implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     * @return $this|\Database\Model\MailQueue The current object (for fluent API support)
+     * @return $this|\Database\Model\News The current object (for fluent API support)
      */
     public function setId($v)
     {
@@ -438,82 +431,78 @@ abstract class MailQueue implements ActiveRecordInterface
 
         if ($this->id !== $v) {
             $this->id = $v;
-            $this->modifiedColumns[MailQueueTableMap::COL_ID] = true;
+            $this->modifiedColumns[NewsTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [mail_to] column.
+     * Set the value of [unique_id] column.
      *
      * @param string $v new value
-     * @return $this|\Database\Model\MailQueue The current object (for fluent API support)
+     * @return $this|\Database\Model\News The current object (for fluent API support)
      */
-    public function setMailTo($v)
+    public function setUniqueId($v)
     {
         if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->mail_to !== $v) {
-            $this->mail_to = $v;
-            $this->modifiedColumns[MailQueueTableMap::COL_MAIL_TO] = true;
+        if ($this->unique_id !== $v) {
+            $this->unique_id = $v;
+            $this->modifiedColumns[NewsTableMap::COL_UNIQUE_ID] = true;
         }
 
         return $this;
-    } // setMailTo()
+    } // setUniqueId()
 
     /**
-     * Set the value of [mail_id] column.
+     * Set the value of [title] column.
      *
-     * @param int $v new value
-     * @return $this|\Database\Model\MailQueue The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Database\Model\News The current object (for fluent API support)
      */
-    public function setMailId($v)
+    public function setTitle($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->mail_id !== $v) {
-            $this->mail_id = $v;
-            $this->modifiedColumns[MailQueueTableMap::COL_MAIL_ID] = true;
-        }
-
-        if ($this->aMail !== null && $this->aMail->getId() !== $v) {
-            $this->aMail = null;
+        if ($this->title !== $v) {
+            $this->title = $v;
+            $this->modifiedColumns[NewsTableMap::COL_TITLE] = true;
         }
 
         return $this;
-    } // setMailId()
+    } // setTitle()
 
     /**
-     * Set the value of [mail_status] column.
+     * Set the value of [description] column.
      *
-     * @param int $v new value
-     * @return $this|\Database\Model\MailQueue The current object (for fluent API support)
+     * @param string $v new value
+     * @return $this|\Database\Model\News The current object (for fluent API support)
      */
-    public function setMailStatus($v)
+    public function setDescription($v)
     {
         if ($v !== null) {
-            $v = (int) $v;
+            $v = (string) $v;
         }
 
-        if ($this->mail_status !== $v) {
-            $this->mail_status = $v;
-            $this->modifiedColumns[MailQueueTableMap::COL_MAIL_STATUS] = true;
+        if ($this->description !== $v) {
+            $this->description = $v;
+            $this->modifiedColumns[NewsTableMap::COL_DESCRIPTION] = true;
         }
 
         return $this;
-    } // setMailStatus()
+    } // setDescription()
 
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Database\Model\MailQueue The current object (for fluent API support)
+     * @return $this|\Database\Model\News The current object (for fluent API support)
      */
     public function setCreatedAt($v)
     {
@@ -521,7 +510,7 @@ abstract class MailQueue implements ActiveRecordInterface
         if ($this->created_at !== null || $dt !== null) {
             if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
                 $this->created_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[MailQueueTableMap::COL_CREATED_AT] = true;
+                $this->modifiedColumns[NewsTableMap::COL_CREATED_AT] = true;
             }
         } // if either are not null
 
@@ -533,7 +522,7 @@ abstract class MailQueue implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     * @return $this|\Database\Model\MailQueue The current object (for fluent API support)
+     * @return $this|\Database\Model\News The current object (for fluent API support)
      */
     public function setUpdatedAt($v)
     {
@@ -541,7 +530,7 @@ abstract class MailQueue implements ActiveRecordInterface
         if ($this->updated_at !== null || $dt !== null) {
             if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
                 $this->updated_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[MailQueueTableMap::COL_UPDATED_AT] = true;
+                $this->modifiedColumns[NewsTableMap::COL_UPDATED_AT] = true;
             }
         } // if either are not null
 
@@ -584,25 +573,25 @@ abstract class MailQueue implements ActiveRecordInterface
     {
         try {
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : MailQueueTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : NewsTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
             $this->id = (null !== $col) ? (int) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : MailQueueTableMap::translateFieldName('MailTo', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->mail_to = (null !== $col) ? (string) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : NewsTableMap::translateFieldName('UniqueId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->unique_id = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : MailQueueTableMap::translateFieldName('MailId', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->mail_id = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : NewsTableMap::translateFieldName('Title', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->title = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : MailQueueTableMap::translateFieldName('MailStatus', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->mail_status = (null !== $col) ? (int) $col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : NewsTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : MailQueueTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : NewsTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : MailQueueTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : NewsTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -615,10 +604,10 @@ abstract class MailQueue implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 6; // 6 = MailQueueTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = NewsTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Database\\Model\\MailQueue'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Database\\Model\\News'), 0, $e);
         }
     }
 
@@ -637,9 +626,6 @@ abstract class MailQueue implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aMail !== null && $this->mail_id !== $this->aMail->getId()) {
-            $this->aMail = null;
-        }
     } // ensureConsistency
 
     /**
@@ -663,13 +649,13 @@ abstract class MailQueue implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(MailQueueTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(NewsTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildMailQueueQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildNewsQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -679,7 +665,6 @@ abstract class MailQueue implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aMail = null;
         } // if (deep)
     }
 
@@ -689,8 +674,8 @@ abstract class MailQueue implements ActiveRecordInterface
      * @param      ConnectionInterface $con
      * @return void
      * @throws PropelException
-     * @see MailQueue::setDeleted()
-     * @see MailQueue::isDeleted()
+     * @see News::setDeleted()
+     * @see News::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -699,11 +684,11 @@ abstract class MailQueue implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailQueueTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(NewsTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildMailQueueQuery::create()
+            $deleteQuery = ChildNewsQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -734,7 +719,7 @@ abstract class MailQueue implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(MailQueueTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(NewsTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
@@ -744,16 +729,16 @@ abstract class MailQueue implements ActiveRecordInterface
                 $ret = $ret && $this->preInsert($con);
                 // timestampable behavior
 
-                if (!$this->isColumnModified(MailQueueTableMap::COL_CREATED_AT)) {
+                if (!$this->isColumnModified(NewsTableMap::COL_CREATED_AT)) {
                     $this->setCreatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
-                if (!$this->isColumnModified(MailQueueTableMap::COL_UPDATED_AT)) {
+                if (!$this->isColumnModified(NewsTableMap::COL_UPDATED_AT)) {
                     $this->setUpdatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);
                 // timestampable behavior
-                if ($this->isModified() && !$this->isColumnModified(MailQueueTableMap::COL_UPDATED_AT)) {
+                if ($this->isModified() && !$this->isColumnModified(NewsTableMap::COL_UPDATED_AT)) {
                     $this->setUpdatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
             }
@@ -765,7 +750,7 @@ abstract class MailQueue implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                MailQueueTableMap::addInstanceToPool($this);
+                NewsTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -790,18 +775,6 @@ abstract class MailQueue implements ActiveRecordInterface
         $affectedRows = 0; // initialize var to track total num of affected rows
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
-
-            // We call the save method on the following object(s) if they
-            // were passed to this object by their corresponding set
-            // method.  This object relates to these object(s) by a
-            // foreign key reference.
-
-            if ($this->aMail !== null) {
-                if ($this->aMail->isModified() || $this->aMail->isNew()) {
-                    $affectedRows += $this->aMail->save($con);
-                }
-                $this->setMail($this->aMail);
-            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -834,33 +807,33 @@ abstract class MailQueue implements ActiveRecordInterface
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[MailQueueTableMap::COL_ID] = true;
+        $this->modifiedColumns[NewsTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . MailQueueTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . NewsTableMap::COL_ID . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(MailQueueTableMap::COL_ID)) {
+        if ($this->isColumnModified(NewsTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_MAIL_TO)) {
-            $modifiedColumns[':p' . $index++]  = 'mail_to';
+        if ($this->isColumnModified(NewsTableMap::COL_UNIQUE_ID)) {
+            $modifiedColumns[':p' . $index++]  = 'unique_id';
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_MAIL_ID)) {
-            $modifiedColumns[':p' . $index++]  = 'mail_id';
+        if ($this->isColumnModified(NewsTableMap::COL_TITLE)) {
+            $modifiedColumns[':p' . $index++]  = 'title';
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_MAIL_STATUS)) {
-            $modifiedColumns[':p' . $index++]  = 'mail_status';
+        if ($this->isColumnModified(NewsTableMap::COL_DESCRIPTION)) {
+            $modifiedColumns[':p' . $index++]  = 'description';
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_CREATED_AT)) {
+        if ($this->isColumnModified(NewsTableMap::COL_CREATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'created_at';
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_UPDATED_AT)) {
+        if ($this->isColumnModified(NewsTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO mail_queue (%s) VALUES (%s)',
+            'INSERT INTO news (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -872,14 +845,14 @@ abstract class MailQueue implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'mail_to':
-                        $stmt->bindValue($identifier, $this->mail_to, PDO::PARAM_STR);
+                    case 'unique_id':
+                        $stmt->bindValue($identifier, $this->unique_id, PDO::PARAM_STR);
                         break;
-                    case 'mail_id':
-                        $stmt->bindValue($identifier, $this->mail_id, PDO::PARAM_INT);
+                    case 'title':
+                        $stmt->bindValue($identifier, $this->title, PDO::PARAM_STR);
                         break;
-                    case 'mail_status':
-                        $stmt->bindValue($identifier, $this->mail_status, PDO::PARAM_INT);
+                    case 'description':
+                        $stmt->bindValue($identifier, $this->description, PDO::PARAM_STR);
                         break;
                     case 'created_at':
                         $stmt->bindValue($identifier, $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
@@ -933,7 +906,7 @@ abstract class MailQueue implements ActiveRecordInterface
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = MailQueueTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = NewsTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -953,13 +926,13 @@ abstract class MailQueue implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getMailTo();
+                return $this->getUniqueId();
                 break;
             case 2:
-                return $this->getMailId();
+                return $this->getTitle();
                 break;
             case 3:
-                return $this->getMailStatus();
+                return $this->getDescription();
                 break;
             case 4:
                 return $this->getCreatedAt();
@@ -984,23 +957,22 @@ abstract class MailQueue implements ActiveRecordInterface
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
      * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
-     * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
     {
 
-        if (isset($alreadyDumpedObjects['MailQueue'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects['News'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['MailQueue'][$this->hashCode()] = true;
-        $keys = MailQueueTableMap::getFieldNames($keyType);
+        $alreadyDumpedObjects['News'][$this->hashCode()] = true;
+        $keys = NewsTableMap::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getId(),
-            $keys[1] => $this->getMailTo(),
-            $keys[2] => $this->getMailId(),
-            $keys[3] => $this->getMailStatus(),
+            $keys[1] => $this->getUniqueId(),
+            $keys[2] => $this->getTitle(),
+            $keys[3] => $this->getDescription(),
             $keys[4] => $this->getCreatedAt(),
             $keys[5] => $this->getUpdatedAt(),
         );
@@ -1017,23 +989,6 @@ abstract class MailQueue implements ActiveRecordInterface
             $result[$key] = $virtualColumn;
         }
 
-        if ($includeForeignObjects) {
-            if (null !== $this->aMail) {
-
-                switch ($keyType) {
-                    case TableMap::TYPE_CAMELNAME:
-                        $key = 'mail';
-                        break;
-                    case TableMap::TYPE_FIELDNAME:
-                        $key = 'mail';
-                        break;
-                    default:
-                        $key = 'Mail';
-                }
-
-                $result[$key] = $this->aMail->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-        }
 
         return $result;
     }
@@ -1047,11 +1002,11 @@ abstract class MailQueue implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     * @return $this|\Database\Model\MailQueue
+     * @return $this|\Database\Model\News
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = MailQueueTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = NewsTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1062,7 +1017,7 @@ abstract class MailQueue implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     * @return $this|\Database\Model\MailQueue
+     * @return $this|\Database\Model\News
      */
     public function setByPosition($pos, $value)
     {
@@ -1071,13 +1026,13 @@ abstract class MailQueue implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setMailTo($value);
+                $this->setUniqueId($value);
                 break;
             case 2:
-                $this->setMailId($value);
+                $this->setTitle($value);
                 break;
             case 3:
-                $this->setMailStatus($value);
+                $this->setDescription($value);
                 break;
             case 4:
                 $this->setCreatedAt($value);
@@ -1109,19 +1064,19 @@ abstract class MailQueue implements ActiveRecordInterface
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = MailQueueTableMap::getFieldNames($keyType);
+        $keys = NewsTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) {
             $this->setId($arr[$keys[0]]);
         }
         if (array_key_exists($keys[1], $arr)) {
-            $this->setMailTo($arr[$keys[1]]);
+            $this->setUniqueId($arr[$keys[1]]);
         }
         if (array_key_exists($keys[2], $arr)) {
-            $this->setMailId($arr[$keys[2]]);
+            $this->setTitle($arr[$keys[2]]);
         }
         if (array_key_exists($keys[3], $arr)) {
-            $this->setMailStatus($arr[$keys[3]]);
+            $this->setDescription($arr[$keys[3]]);
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setCreatedAt($arr[$keys[4]]);
@@ -1148,7 +1103,7 @@ abstract class MailQueue implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Database\Model\MailQueue The current object, for fluid interface
+     * @return $this|\Database\Model\News The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1168,25 +1123,25 @@ abstract class MailQueue implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(MailQueueTableMap::DATABASE_NAME);
+        $criteria = new Criteria(NewsTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(MailQueueTableMap::COL_ID)) {
-            $criteria->add(MailQueueTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(NewsTableMap::COL_ID)) {
+            $criteria->add(NewsTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_MAIL_TO)) {
-            $criteria->add(MailQueueTableMap::COL_MAIL_TO, $this->mail_to);
+        if ($this->isColumnModified(NewsTableMap::COL_UNIQUE_ID)) {
+            $criteria->add(NewsTableMap::COL_UNIQUE_ID, $this->unique_id);
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_MAIL_ID)) {
-            $criteria->add(MailQueueTableMap::COL_MAIL_ID, $this->mail_id);
+        if ($this->isColumnModified(NewsTableMap::COL_TITLE)) {
+            $criteria->add(NewsTableMap::COL_TITLE, $this->title);
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_MAIL_STATUS)) {
-            $criteria->add(MailQueueTableMap::COL_MAIL_STATUS, $this->mail_status);
+        if ($this->isColumnModified(NewsTableMap::COL_DESCRIPTION)) {
+            $criteria->add(NewsTableMap::COL_DESCRIPTION, $this->description);
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_CREATED_AT)) {
-            $criteria->add(MailQueueTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(NewsTableMap::COL_CREATED_AT)) {
+            $criteria->add(NewsTableMap::COL_CREATED_AT, $this->created_at);
         }
-        if ($this->isColumnModified(MailQueueTableMap::COL_UPDATED_AT)) {
-            $criteria->add(MailQueueTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(NewsTableMap::COL_UPDATED_AT)) {
+            $criteria->add(NewsTableMap::COL_UPDATED_AT, $this->updated_at);
         }
 
         return $criteria;
@@ -1204,8 +1159,8 @@ abstract class MailQueue implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildMailQueueQuery::create();
-        $criteria->add(MailQueueTableMap::COL_ID, $this->id);
+        $criteria = ChildNewsQuery::create();
+        $criteria->add(NewsTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1267,16 +1222,16 @@ abstract class MailQueue implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Database\Model\MailQueue (or compatible) type.
+     * @param      object $copyObj An object of \Database\Model\News (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setMailTo($this->getMailTo());
-        $copyObj->setMailId($this->getMailId());
-        $copyObj->setMailStatus($this->getMailStatus());
+        $copyObj->setUniqueId($this->getUniqueId());
+        $copyObj->setTitle($this->getTitle());
+        $copyObj->setDescription($this->getDescription());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
         if ($makeNew) {
@@ -1294,7 +1249,7 @@ abstract class MailQueue implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return \Database\Model\MailQueue Clone of current object.
+     * @return \Database\Model\News Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1308,70 +1263,16 @@ abstract class MailQueue implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildMail object.
-     *
-     * @param  ChildMail $v
-     * @return $this|\Database\Model\MailQueue The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setMail(ChildMail $v = null)
-    {
-        if ($v === null) {
-            $this->setMailId(NULL);
-        } else {
-            $this->setMailId($v->getId());
-        }
-
-        $this->aMail = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildMail object, it will not be re-added.
-        if ($v !== null) {
-            $v->addMailQueue($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated ChildMail object
-     *
-     * @param  ConnectionInterface $con Optional Connection object.
-     * @return ChildMail The associated ChildMail object.
-     * @throws PropelException
-     */
-    public function getMail(ConnectionInterface $con = null)
-    {
-        if ($this->aMail === null && ($this->mail_id !== null)) {
-            $this->aMail = ChildMailQuery::create()->findPk($this->mail_id, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aMail->addMailQueues($this);
-             */
-        }
-
-        return $this->aMail;
-    }
-
-    /**
      * Clears the current object, sets all attributes to their default values and removes
      * outgoing references as well as back-references (from other objects to this one. Results probably in a database
      * change of those foreign objects when you call `save` there).
      */
     public function clear()
     {
-        if (null !== $this->aMail) {
-            $this->aMail->removeMailQueue($this);
-        }
         $this->id = null;
-        $this->mail_to = null;
-        $this->mail_id = null;
-        $this->mail_status = null;
+        $this->unique_id = null;
+        $this->title = null;
+        $this->description = null;
         $this->created_at = null;
         $this->updated_at = null;
         $this->alreadyInSave = false;
@@ -1394,7 +1295,6 @@ abstract class MailQueue implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aMail = null;
     }
 
     /**
@@ -1404,7 +1304,7 @@ abstract class MailQueue implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string) $this->exportTo(MailQueueTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(NewsTableMap::DEFAULT_STRING_FORMAT);
     }
 
     // timestampable behavior
@@ -1412,11 +1312,11 @@ abstract class MailQueue implements ActiveRecordInterface
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     $this|ChildMailQueue The current object (for fluent API support)
+     * @return     $this|ChildNews The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged()
     {
-        $this->modifiedColumns[MailQueueTableMap::COL_UPDATED_AT] = true;
+        $this->modifiedColumns[NewsTableMap::COL_UPDATED_AT] = true;
 
         return $this;
     }

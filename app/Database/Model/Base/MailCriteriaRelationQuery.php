@@ -325,9 +325,6 @@ abstract class MailCriteriaRelationQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($emailAddress)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $emailAddress)) {
-                $emailAddress = str_replace('*', '%', $emailAddress);
-                $comparison = Criteria::LIKE;
             }
         }
 

@@ -1,0 +1,15 @@
+{% for news in newsList %}
+<div class="newsItem">
+    <div class="newsTitle">
+        <h5>{{ news.title }}</h5>
+    </div>
+    <div class="newsContent">
+        <h5>{{ news.description }}</h5>
+        ....................................................
+    </div>
+    <div class="viewNews">
+        <a href="#" class="pull-right">vezi detalii</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+{% endfor %}

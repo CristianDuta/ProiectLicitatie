@@ -42,6 +42,9 @@ class PageRenderSettingsFactory
             case 'auction':
                 $pageRenderSettings = new AuctionPageRenderSettings($this->app['config'], $pageValue);
                 break;
+            case 'home':
+                $pageRenderSettings = new HomePageRenderSettings();
+                break;
         }
 
         return $pageRenderSettings;

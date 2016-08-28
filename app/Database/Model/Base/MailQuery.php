@@ -335,9 +335,6 @@ abstract class MailQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($fromEmailAddress)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $fromEmailAddress)) {
-                $fromEmailAddress = str_replace('*', '%', $fromEmailAddress);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -364,9 +361,6 @@ abstract class MailQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($subject)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $subject)) {
-                $subject = str_replace('*', '%', $subject);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -393,9 +387,6 @@ abstract class MailQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($auctionList)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $auctionList)) {
-                $auctionList = str_replace('*', '%', $auctionList);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -422,9 +413,6 @@ abstract class MailQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($mailTemplate)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $mailTemplate)) {
-                $mailTemplate = str_replace('*', '%', $mailTemplate);
-                $comparison = Criteria::LIKE;
             }
         }
 

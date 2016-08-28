@@ -134,5 +134,22 @@ CREATE TABLE `mail_criteria_relation`
         REFERENCES `mail_criteria` (`id`)
 ) ENGINE=InnoDB;
 
+-- ---------------------------------------------------------------------
+-- news
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `news`;
+
+CREATE TABLE `news`
+(
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `unique_id` VARCHAR(32) NOT NULL,
+    `title` TEXT NOT NULL,
+    `description` TEXT NOT NULL,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

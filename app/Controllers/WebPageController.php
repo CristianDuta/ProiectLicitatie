@@ -34,17 +34,14 @@ class WebPageController extends AbstractAppController
         $this->getControllerCollection()->get('/{pageName}/{pageValue}', function (
             Application $app, Request $request, $pageName, $pageValue
         ) {
-            if ($pageName == 'admin') {
+            if (empty($pageName)) {
+                $pageName = 'home';
+            } elseif ($pageName == 'admin') {
                 return $app->redirect("/admin/");
             }
 
-            $templateName = 'home-page.html';
-            if ($pageName) {
-                $templateName = $pageName . '-page.html';
-            }
-
             $renderParams             = $this->getPageRenderParams($app, $pageName, $pageValue);
-            $renderParams['pageName'] = $templateName;
+            $renderParams['pageName'] = $pageName . '-page.html';
             $renderParams['username'] = $this->getUsername($app);
             $renderParams['error']    = $app['security.last_error']($request);
             $renderParams['isDebug']  = $app['debug'];

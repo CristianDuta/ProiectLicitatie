@@ -330,9 +330,6 @@ abstract class MailQueueQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($mailTo)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $mailTo)) {
-                $mailTo = str_replace('*', '%', $mailTo);
-                $comparison = Criteria::LIKE;
             }
         }
 

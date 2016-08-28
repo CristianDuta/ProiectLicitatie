@@ -422,9 +422,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($uniqueId)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $uniqueId)) {
-                $uniqueId = str_replace('*', '%', $uniqueId);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -451,9 +448,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($title)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $title)) {
-                $title = str_replace('*', '%', $title);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -480,9 +474,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($estimatedValue)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $estimatedValue)) {
-                $estimatedValue = str_replace('*', '%', $estimatedValue);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -509,9 +500,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($location)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $location)) {
-                $location = str_replace('*', '%', $location);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -538,9 +526,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($documentation)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $documentation)) {
-                $documentation = str_replace('*', '%', $documentation);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -651,9 +636,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($gainer)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $gainer)) {
-                $gainer = str_replace('*', '%', $gainer);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -680,9 +662,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($contractType)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $contractType)) {
-                $contractType = str_replace('*', '%', $contractType);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -709,9 +688,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($fundingType)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $fundingType)) {
-                $fundingType = str_replace('*', '%', $fundingType);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -738,9 +714,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($contractSubject)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $contractSubject)) {
-                $contractSubject = str_replace('*', '%', $contractSubject);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -810,9 +783,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($applyMode)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $applyMode)) {
-                $applyMode = str_replace('*', '%', $applyMode);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -839,9 +809,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($contractPeriod)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $contractPeriod)) {
-                $contractPeriod = str_replace('*', '%', $contractPeriod);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -868,9 +835,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($participationWarranty)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $participationWarranty)) {
-                $participationWarranty = str_replace('*', '%', $participationWarranty);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -897,9 +861,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($participationConditions)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $participationConditions)) {
-                $participationConditions = str_replace('*', '%', $participationConditions);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -926,9 +887,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($professionalAbility)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $professionalAbility)) {
-                $professionalAbility = str_replace('*', '%', $professionalAbility);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -955,9 +913,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($averageTurnover)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $averageTurnover)) {
-                $averageTurnover = str_replace('*', '%', $averageTurnover);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -984,9 +939,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($cashFlow)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $cashFlow)) {
-                $cashFlow = str_replace('*', '%', $cashFlow);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -1013,9 +965,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($similarExperience)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $similarExperience)) {
-                $similarExperience = str_replace('*', '%', $similarExperience);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -1042,9 +991,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($keyPersonnel)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $keyPersonnel)) {
-                $keyPersonnel = str_replace('*', '%', $keyPersonnel);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -1071,9 +1017,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($equipment)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $equipment)) {
-                $equipment = str_replace('*', '%', $equipment);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -1100,9 +1043,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($qualityAssurance)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $qualityAssurance)) {
-                $qualityAssurance = str_replace('*', '%', $qualityAssurance);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -1129,9 +1069,6 @@ abstract class AuctionQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($additionalInformation)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $additionalInformation)) {
-                $additionalInformation = str_replace('*', '%', $additionalInformation);
-                $comparison = Criteria::LIKE;
             }
         }
 

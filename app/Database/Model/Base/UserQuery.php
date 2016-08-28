@@ -327,9 +327,6 @@ abstract class UserQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($firstName)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $firstName)) {
-                $firstName = str_replace('*', '%', $firstName);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -356,9 +353,6 @@ abstract class UserQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($lastName)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $lastName)) {
-                $lastName = str_replace('*', '%', $lastName);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -385,9 +379,6 @@ abstract class UserQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($roles)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $roles)) {
-                $roles = str_replace('*', '%', $roles);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -414,9 +405,6 @@ abstract class UserQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($email)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $email)) {
-                $email = str_replace('*', '%', $email);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -443,9 +431,6 @@ abstract class UserQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($password)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $password)) {
-                $password = str_replace('*', '%', $password);
-                $comparison = Criteria::LIKE;
             }
         }
 
@@ -472,9 +457,6 @@ abstract class UserQuery extends ModelCriteria
         if (null === $comparison) {
             if (is_array($phoneNumber)) {
                 $comparison = Criteria::IN;
-            } elseif (preg_match('/[\%\*]/', $phoneNumber)) {
-                $phoneNumber = str_replace('*', '%', $phoneNumber);
-                $comparison = Criteria::LIKE;
             }
         }
 

@@ -668,16 +668,16 @@ abstract class MailCriteria implements ActiveRecordInterface
                 // timestampable behavior
 
                 if (!$this->isColumnModified(MailCriteriaTableMap::COL_CREATED_AT)) {
-                    $this->setCreatedAt(time());
+                    $this->setCreatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
                 if (!$this->isColumnModified(MailCriteriaTableMap::COL_UPDATED_AT)) {
-                    $this->setUpdatedAt(time());
+                    $this->setUpdatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
             } else {
                 $ret = $ret && $this->preUpdate($con);
                 // timestampable behavior
                 if ($this->isModified() && !$this->isColumnModified(MailCriteriaTableMap::COL_UPDATED_AT)) {
-                    $this->setUpdatedAt(time());
+                    $this->setUpdatedAt(\Propel\Runtime\Util\PropelDateTime::createHighPrecision());
                 }
             }
             if ($ret) {

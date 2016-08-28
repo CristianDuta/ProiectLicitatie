@@ -11,6 +11,8 @@ use Database\Model\Mail;
 use Database\Model\MailCriteriaQuery;
 use Database\Model\MailCriteriaRelationQuery;
 use Database\Model\MailQueue;
+use Database\Model\News;
+use Database\Model\NewsQuery;
 use Exception;
 use Silex\Application;
 use Silex\ControllerCollection;
@@ -25,6 +27,9 @@ class AdminPageController extends AbstractAppController
     const PAGE_TITLE_VIEW_AUCTION_LIST = 'Vizualizare Licitatii';
     const PAGE_TITLE_VIEW_AUCTION = 'Vizualizare Licitatie';
     const PAGE_TITLE_MAIL_ALERTS = 'Alerte email';
+    const PAGE_TITLE_ADD_NEWS = 'Adauga stire noua';
+    const PAGE_TITLE_EDIT_NEWS = 'Editeaza stire';
+    const PAGE_TITLE_NEWS_LIST = 'Vizualizare stiri';
 
     /**
      * Returns routes to connect to the given application.
@@ -45,6 +50,9 @@ class AdminPageController extends AbstractAppController
         $this->setUpMailAlertsProvider()->secure('ROLE_ADMIN');
         $this->setUpSaveEmailAlerts()->secure('ROLE_ADMIN');
         $this->setUpSendAuctionListViaEmail()->secure('ROLE_ADMIN');
+//        $this->setUpNewsListPage()->secure('ROLE_ADMIN');
+        $this->setUpAddOrEditNewsPage()->secure('ROLE_ADMIN');
+
 
         return $this->getControllerCollection();
     }
@@ -285,5 +293,50 @@ class AdminPageController extends AbstractAppController
                 'statusMessage' => !empty($statusMessage) ? $statusMessage : 'success'
             ));
         });
+    }
+
+
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpAddOrEditNewsPage() //todo
+    {
+        return $this->getControllerCollection()->match('/addOrEditNews/{id}', function (Request $request, Application $app, $id) {
+            $requestType = $request->getMethod();
+            if ($requestType == 'POST') {
+                if (!empty($id)) {
+                    $news = NewsQuery::create()
+                        ->filterByUniqueId($id)
+                        ->findOne();
+                } else {
+                    $news = new News();
+                }
+
+                $news->setTitle($request->get('title'));
+                $news->setDescription($request->get('description'));
+                $news->save();
+
+                return $app->redirect('/admin/addOrEditNews' . $id);
+            }
+
+            $news = new News();
+            $pageTitle = self::PAGE_TITLE_ADD_NEWS;
+
+            if (!empty($id)) {
+                $pageTitle = self::PAGE_TITLE_EDIT_NEWS;
+                $news = NewsQuery::create()
+                ->filterByUniqueId($id)
+                ->findOne();
+            }
+
+            return $app['twig']->render("admin-index.html", array(
+                'pageTitle' => $pageTitle,
+                'activeMenuItem' => 'addOrEditNews',
+                'username' => $this->getUsername($app),
+                'pageContent' => $app['twig']->render("add-edit-news.html", [
+                    'news' => $news
+                ])
+            ));
+        })->value('id', '');
     }
 }

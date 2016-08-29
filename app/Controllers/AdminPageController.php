@@ -14,6 +14,7 @@ use Database\Model\MailQueue;
 use Database\Model\News;
 use Database\Model\NewsQuery;
 use Exception;
+use Propel\Runtime\ActiveQuery\Criteria;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,9 +51,9 @@ class AdminPageController extends AbstractAppController
         $this->setUpMailAlertsProvider()->secure('ROLE_ADMIN');
         $this->setUpSaveEmailAlerts()->secure('ROLE_ADMIN');
         $this->setUpSendAuctionListViaEmail()->secure('ROLE_ADMIN');
-//        $this->setUpNewsListPage()->secure('ROLE_ADMIN');
+        $this->setUpNewsListPage()->secure('ROLE_ADMIN');
         $this->setUpAddOrEditNewsPage()->secure('ROLE_ADMIN');
-
+        $this->setUpDeleteNewsPage()->secure('ROLE_ADMIN');
 
         return $this->getControllerCollection();
     }
@@ -295,11 +296,10 @@ class AdminPageController extends AbstractAppController
         });
     }
 
-
     /**
      * @return \Silex\Controller|\BusinessLogic\SecureRoute
      */
-    private function setUpAddOrEditNewsPage() //todo
+    private function setUpAddOrEditNewsPage()
     {
         return $this->getControllerCollection()->match('/addOrEditNews/{id}', function (Request $request, Application $app, $id) {
             $requestType = $request->getMethod();
@@ -338,5 +338,40 @@ class AdminPageController extends AbstractAppController
                 ])
             ));
         })->value('id', '');
+    }
+
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpNewsListPage()
+    {
+        return $this->getControllerCollection()->get('/newsList', function (Application $app) {
+
+            $pageTitle = self::PAGE_TITLE_NEWS_LIST;
+
+            return $app['twig']->render("admin-index.html", array(
+                'pageTitle' => $pageTitle,
+                'activeMenuItem' => 'newsList',
+                'username' => $this->getUsername($app),
+                'pageContent' => $app['twig']->render("view-news.html", [
+                    'newsList' => NewsQuery::create()->orderByUpdatedAt(Criteria::DESC)->find(),
+                ])
+            ));
+        });
+    }
+
+
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpDeleteNewsPage()
+    {
+        return $this->getControllerCollection()->match('/deleteNews/{id}', function (Application $app, $id) {
+            NewsQuery::create()
+                ->filterByUniqueId($id)
+                ->delete();
+
+            return $app->redirect("/admin/newsList");
+        });
     }
 }

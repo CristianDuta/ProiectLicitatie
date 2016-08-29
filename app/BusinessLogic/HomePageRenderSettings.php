@@ -4,6 +4,7 @@ namespace BusinessLogic;
 
 use BusinessLogic\Interfaces\PageRenderSettings;
 use Database\Model\NewsQuery;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 class HomePageRenderSettings implements PageRenderSettings
 {
@@ -24,7 +25,7 @@ class HomePageRenderSettings implements PageRenderSettings
     private function getNews()
     {
         return NewsQuery::create()
-            ->orderByUpdatedAt()
+            ->orderByUpdatedAt(Criteria::DESC)
             ->find();
     }
 }

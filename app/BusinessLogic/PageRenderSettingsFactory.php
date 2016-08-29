@@ -45,6 +45,9 @@ class PageRenderSettingsFactory
             case 'home':
                 $pageRenderSettings = new HomePageRenderSettings();
                 break;
+            case 'news':
+                $pageRenderSettings = new NewsPageRenderSettings($pageValue);
+                break;
         }
 
         return $pageRenderSettings;

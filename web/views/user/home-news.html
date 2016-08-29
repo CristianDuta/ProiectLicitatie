@@ -1,0 +1,22 @@
+{% for news in newsList[:4] %}
+<div class="newsItem">
+    <div class="newsTitle">
+        {% if news.title|length > 30 %}
+            <h5>{{ news.title[:30] }}...</h5>
+        {% else %}
+            <h5>{{ news.title }}</h5>
+        {% endif %}
+    </div>
+    <div class="newsContent">
+        {% if news.description|length > 70 %}
+            <h5>{{ news.description[:70] }}...</h5>
+        {% else %}
+            <h5>{{ news.description }}</h5>
+        {% endif %}
+    </div>
+    <div class="viewNews">
+        <a href="/news/{{ news.UniqueId }}" class="pull-right">vezi detalii</a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+{% endfor %}

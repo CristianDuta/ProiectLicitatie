@@ -151,5 +151,26 @@ CREATE TABLE `news`
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
+-- ---------------------------------------------------------------------
+-- subscriptions
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `subscriptions`;
+
+CREATE TABLE `subscriptions`
+(
+    `id` INTEGER(11) NOT NULL AUTO_INCREMENT,
+    `company_name` VARCHAR(255) NOT NULL,
+    `company_address` TEXT NOT NULL,
+    `company_cui` VARCHAR(255) NOT NULL,
+    `company_representative` VARCHAR(255) NOT NULL,
+    `iban_account` VARCHAR(255) NOT NULL,
+    `email_address` VARCHAR(255) NOT NULL,
+    `phone_number` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME,
+    `updated_at` DATETIME,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

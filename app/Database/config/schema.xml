@@ -108,4 +108,20 @@
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
     </table>
+
+    <table name="subscriptions" idMethod="native" phpName="Subscription">
+        <column name="id" phpName="Id" type="INTEGER" size="11" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="company_name" phpName="CompanyName" type="VARCHAR" size="255" required="true" />
+        <column name="company_address" phpName="CompanyAddress" type="LONGVARCHAR" required="true" />
+        <column name="company_cui" phpName="CompanyCui" type="VARCHAR" size="255" required="true" />
+        <column name="company_representative" phpName="CompanyRepresentative" type="VARCHAR" size="255" required="true" />
+        <column name="iban_account" phpName="IbanAccount" type="VARCHAR" size="255" required="true" />
+        <column name="email_address" phpName="EmailAddress" type="VARCHAR" size="255" required="true" />
+        <column name="phone_number" phpName="PhoneNumber" type="VARCHAR" size="255" required="true"/>
+        <behavior name="timestampable" />
+
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
 </database>

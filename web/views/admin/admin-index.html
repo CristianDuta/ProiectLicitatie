@@ -160,6 +160,18 @@
                                 <span class="menu-title">Vizualizare stiri</span>
                             </a>
                         </li>
+                        {% if activeMenuItem == 'subscriptionList' %}
+                        <li class="active">
+                        {% else %}
+                        <li>
+                        {% endif %}
+                            <a href="/admin/subscriptionList">
+                                <i class="fa fa-building">
+                                    <div class="icon-bg bg-red"></div>
+                                </i>
+                                <span class="menu-title">Vizualizare abonamente</span>
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
@@ -222,6 +234,10 @@
 {% if activeMenuItem == 'emailAlerts' %}
 <script src="//cdn.datatables.net/u/bs/dt-1.10.12,b-1.2.1/datatables.min.js"></script>
 <script src="{{ asset('script/emailAlert.js') }}"></script>
+{% endif %}
+{% if activeMenuItem == 'subscriptionList' %}
+<script src="//cdn.datatables.net/u/bs/dt-1.10.12,b-1.2.1/datatables.min.js"></script>
+<script src="{{ asset('script/subscriptionList.js') }}"></script>
 {% endif %}
 {% if activeMenuItem == 'view' %}
     {% if is_granted('ROLE_ADMIN') %}

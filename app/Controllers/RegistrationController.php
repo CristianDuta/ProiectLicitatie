@@ -2,12 +2,12 @@
 
 namespace Controllers;
 
+use BusinessLogic\UserProvider;
 use BusinessLogic\UserRegistrationProcess;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\User\User;
 
 class RegistrationController extends AbstractAppController
 {
@@ -36,22 +36,20 @@ class RegistrationController extends AbstractAppController
                 $app['security.encoder.digest']->encodePassword($parameterList['password'], ''),
                 $parameterList['firstName'],
                 $parameterList['lastName'],
-                $parameterList['phoneNumber'],
-                $parameterList['newsOption']
+                $parameterList['phoneNumber']
             );
             $userRegistrationProcess->execute();
-
-//            if (strpos($request->headers->get('referer'), 'admin') !== false) {
-//                $redirectUrl = "/admin/";
-//            }
-
-            return $app->redirect('/');
+            $this->loginUser($app, $parameterList);
+            return $app->redirect('/home');
         });
     }
 
     private function loginUser(Application $app, $loginData)
     {
-        $User = new User($loginData['email'], $loginData['password'], array('ROLE_USER'));
-        $app['security']->setToken(serialize(new UsernamePasswordToken($User, $User->getPassword(), 'default', array('ROLE_USER'))));
+        $userProvided = new UserProvider();
+        $User = $userProvided->loadUserByUsername($loginData['email']);
+        $token = new UsernamePasswordToken($User, $User->getPassword(), 'default', array('ROLE_USER'));
+
+        $app['security.token_storage']->setToken($token);
     }
 }

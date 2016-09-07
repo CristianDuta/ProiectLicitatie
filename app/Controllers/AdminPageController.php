@@ -13,6 +13,7 @@ use Database\Model\MailCriteriaRelationQuery;
 use Database\Model\MailQueue;
 use Database\Model\News;
 use Database\Model\NewsQuery;
+use Database\Model\SubscriptionQuery;
 use Exception;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Silex\Application;
@@ -31,6 +32,8 @@ class AdminPageController extends AbstractAppController
     const PAGE_TITLE_ADD_NEWS = 'Adauga stire noua';
     const PAGE_TITLE_EDIT_NEWS = 'Editeaza stire';
     const PAGE_TITLE_NEWS_LIST = 'Vizualizare stiri';
+    const PAGE_TITLE_SUBSCRIPTION_LIST = 'Vizualizare abonamente';
+    const PAGE_TITLE_SUBSCRIPTION_EDIT = 'Actualizeaza abonament';
 
     /**
      * Returns routes to connect to the given application.
@@ -54,6 +57,8 @@ class AdminPageController extends AbstractAppController
         $this->setUpNewsListPage()->secure('ROLE_ADMIN');
         $this->setUpAddOrEditNewsPage()->secure('ROLE_ADMIN');
         $this->setUpDeleteNewsPage()->secure('ROLE_ADMIN');
+        $this->setUpSubscriptionPage()->secure('ROLE_ADMIN');
+        $this->setUpEditSubscriptionPage()->secure('ROLE_ADMIN');
 
         return $this->getControllerCollection();
     }
@@ -150,7 +155,7 @@ class AdminPageController extends AbstractAppController
                 'username' => $this->getUsername($app),
                 'pageContent' => $app['twig']->render("view-details.html", [
                     'inputArray' => $app['config']['addOrEditSection'],
-                    'auctionList' => $auction,
+                    'auction' => $auction,
                 ])
             ));
         })->value('id', '');
@@ -250,6 +255,77 @@ class AdminPageController extends AbstractAppController
                 'statusMessage' => !empty($statusMessage) ? $statusMessage : 'success'
             ));
         });
+    }
+
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpSubscriptionPage()
+    {
+        return $this->getControllerCollection()->get('/subscriptionList', function (Application $app) {
+            $subscriptionList = SubscriptionQuery::create()
+                ->orderByUpdatedAt(Criteria::DESC)
+                ->find()
+                ->toArray();
+
+            return $app['twig']->render("admin-index.html", array(
+                'pageTitle' => self::PAGE_TITLE_SUBSCRIPTION_LIST,
+                'activeMenuItem' => 'subscriptionList',
+                'username' => $this->getUsername($app),
+                'pageContent' => $app['twig']->render("subscriptionList.html", [
+                    'inputArray' => [
+                        "CompanyName" => 'Companie',
+                        "CompanyAddress" => 'Adresa',
+                        "CompanyCui" => 'CUI',
+                        "CompanyRepresentative" => 'Reprezentant companie',
+                        "IbanAccount" => 'Cont IBAN',
+                        "EmailAddress" => 'Adresa e-mail',
+                        "PhoneNumber" => 'Telefon',
+                        "CreatedAt" => 'Adaugat la data',
+                        "UpdatedAt" => 'Actualizat la data',
+                    ],
+                    'subscriptionList' => $subscriptionList,
+                ])
+            ));
+        });
+    }
+
+    /**
+     * @return \Silex\Controller|\BusinessLogic\SecureRoute
+     */
+    private function setUpEditSubscriptionPage()
+    {
+        return $this->getControllerCollection()->match('/subscription/{id}', function (Request $request, Application $app, $id) {
+            if (empty($id)) {
+                return $app->redirect('/admin/subscriptionList');
+            }
+
+            $subscription = SubscriptionQuery::create()
+                ->filterById($id)
+                ->findOne();
+
+            if ($request->getMethod() == 'POST') {
+                $subscription->setCompanyName($request->get('companyName'));
+                $subscription->setCompanyAddress($request->get('companyAddress'));
+                $subscription->setCompanyCui($request->get('companyCui'));
+                $subscription->setCompanyRepresentative($request->get('companyRepresentative'));
+                $subscription->setIbanAccount($request->get('companyIban'));
+                $subscription->setEmailAddress($request->get('email'));
+                $subscription->setPhoneNumber($request->get('phoneNumber'));
+                $subscription->save();
+
+                return $app->redirect('/admin/subscriptionList');
+            }
+
+            return $app['twig']->render("admin-index.html", array(
+                'pageTitle' => self::PAGE_TITLE_SUBSCRIPTION_EDIT,
+                'activeMenuItem' => 'subscriptionList',
+                'username' => $this->getUsername($app),
+                'pageContent' => $app['twig']->render("edit-subscription.html", [
+                    'subscription' => $subscription
+                ])
+            ));
+        })->value('id', '');
     }
 
     /**

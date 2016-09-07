@@ -12,7 +12,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 $app = new Silex\Application();
 $app['config'] = require_once dirname(__DIR__) . "/app/config/global.config.php";
 $app['local_config'] = require_once dirname(__DIR__) . "/app/config/local.config.php";
-//$app['debug'] = true;
+$app['debug'] = true;
 
 
 /** register auth services */

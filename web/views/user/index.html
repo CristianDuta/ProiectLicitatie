@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
           integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link type="text/css" rel="stylesheet" href="{{ asset('styles/jplist-custom.css') }}"/>
-    <link type="text/css" rel="stylesheet" href="{{ asset('styles/style.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset('styles/style.css') ~ '?v=2'}}">
     <title>Licitaţie Pas cu Pas</title>
 </head>
 <body>
@@ -20,10 +20,12 @@
         {% include 'page-menu.html' %}
     </div>
     <div class="row title">
+        {% if username %}
         <div class="col-sm-12">
             <h5 class="welcome-message pull-right">Bine ai venit, {{ username }}</h5>
             <div class="clearfix"></div>
         </div>
+        {% endif %}
         <div class="col-sm-12">
             <div class="welcome-title">
                 <h2 class="hidden-xs hidden-sm visible-md visible-lg">Licitaţie pas cu pas <br/> Bun venit!</h2>

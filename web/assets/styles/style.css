@@ -25,20 +25,19 @@ body {
     position: absolute;
 }
 
-.row.header .menu .welcome-message {
-    color: #1F6AB9;
-    font-weight: bold;
-    padding-right: 10px;
-    float: right;
-    clear: both;
-}
-
 .row.header .btn-custom {
     background: #881917;
     border: 3px solid #FFFFFF;
     color: #FFFFFF;
     font-weight: bold;
     width: 100%;
+    margin: 5px 0;
+}
+
+.row.title .welcome-message {
+    color: #1F6AB9;
+    font-weight: bold;
+    padding-right: 10px;
     margin: 5px 0;
 }
 
@@ -63,13 +62,19 @@ body {
     margin: 0 auto;
 }
 
+.row.title .welcome-title h3,
+.row.title .welcome-title h4
+{
+    margin-top: 0;
+}
+
 .row.main-content {
     background-color: #721513;
 }
 
 .row.main-content .main-content-notebook {
     position: relative;
-    height: 600px;
+    padding-bottom: 10px;
 }
 
 .row.main-content .main-content-notebook .text-content {
@@ -80,20 +85,6 @@ body {
     right: 0;
     margin: 0 auto;
     top: 50px;
-}
-
-.row.main-content .main-content-notebook .text-content .check-icon {
-    font-size: 60px;
-    color: #721513;
-}
-
-.row.main-content .main-content-notebook .notebook-image {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    padding-right: 30px;
-    max-width: 460px;
 }
 
 .main-content-subscribe-text .subscriptionButton {

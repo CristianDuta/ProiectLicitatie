@@ -21,12 +21,20 @@
     </div>
     <div class="row title">
         <div class="col-sm-12">
+            <h5 class="welcome-message pull-right">Bine ai venit, {{ username }}</h5>
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-sm-12">
             <div class="welcome-title">
-                <h2>Licitaţie pas cu pas <br/> Bun venit!</h2>
+                <h2 class="hidden-xs hidden-sm visible-md visible-lg">Licitaţie pas cu pas <br/> Bun venit!</h2>
+                <h3 class="visible-xs visible-sm hidden-md hidden-lg">Licitaţie pas cu pas <br/> Bun venit!</h3>
             </div>
-            <h3>Această platformă a fost gândită special pentru ca dumneavoastră, în calitate de client să puteți decide
-                în 5 minute dacă sunteți eligibil să participați la licitațiile din domeniul dumneavoastră de
-                activitate.</h3>
+            <h3 class="hidden-xs hidden-sm visible-md visible-lg">Această platformă a fost gândită special pentru ca
+                dumneavoastră, în calitate de client să puteți decide în 5 minute dacă sunteți eligibil să participați
+                la licitațiile din domeniul dumneavoastră de activitate.</h3>
+            <h4 class="visible-xs visible-sm hidden-md hidden-lg">Această platformă a fost gândită special pentru ca
+                dumneavoastră, în calitate de client să puteți decide în 5 minute dacă sunteți eligibil să participați
+                la licitațiile din domeniul dumneavoastră de activitate.</h4>
         </div>
     </div>
 
@@ -38,6 +46,7 @@
         <div class="copyright">&copy; {{ "now"|date("Y") }} - Licitaţie Pas cu Pas</div>
         <br/>
     </div>
+    <div class="clearfix"></div>
 </div> <!-- /.container -->
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 <script src="https://use.fontawesome.com/01a7fb78cb.js"></script>

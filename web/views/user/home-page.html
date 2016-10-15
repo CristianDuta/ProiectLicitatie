@@ -1,59 +1,27 @@
 <div class="main-content-title">
     <h2>Care sunt avantajele dumneavoastră?</h2>
 </div>
-<div class="col-xs-3 main-content-home-news">
+<div class="col-xs-3 main-content-home-news hidden-xs hidden-sm visible-md visible-lg">
     {% include 'home-news.html' %}
 </div>
-<div class="col-xs-7 main-content-notebook">
-    <img class="notebook-image" src="{{ asset('images/main-content-notebook.png') }}" />
-    <div class="text-content">
-        <div class="checked-text-content col-sm-12 no-padding">
-            <div class="text-to-check col-sm-10 no-padding pull-left">
-                <h4>O informare promptă și succintă despre licitațiile curente, astfel încât, în câteva minute
-                    să decizi dacă participi.</h4>
-            </div>
-            <div class="check-icon col-sm-2 no-padding pull-right">
-                <i class="fa fa-check" aria-hidden="true"></i>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-
-        <div class="checked-text-content col-sm-12 no-padding">
-            <div class="text-to-check col-sm-10 no-padding pull-left">
-                <h4>Pe baza unui abonament lunar primești în timp util licitațiile în curs și o detaliere exactă
-                    a condițiilor de participare, întocmită de echipă noastră de specialiști în licitații
-                    publice.</h4>
-            </div>
-            <div class="check-icon col-sm-2 no-padding pull-right">
-                <i class="fa fa-check" aria-hidden="true"></i>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-
-        <div class="checked-text-content col-sm-12 no-padding">
-            <div class="text-to-check col-sm-10 no-padding pull-left">
-                <br/>
-                <h4>Economie de timp și bani, beneficiind de informare sigură și la obiect.</h4>
-            </div>
-            <div class="check-icon col-sm-2 no-padding pull-right">
-                <i class="fa fa-check" aria-hidden="true"></i>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-        <div class="checked-text-content col-sm-12 no-padding">
-            <div class="text-to-check col-sm-10 no-padding pull-left">
-                <h4>Pe baza experienței acumulate, suntem la dispoziția dumneavoastră pentru a depăși
-                    obstacolele pe care le întâlniți la întocmirea ofertelor și la răspunsurile la solicitările
-                    de clarificări.</h4>
-            </div>
-            <div class="check-icon col-sm-2 no-padding pull-right">
-                <i class="fa fa-check" aria-hidden="true"></i>
-            </div>
-            <div class="clearfix"></div>
-        </div>
+<div class="col-xs-12 col-md-6 main-content-notebook">
+    <img class="notebook-image img-responsive center-block" src="{{ asset('images/main-content-notebook.png') }}" />
+</div>
+<div class="col-xs-12 main-content-subscribe-text text-center visible-xs visible-sm hidden-md hidden-lg">
+    <h3>
+        <a class="subscriptionButton" href="/subscription">
+            <i class="fa fa-hand-o-right" aria-hidden="true"></i>
+            <u>VREAU ABONAMENT</u>
+            <i class="fa fa-hand-o-left" aria-hidden="true"></i>
+        </a>
+    </h3>
+</div>
+<div class="col-xs-12 visible-xs visible-sm hidden-md hidden-lg">
+    <div class="col-xs-12 main-content-home-news">
+        {% include 'home-news.html' %}
     </div>
 </div>
-<div class="col-xs-2 main-content-subscribe-text">
+<div class="col-sm-2 main-content-subscribe-text hidden-xs hidden-sm visible-md visible-lg">
     <a class="subscriptionButton" href="/subscription">
         V<br />
         R<br />
